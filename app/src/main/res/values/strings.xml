@@ -8,4 +8,5 @@
     <string name="notificaciones">Notificaciones</string>
     <string name="usuario">Usuario</string>
     <string name="mi_perfil">Mi perfil</string>
+    <string name="title_activity_teacher">TeacherActivity</string>
 </resources>

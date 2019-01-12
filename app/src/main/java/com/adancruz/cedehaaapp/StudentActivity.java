@@ -1,6 +1,7 @@
 package com.adancruz.cedehaaapp;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 public class StudentActivity extends AppCompatActivity {
+
+    private Intent intent;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -31,7 +34,7 @@ public class StudentActivity extends AppCompatActivity {
                     selectedFragment = new StUserFragment();
                     break;
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.container,
+            getSupportFragmentManager().beginTransaction().replace(R.id.st_container_activity,
                     selectedFragment).commit();
             return true;
         }
@@ -48,4 +51,12 @@ public class StudentActivity extends AppCompatActivity {
                 new StHomeFragment()).commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        intent = new Intent(StudentActivity.this, TeacherActivity.class);
+        StudentActivity.this.finish();
+        startActivity(intent);
+    }
 }
