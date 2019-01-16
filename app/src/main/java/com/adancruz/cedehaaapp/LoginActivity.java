@@ -36,38 +36,40 @@ import java.util.List;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A login screen that offers login via email/password.
+ * Una pantalla de inicio de sesión que ofrece inicio de sesión por correo electrónico / contraseña.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
-     * Id to identity READ_CONTACTS permission request.
+     * Id para identificar la solicitud de permiso READ_CONTACTS.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
+     * Un almacén de autenticación ficticio que contiene nombres de usuario y contraseñas conocidos
+     * TODO: Eliminar después de conectarse a un sistema de autenticación real.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
     /**
-     * Keep track of the login task to ensure we can cancel it if requested.
+     * Realiza un seguimiento de la tarea de inicio de sesión para garantizar que podamos cancelarla si así lo solicita.
      */
     private UserLoginTask mAuthTask = null;
 
-    // UI references.
+    // Referencias de la interfaz de usuario.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    Button boton_registrarse;
+    Button boton_iniciarSesion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
+        // Configure el formulario de inicio de sesión.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -83,7 +85,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button boton_iniciarSesion = (Button) findViewById(R.id.boton_iniciar_sesion);
+        boton_registrarse = (Button) findViewById(R.id.boton_registrarse);
+        boton_registrarse.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        boton_iniciarSesion = (Button) findViewById(R.id.boton_iniciar_sesion);
         boton_iniciarSesion.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,7 +136,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Callback received when a permissions request has been completed.
+     * Devolución de llamada recibida cuando se ha completado una solicitud de permisos.
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -140,34 +150,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
+     * Intenta iniciar sesión o registrar la cuenta especificada por el formulario de inicio de sesión
+     * Si hay errores de formulario (correo electrónico no válido, campos faltantes, etc.),
+     * se presentan los errores y no se realiza ningún intento de inicio de sesión real.
      */
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
         }
 
-        // Reset errors.
+        // Restablecer errores.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
+        // Almacenar valores en el momento del intento de inicio de sesión.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
+        // Verifique una contraseña válida, si el usuario ingresó una.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_contrasena_invalida));
             focusView = mPasswordView;
             cancel = true;
         }
 
-        // Check for a valid email address.
+        // Compruebe si hay una dirección de correo electrónico válida.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_campo_requerido));
             focusView = mEmailView;
@@ -179,12 +189,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+            // Hubo un error; no intenta iniciar sesión y enfoca el
+            // primer campo de formulario con un error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
+            // Muestra un marcador de progreso y comienza una tarea en segundo plano
+            // para realizar el intento de inicio de sesión del usuario.
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
@@ -192,23 +202,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
+        //TODO: Reemplaza esto con tu propia lógica
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
+        //TODO: Reemplaza esto con tu propia lógica
         return password.length() > 4;
     }
 
     /**
-     * Shows the progress UI and hides the login form.
+     * Muestra el progreso de la interfaz de usuario y oculta el formulario de inicio de sesión.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
+        // En Honeycomb MR2 tenemos las API ViewPropertyAnimator, que
+        // permiten animaciones muy fáciles. Si está disponible, use
+        // estas API para fundir el selector de progreso.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -230,8 +240,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
+            // Las API de ViewPropertyAnimator no están disponibles, así que simplemente
+            // muestre y oculte los componentes de UI relevantes.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
@@ -240,17 +250,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
+                // Recupere las filas de datos para el contacto 'perfil' del usuario del dispositivo.
                 Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
                         ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
 
-                // Select only email addresses.
+                // Seleccione solo direcciones de correo electrónico.
                 ContactsContract.Contacts.Data.MIMETYPE +
                         " = ?", new String[]{ContactsContract.CommonDataKinds.Email
                 .CONTENT_ITEM_TYPE},
 
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
+                // Mostrar primero las direcciones de correo electrónico principales. Tenga en cuenta que no
+                // habrá una dirección de correo electrónico principal si el usuario no ha especificado una.
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
@@ -272,7 +282,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+        // Cree un adaptador para indicar al AutoCompleteTextView qué mostrar en su lista desplegable.
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
@@ -292,8 +302,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     * Representa una tarea de inicio de sesión / registro asíncrono
+     * utilizada para autenticar al usuario.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -307,10 +317,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            // TODO: Intento de autenticación contra un servicio de red.
 
             try {
-                // Simulate network access.
+                // Simular el acceso a la red.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
@@ -319,12 +329,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
+                    // La cuenta existe, devuelve verdadero si la contraseña coincide.
                     return pieces[1].equals(mPassword);
                 }
             }
 
-            // TODO: register the new account here.
+            // TODO: Registre la nueva cuenta aquí.
             return true;
         }
 

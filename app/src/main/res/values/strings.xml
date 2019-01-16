@@ -30,7 +30,7 @@
     <string name="error_contrasena_invalida">La contraseña es demasiado corta</string>
     <string name="error_contrasena_incorrecta">La contraseña es incorrecta</string>
     <string name="error_campo_requerido">Este campo es requerido</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
+    <string name="permission_rationale">"Se requieren permisos de contactos para proporcionar
+        completamientos de correo electrónico."
     </string>
 </resources>
