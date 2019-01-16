@@ -89,7 +89,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boton_registrarse.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(LoginActivity.this, StudentRegisterActivity.class);
+                startActivity(intent);
             }
         });
 

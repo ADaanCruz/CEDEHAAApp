@@ -33,4 +33,12 @@
     <string name="permission_rationale">"Se requieren permisos de contactos para proporcionar
         completamientos de correo electrónico."
     </string>
+    <string name="nombres">Nombre/s</string>
+    <string name="apellidos">Apellidos</string>
+    <string name="numero_telefonico">Número telefónico</string>
+    <string name="estado">Estado</string>
+    <string name="ciudad">Ciudad</string>
+    <string name="aceptar_registro">Aceptar registro</string>
+    <string name="leyenda_terminos_y_condiciones">Al aceptar registro, usted acepta los términos y condiciones del uso de la aplicación.</string>
+    <string name="terminos_y_condiciones">Leer términos y condiciones</string>
 </resources>
