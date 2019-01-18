@@ -4,46 +4,34 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * Una pantalla de inicio de sesión que ofrece inicio de sesión por correo electrónico / contraseña.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
-
-    /**
-     * Id para identificar la solicitud de permiso READ_CONTACTS.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
+public class LoginActivity extends AppCompatActivity {
 
     /**
      * Un almacén de autenticación ficticio que contiene nombres de usuario y contraseñas conocidos
@@ -58,7 +46,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private UserLoginTask mAuthTask = null;
 
     // Referencias de la interfaz de usuario.
-    private AutoCompleteTextView mEmailView;
+    private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
@@ -69,21 +57,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Configure el formulario de inicio de sesión.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
 
+        mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
 
         boton_registrarse = (Button) findViewById(R.id.boton_registrarse);
         boton_registrarse.setOnClickListener(new OnClickListener() {
@@ -95,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         boton_iniciarSesion = (Button) findViewById(R.id.boton_iniciar_sesion);
-        boton_iniciarSesion.setOnClickListener(new OnClickListener() {
+        boton_iniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -105,50 +81,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
-
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Devolución de llamada recibida cuando se ha completado una solicitud de permisos.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
-    }
-
 
     /**
      * Intenta iniciar sesión o registrar la cuenta especificada por el formulario de inicio de sesión
@@ -171,14 +103,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean cancel = false;
         View focusView = null;
 
-        // Verifique una contraseña válida, si el usuario ingresó una.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_contrasena_invalida));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Compruebe si hay una dirección de correo electrónico válida.
+        // Comprueba si hay una dirección de correo electrónico válida.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_campo_requerido));
             focusView = mEmailView;
@@ -187,6 +112,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_correo_invalido));
             focusView = mEmailView;
             cancel = true;
+        } else
+            // Comprueba si hay una contraseña válida.
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_campo_requerido));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_contrasena_invalida));
+            focusView = mPasswordView;
+            cancel = true;
+        } else {
+            showProgress(true);
+            cancel = false;
         }
 
         if (cancel) {
@@ -196,15 +134,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Muestra un marcador de progreso y comienza una tarea en segundo plano
             // para realizar el intento de inicio de sesión del usuario.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            String correo = mEmailView.getText().toString();
+            String contrasena = mPasswordView.getText().toString();
+
+            final Response.Listener<String> responseListener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("success");
+                        if (success) {
+                            Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
+                            //finish();
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(LoginActivity.this,"Acceso fallido", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(LoginActivity.this, "ERROR: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+                    showProgress(false);
+                }
+            };
+
+            LoginRequest loginRequest = new LoginRequest(correo, contrasena, responseListener);
+            RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+            queue.add(loginRequest);
         }
     }
 
     private boolean isEmailValid(String email) {
         //TODO: Reemplaza esto con tu propia lógica
         return email.contains("@");
+        //return true;
     }
 
     private boolean isPasswordValid(String password) {
@@ -248,49 +212,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Recupere las filas de datos para el contacto 'perfil' del usuario del dispositivo.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Seleccione solo direcciones de correo electrónico.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Mostrar primero las direcciones de correo electrónico principales. Tenga en cuenta que no
-                // habrá una dirección de correo electrónico principal si el usuario no ha especificado una.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         // Cree un adaptador para indicar al AutoCompleteTextView qué mostrar en su lista desplegable.
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
-        mEmailView.setAdapter(adapter);
+        //mEmailView.setAdapter(adapter);
     }
-
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -345,9 +274,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
-                finish();
-                startActivity(intent);
+                //Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
+                //finish();
+                //startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_contrasena_incorrecta));
                 mPasswordView.requestFocus();
