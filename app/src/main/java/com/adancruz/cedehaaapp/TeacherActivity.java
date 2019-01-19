@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -48,6 +49,14 @@ public class TeacherActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.te_container_activity,
                 new TeHomeFragment()).commit();
+
+        Intent intent = this.getIntent();
+        String nombre = intent.getStringExtra("nombre");
+        AlertDialog.Builder builder = new AlertDialog.Builder(TeacherActivity.this);
+        builder.setMessage("¡Bienvenido profesor, " + nombre + "!")
+                .setNegativeButton("Continuar", null)
+                .create()
+                .show();
     }
 
 }

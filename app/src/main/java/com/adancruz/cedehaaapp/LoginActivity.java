@@ -145,11 +145,19 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("success");
                         if (success) {
-                            Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
+                            String tipoDeUsuario = jsonObject.getString("tipoDeUsuario");
+                            Intent intent = null;
+                            if (tipoDeUsuario.equals("profesor")) {
+                                intent = new Intent(LoginActivity.this, TeacherActivity.class);
+                            } else {
+                                intent = new Intent(LoginActivity.this, StudentActivity.class);
+                            }
+                            intent.putExtra("nombre", jsonObject.getString("nombre"));
+                            //intent.putExtra("sexo", jsonObject.getString("sexo"));
                             //finish();
                             startActivity(intent);
                         } else {
-                            Toast.makeText(LoginActivity.this,"Acceso fallido", Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this,"Acceso fallido, verifica los campos", Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         Toast.makeText(LoginActivity.this, "ERROR: "+e.getMessage(), Toast.LENGTH_LONG).show();

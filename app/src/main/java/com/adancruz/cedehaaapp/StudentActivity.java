@@ -1,25 +1,22 @@
 package com.adancruz.cedehaaapp;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 public class StudentActivity extends AppCompatActivity {
-
-    private Intent intent;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment selectedFragment = null;
+            Fragment selectedFragment;
             switch (item.getItemId()) {
                 case R.id.st_navigation_home:
                     selectedFragment = new StHomeFragment();
@@ -32,6 +29,9 @@ public class StudentActivity extends AppCompatActivity {
                     break;
                 case R.id.st_navigation_user:
                     selectedFragment = new StUserFragment();
+                    break;
+                default:
+                    selectedFragment = new StHomeFragment();
                     break;
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.st_container_activity,
@@ -49,14 +49,13 @@ public class StudentActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.st_container_activity,
                 new StHomeFragment()).commit();
-    }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-        intent = new Intent(StudentActivity.this, TeacherActivity.class);
-        StudentActivity.this.finish();
-        startActivity(intent);
+        Intent intent = this.getIntent();
+        String nombre = intent.getStringExtra("nombre");
+        AlertDialog.Builder builder = new AlertDialog.Builder(StudentActivity.this);
+        builder.setMessage("¡Bienvenido estudiante, " + nombre + "!")
+                .setNegativeButton("Continuar", null)
+                .create()
+                .show();
     }
 }
