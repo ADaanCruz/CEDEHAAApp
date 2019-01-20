@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".StudentRegisterActivity">
 
     <LinearLayout
@@ -14,7 +15,7 @@
         <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginBottom="10dp">
 
-            <AutoCompleteTextView android:id="@+id/nombres"
+            <AutoCompleteTextView android:id="@+id/nombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/nombres"
@@ -27,10 +28,10 @@
         <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginBottom="10dp">
 
-            <AutoCompleteTextView android:id="@+id/apellidos"
+            <AutoCompleteTextView android:id="@+id/apellidoPaterno"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/apellidos"
+                android:hint="@string/apellido_paterno"
                 android:inputType="textPersonName"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -40,11 +41,52 @@
         <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginBottom="10dp">
 
-            <AutoCompleteTextView android:id="@+id/correo_electronico"
+            <AutoCompleteTextView android:id="@+id/apellidoMaterno"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/apellido_materno"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginBottom="10dp">
+
+            <AutoCompleteTextView android:id="@+id/correo_reg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/correo_electronico"
                 android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout android:layout_width="190dp"
+        android:layout_height="wrap_content" android:layout_marginBottom="10dp"
+        app:passwordToggleEnabled="true">
+
+            <AutoCompleteTextView android:id="@+id/contrasena_reg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/contrasena"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout android:layout_width="190dp"
+        android:layout_height="wrap_content" android:layout_marginBottom="10dp"
+        app:passwordToggleEnabled="true">
+
+            <AutoCompleteTextView android:id="@+id/conf_contrasena_reg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/confirmar_contrasena"
+                android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true" />
 
@@ -58,32 +100,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/numero_telefonico"
                 android:inputType="phone"
-                android:maxLines="1"
-                android:singleLine="true" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout android:layout_width="170dp"
-            android:layout_height="wrap_content" android:layout_marginBottom="10dp">
-
-            <AutoCompleteTextView android:id="@+id/estado"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/estado"
-                android:inputType="textPostalAddress"
-                android:maxLines="1"
-                android:singleLine="true" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_marginBottom="10dp">
-
-            <AutoCompleteTextView android:id="@+id/ciudad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/ciudad"
-                android:inputType="textPostalAddress"
                 android:maxLines="1"
                 android:singleLine="true" />
 

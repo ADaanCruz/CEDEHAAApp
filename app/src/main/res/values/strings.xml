@@ -41,4 +41,7 @@
     <string name="aceptar_registro">Aceptar registro</string>
     <string name="leyenda_terminos_y_condiciones">Al aceptar registro, usted acepta los términos y condiciones del uso de la aplicación.</string>
     <string name="terminos_y_condiciones">Leer términos y condiciones</string>
+    <string name="apellido_paterno">Apellido paterno</string>
+    <string name="apellido_materno">Apellido materno</string>
+    <string name="confirmar_contrasena">Confirmar contraseña</string>
 </resources>
