@@ -60,7 +60,8 @@
                 android:hint="@string/correo_electronico"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                tools:ignore="Autofill" />
 
         </android.support.design.widget.TextInputLayout>
 

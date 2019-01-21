@@ -23,6 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -141,29 +142,51 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(String response) {
                     try {
-
                         JSONObject jsonObject = new JSONObject(response);
                         boolean success = jsonObject.getBoolean("success");
                         if (success) {
                             String tipoDeUsuario = jsonObject.getString("tipoDeUsuario");
                             Intent intent = null;
-                            if (tipoDeUsuario.equals("profesor")) {
+                            if (tipoDeUsuario.equals("estudiante")) {
+                                intent = new Intent(LoginActivity.this, StudentActivity.class);
+                            } else if (tipoDeUsuario.equals("profesor")) {
                                 intent = new Intent(LoginActivity.this, TeacherActivity.class);
                             } else {
-                                intent = new Intent(LoginActivity.this, StudentActivity.class);
+                                //intent = new Intent(LoginActivity.this, AdminActivity.class);
                             }
                             intent.putExtra("nombre", jsonObject.getString("nombre"));
-                            //intent.putExtra("sexo", jsonObject.getString("sexo"));
                             //finish();
                             startActivity(intent);
+                            showProgress(false);
                         } else {
-                            Toast.makeText(LoginActivity.this,"Acceso fallido, verifica los campos", Toast.LENGTH_LONG).show();
+                            String error = jsonObject.getString("message");
+                            String password = "password", email = "email", post = "post";
+                            if (error.equals(password)) {
+                                Toast.makeText(LoginActivity.this,
+                                        "La contraseña es incorrecta",
+                                        Toast.LENGTH_LONG).show();
+                            } else if (error.equals(email)) {
+                                Toast.makeText(LoginActivity.this,
+                                        "El correo no está registrado",
+                                        Toast.LENGTH_LONG).show();
+                            } else if (error.equals(post)) {
+                                Toast.makeText(LoginActivity.this,
+                                        "Error: Type POST",
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(LoginActivity.this,
+                                        "Acceso fallido, verifica los campos",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                            showProgress(false);
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(LoginActivity.this, "ERROR: "+e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this,
+                                "ERROR: "+e.getMessage(),
+                                Toast.LENGTH_LONG).show();
                         e.printStackTrace();
+                        showProgress(false);
                     }
-                    showProgress(false);
                 }
             };
 
