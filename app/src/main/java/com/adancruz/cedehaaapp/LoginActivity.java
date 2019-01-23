@@ -155,9 +155,9 @@ public class LoginActivity extends AppCompatActivity {
                                 //intent = new Intent(LoginActivity.this, AdminActivity.class);
                             }
                             intent.putExtra("nombre", jsonObject.getString("nombre"));
-                            //finish();
-                            startActivity(intent);
+                            finish();
                             showProgress(false);
+                            startActivity(intent);
                         } else {
                             String error = jsonObject.getString("message");
                             String password = "password", email = "email", post = "post";

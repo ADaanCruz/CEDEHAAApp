@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 public class StudentActivity extends AppCompatActivity {
+
+    Fragment fragment = new StHomeFragment();
+    Bundle bundle = new Bundle();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -19,7 +21,7 @@ public class StudentActivity extends AppCompatActivity {
             Fragment selectedFragment;
             switch (item.getItemId()) {
                 case R.id.st_navigation_home:
-                    selectedFragment = new StHomeFragment();
+                    selectedFragment = fragment;
                     break;
                 case R.id.st_navigation_courses:
                     selectedFragment = new StCoursesFragment();
@@ -45,17 +47,20 @@ public class StudentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
 
+        String nombre = this.getIntent().getStringExtra("nombre");
+
+        bundle.putString("nombre", nombre);
+        fragment.setArguments(bundle);
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.st_navView);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.st_container_activity,
-                new StHomeFragment()).commit();
+                fragment).commit();
+    }
 
-        Intent intent = this.getIntent();
-        String nombre = intent.getStringExtra("nombre");
-        AlertDialog.Builder builder = new AlertDialog.Builder(StudentActivity.this);
-        builder.setMessage("¡Bienvenido estudiante, " + nombre + "!")
-                .setNegativeButton("Continuar", null)
-                .create()
-                .show();
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(StudentActivity.this, LoginActivity.class));
     }
 }

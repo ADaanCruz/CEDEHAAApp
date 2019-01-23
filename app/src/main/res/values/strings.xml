@@ -44,4 +44,9 @@
     <string name="apellido_paterno">Apellido paterno</string>
     <string name="apellido_materno">Apellido materno</string>
     <string name="confirmar_contrasena">Confirmar contraseña</string>
+    <string name="tus_cursos">Tus cursos</string>
+    <string name="preview_course">preview_course</string>
+    <string name="titulo_del_curso">Titulo del curso</string>
+    <string name="descripcion_del_curso">Descripción del curso</string>
+    <string name="available_course">available_course</string>
 </resources>
