@@ -41,6 +41,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:hint="@string/correo_electronico"
+                    android:textSize="16sp"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"
@@ -51,7 +52,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true">
+                app:passwordToggleEnabled="true" >
 
                 <EditText
                     android:id="@+id/password"
@@ -59,6 +60,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:hint="@string/contrasena"
+                    android:textSize="16sp"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
@@ -66,24 +68,52 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true"
-                    tools:targetApi="o" />
+                    tools:targetApi="o"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"/>
 
             </android.support.design.widget.TextInputLayout>
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:text="@string/mantener_sesion_abierta"
+                android:textSize="16sp"
+                android:textColor="@color/black_overlay"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"/>
 
             <Button
                 android:id="@+id/boton_registrarse"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/registrarse"
-                android:textStyle="bold" />
+                android:textColor="@color/black_overlay"
+                android:background="#00000000"/>
 
             <Button
                 android:id="@+id/boton_iniciar_sesion"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="@string/iniciar_sesion"
-                android:textStyle="bold" />
+                android:textColor="#ffffff"
+                android:background="@color/colorPrimary"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/olvidaste_tu_contrasena"
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:clickable="true"
+                android:focusable="true"/>
 
         </LinearLayout>
     </ScrollView>

@@ -155,6 +155,10 @@ public class LoginActivity extends AppCompatActivity {
                                 //intent = new Intent(LoginActivity.this, AdminActivity.class);
                             }
                             intent.putExtra("nombre", jsonObject.getString("nombre"));
+                            intent.putExtra("apellidoPaterno", jsonObject.getString("apellidoPaterno"));
+                            intent.putExtra("apellidoMaterno", jsonObject.getString("apellidoMaterno"));
+                            intent.putExtra("correo", jsonObject.getString("correo"));
+                            intent.putExtra("telefono", jsonObject.getString("telefono"));
                             finish();
                             showProgress(false);
                             startActivity(intent);

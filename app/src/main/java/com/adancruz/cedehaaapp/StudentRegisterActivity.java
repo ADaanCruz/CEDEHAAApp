@@ -19,7 +19,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
 
     Button boton_aceptarRegistro;
     TextView texto_leerTerminosYCondiciones;
-    EditText nombre, apellidoPaterno, apellidoMaterno, correo, contrasena, conf_contrasena;
+    EditText nombre, apellidoPaterno, apellidoMaterno, correo, contrasena, conf_contrasena, telefono;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +32,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
         correo = (EditText) findViewById(R.id.correo_reg);
         contrasena = (EditText) findViewById(R.id.contrasena_reg);
         conf_contrasena = (EditText) findViewById(R.id.conf_contrasena_reg);
+        telefono = (EditText) findViewById(R.id.numero_telefonico);
 
         boton_aceptarRegistro = (Button) findViewById(R.id.boton_aceptar_registro);
         boton_aceptarRegistro.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +44,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
                 String correo_electronico = correo.getText().toString();
                 String contrasena_ = contrasena.getText().toString();
                 String conf_contrasena_ = conf_contrasena.getText().toString();
+                String telefono_ = telefono.getText().toString();
 
                 if (conf_contrasena_.equals(contrasena_)) {
                     Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -80,7 +82,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
                     };
 
                     StudentRegisterRequest registerRequest = new StudentRegisterRequest(
-                            nombres, apellido_paterno, apellido_materno, correo_electronico, contrasena_,
+                            nombres, apellido_paterno, apellido_materno, correo_electronico, contrasena_, telefono_,
                             "estudiante", "", responseListener
                     );
                     RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);

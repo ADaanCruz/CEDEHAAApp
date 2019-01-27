@@ -47,6 +47,17 @@
     <string name="tus_cursos">Tus cursos</string>
     <string name="preview_course">preview_course</string>
     <string name="titulo_del_curso">Titulo del curso</string>
-    <string name="descripcion_del_curso">Descripción del curso</string>
+    <string name="descripcion_del_curso">Descripción breve del curso</string>
     <string name="available_course">available_course</string>
+    <string name="descripcion_general_del_curso">Descripción general del curso</string>
+    <string name="inscribirse">Inscribirse</string>
+    <string name="cursos_a_ofrecer">Cursos a ofrecer</string>
+    <string name="foto_de_perfil">Foto de perfil</string>
+    <string name="nombre_de_la_configuracion">Nombre de la configuración</string>
+    <string name="mi_informacion">Mi información</string>
+    <string name="acerca_de">Acerca de</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
+    <string name="recibir_notificaciones">Recibir notificaciones</string>
+    <string name="olvidaste_tu_contrasena">¿Olvidaste tu contraseña?</string>
+    <string name="mantener_sesion_abierta">Mantener sesión abierta</string>
 </resources>

@@ -36,6 +36,7 @@ public class StudentActivity extends AppCompatActivity {
                     selectedFragment = new StHomeFragment();
                     break;
             }
+            cargarBundle(selectedFragment);
             getSupportFragmentManager().beginTransaction().replace(R.id.st_container_activity,
                     selectedFragment).commit();
             return true;
@@ -47,10 +48,7 @@ public class StudentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
 
-        String nombre = this.getIntent().getStringExtra("nombre");
-
-        bundle.putString("nombre", nombre);
-        fragment.setArguments(bundle);
+        cargarBundle(fragment);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.st_navView);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -62,5 +60,20 @@ public class StudentActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(StudentActivity.this, LoginActivity.class));
+    }
+
+    public void cargarBundle(Fragment selectedFragment) {
+        String nombre = this.getIntent().getStringExtra("nombre");
+        String apellidoPaterno = this.getIntent().getStringExtra("apellidoPaterno");
+        String apellidoMaterno = this.getIntent().getStringExtra("apellidoMaterno");
+        String correo = this.getIntent().getStringExtra("correo");
+        String telefono = this.getIntent().getStringExtra("telefono");
+
+        bundle.putString("nombre", nombre);
+        bundle.putString("apellidoPaterno", apellidoPaterno);
+        bundle.putString("apellidoMaterno", apellidoMaterno);
+        bundle.putString("correo", correo);
+        bundle.putString("telefono", telefono);
+        selectedFragment.setArguments(bundle);
     }
 }

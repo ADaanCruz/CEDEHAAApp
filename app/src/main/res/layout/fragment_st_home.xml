@@ -13,7 +13,8 @@
             android:text="@string/bienvenido"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/texto_tus_cursos"
@@ -22,13 +23,12 @@
             android:text="@string/tus_cursos"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="#000"
             android:layout_marginBottom="5dp"/>
 
         <ListView
-            android:id="@+id/tus_cursos"
+            android:id="@+id/lista_tus_cursos"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </ListView>
+            android:layout_height="wrap_content" />
 
 </LinearLayout>

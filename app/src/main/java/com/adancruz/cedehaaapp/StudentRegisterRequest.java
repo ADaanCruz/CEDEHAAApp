@@ -13,7 +13,7 @@ public class StudentRegisterRequest extends StringRequest {
     private Map<String, String> params;
 
     public StudentRegisterRequest (String nombre, String apellidoPaterno, String apellidoMaterno,
-                                   String correo, String contrasena, String tipoDeUsuario,
+                                   String correo, String contrasena, String telefono, String tipoDeUsuario,
                                    String fotoDePerfil, Response.Listener<String> listener) {
 
         super(Request.Method.POST, STUDENT_REGISTER_REQUEST_URL, listener, null);
@@ -23,6 +23,7 @@ public class StudentRegisterRequest extends StringRequest {
         params.put("apellidoMaterno", apellidoMaterno);
         params.put("correo", correo);
         params.put("contrasena", contrasena);
+        params.put("telefono", telefono);
         params.put("tipoDeUsuario", tipoDeUsuario);
         params.put("fotoDePerfil", fotoDePerfil);
 

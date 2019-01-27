@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/texto_titulo_de_tu_curso_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="@string/titulo_del_curso" />
+
+        <ImageView
+            android:id="@+id/imagen_de_tu_curso_details"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            app:srcCompat="@drawable/placeholder" />
+
+        <TextView
+            android:id="@+id/texto_desc_breve_del_curso_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:text="@string/descripcion_del_curso" />
+
+        <TextView
+            android:id="@+id/texto_desc_gral_del_curso_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/descripcion_general_del_curso" />
+
+        <Button
+            android:id="@+id/boton_notificaciones_de_tu_curso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/notificaciones" />
+    </LinearLayout>
+</ScrollView>
