@@ -2,14 +2,14 @@ package com.adancruz.cedehaaapp;
 
 import java.io.Serializable;
 
-public class YourCourse implements Serializable {
+public class Curso implements Serializable {
 
     private int imagen;
     private String titulo;
     private String descripcionBreve;
     private String descripcionGeneral;
 
-    public YourCourse(int imagen, String titulo, String descripcionBreve, String descripcionGeneral) {
+    public Curso(int imagen, String titulo, String descripcionBreve, String descripcionGeneral) {
         this.imagen = imagen;
         this.titulo = titulo;
         this.descripcionBreve = descripcionBreve;

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class YourCoursesDetailsActivity extends AppCompatActivity {
 
-    private YourCourse item;
+    private Curso item;
     private TextView titulo, descripcionBreve, getDescripcionGeneral;
     private ImageView imagen;
     private Button notificaciones;
@@ -19,7 +19,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_yc_details_list);
 
-        item = (YourCourse) getIntent().getSerializableExtra("objectData");
+        item = (Curso) getIntent().getSerializableExtra("objectData");
 
         titulo = (TextView) findViewById(R.id.texto_titulo_de_tu_curso_details);
         descripcionBreve = (TextView) findViewById(R.id.texto_desc_breve_del_curso_details);

@@ -60,4 +60,8 @@
     <string name="recibir_notificaciones">Recibir notificaciones</string>
     <string name="olvidaste_tu_contrasena">¿Olvidaste tu contraseña?</string>
     <string name="mantener_sesion_abierta">Mantener sesión abierta</string>
+    <string name="imagen_del_curso">Imagen del curso</string>
+    <string name="tipo_y_nombre_de_usuario">Tipo y nombre de usuario</string>
+    <string name="mensaje_de_la_notificacion">Mensaje de la notificación</string>
+    <string name="fecha_de_publicacion">Fecha de publicación</string>
 </resources>

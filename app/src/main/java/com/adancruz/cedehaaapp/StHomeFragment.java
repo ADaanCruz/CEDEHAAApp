@@ -1,6 +1,5 @@
 package com.adancruz.cedehaaapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,7 +30,7 @@ public class StHomeFragment extends Fragment {
             bienvenida.setText(texto);
         }
 
-        tusCursos.setAdapter(new ListYourCoursesAdapter(view.getContext(), GetArrayItems()));
+        tusCursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems()));
         /*tusCursos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -45,22 +43,22 @@ public class StHomeFragment extends Fragment {
         return view;
     }
 
-    private ArrayList<YourCourse> GetArrayItems() {
-        ArrayList<YourCourse> listItems = new ArrayList<>();
+    private ArrayList<Curso> GetArrayItems() {
+        ArrayList<Curso> listItems = new ArrayList<>();
 
-        listItems.add(new YourCourse(R.drawable.placeholder, "Titulo 1",
+        listItems.add(new Curso(R.drawable.placeholder, "Titulo 1",
                 "Descripción 1", "Desc General 1"));
-        listItems.add(new YourCourse(R.drawable.placeholder, "Titulo 2",
+        listItems.add(new Curso(R.drawable.placeholder, "Titulo 2",
                 "Descripción 2", "Desc General 2"));
-        listItems.add(new YourCourse(R.drawable.placeholder, "Titulo 3",
+        listItems.add(new Curso(R.drawable.placeholder, "Titulo 3",
                 "Descripción 3", "Desc General 3"));
-        listItems.add(new YourCourse(R.drawable.placeholder, "Titulo 4",
+        listItems.add(new Curso(R.drawable.placeholder, "Titulo 4",
                 "Descripción 4", "Desc General 4"));
-        listItems.add(new YourCourse(R.drawable.placeholder, "Titulo 5",
+        listItems.add(new Curso(R.drawable.placeholder, "Titulo 5",
                 "Descripción 5", "Desc General 5"));
-        listItems.add(new YourCourse(R.drawable.placeholder, "Titulo 6",
+        listItems.add(new Curso(R.drawable.placeholder, "Titulo 6",
                 "Descripción 6", "Desc General 6"));
-        listItems.add(new YourCourse(R.drawable.placeholder, "Titulo 7",
+        listItems.add(new Curso(R.drawable.placeholder, "Titulo 7",
                 "Descripción 7", "Desc General 7"));
 
         return listItems;
