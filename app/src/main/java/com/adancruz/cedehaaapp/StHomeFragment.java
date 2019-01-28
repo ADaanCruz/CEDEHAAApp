@@ -22,8 +22,8 @@ public class StHomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_st_home, container, false);
 
-        bienvenida = (TextView) view.findViewById(R.id.texto_bienvenida);
-        tusCursos = (ListView) view.findViewById(R.id.lista_tus_cursos);
+        bienvenida = (TextView) view.findViewById(R.id.texto_st_bienvenida);
+        tusCursos = (ListView) view.findViewById(R.id.lista_st_tus_cursos);
 
         if (getArguments() != null) {
             String texto = "¡Bienvenido,\nalumno " + getArguments().getString("nombre") + "!";

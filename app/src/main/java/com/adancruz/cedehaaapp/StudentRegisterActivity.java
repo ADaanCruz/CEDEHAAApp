@@ -46,50 +46,56 @@ public class StudentRegisterActivity extends AppCompatActivity {
                 String conf_contrasena_ = conf_contrasena.getText().toString();
                 String telefono_ = telefono.getText().toString();
 
-                if (conf_contrasena_.equals(contrasena_)) {
-                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                boolean success = jsonObject.getBoolean("success");
-                                if (success) {
-                                    Toast.makeText(StudentRegisterActivity.this,
-                                            "¡Registro realizado!", Toast.LENGTH_LONG).show();
-                                    finish();
-                                } else {
-                                    String error = jsonObject.getString("message");
-                                    String existing = "existing", post = "post";
-                                    if (error.equals(existing)) {
-                                        Toast.makeText(StudentRegisterActivity.this,
-                                                "El correo ya está registrado",
-                                                Toast.LENGTH_LONG).show();
-                                    } else if (error.equals(post)) {
-                                        Toast.makeText(StudentRegisterActivity.this,
-                                                "Error: Type POST",
-                                                Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(StudentRegisterActivity.this,
-                                                "Algo salió mal",
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            } catch (JSONException e) {
-                                Toast.makeText(StudentRegisterActivity.this, "ERROR: "+e.getMessage(), Toast.LENGTH_LONG).show();
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-
-                    StudentRegisterRequest registerRequest = new StudentRegisterRequest(
-                            nombres, apellido_paterno, apellido_materno, correo_electronico, contrasena_, telefono_,
-                            "estudiante", "", responseListener
-                    );
-                    RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);
-                    queue.add(registerRequest);
-                } else {
-                    Toast.makeText(StudentRegisterActivity.this, "Confirma la contrasena",
+                if (correo_electronico.isEmpty() || contrasena_.isEmpty()) {
+                    Toast.makeText(StudentRegisterActivity.this,
+                            "Completa todos los campos",
                             Toast.LENGTH_LONG).show();
+                } else {
+                    if (conf_contrasena_.equals(contrasena_)) {
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    boolean success = jsonObject.getBoolean("success");
+                                    if (success) {
+                                        Toast.makeText(StudentRegisterActivity.this,
+                                                "¡Registro realizado!", Toast.LENGTH_LONG).show();
+                                        finish();
+                                    } else {
+                                        String error = jsonObject.getString("message");
+                                        String existing = "existing", post = "post";
+                                        if (error.equals(existing)) {
+                                            Toast.makeText(StudentRegisterActivity.this,
+                                                    "El correo ya está registrado",
+                                                    Toast.LENGTH_LONG).show();
+                                        } else if (error.equals(post)) {
+                                            Toast.makeText(StudentRegisterActivity.this,
+                                                    "Error: Type POST",
+                                                    Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(StudentRegisterActivity.this,
+                                                    "Algo salió mal",
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    Toast.makeText(StudentRegisterActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+
+                        StudentRegisterRequest registerRequest = new StudentRegisterRequest(
+                                nombres, apellido_paterno, apellido_materno, correo_electronico, contrasena_, telefono_,
+                                "estudiante", "", responseListener
+                        );
+                        RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);
+                        queue.add(registerRequest);
+                    } else {
+                        Toast.makeText(StudentRegisterActivity.this, "Confirma la contrasena",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });

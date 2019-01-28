@@ -149,6 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent = null;
                             if (tipoDeUsuario.equals("estudiante")) {
                                 intent = new Intent(LoginActivity.this, StudentActivity.class);
+                                intent.putExtra("telefono", jsonObject.getString("telefono"));
                             } else if (tipoDeUsuario.equals("profesor")) {
                                 intent = new Intent(LoginActivity.this, TeacherActivity.class);
                             } else {
@@ -158,7 +159,6 @@ public class LoginActivity extends AppCompatActivity {
                             intent.putExtra("apellidoPaterno", jsonObject.getString("apellidoPaterno"));
                             intent.putExtra("apellidoMaterno", jsonObject.getString("apellidoMaterno"));
                             intent.putExtra("correo", jsonObject.getString("correo"));
-                            intent.putExtra("telefono", jsonObject.getString("telefono"));
                             finish();
                             showProgress(false);
                             startActivity(intent);

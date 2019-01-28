@@ -6,7 +6,7 @@
     android:padding="20dp">
 
         <TextView
-            android:id="@+id/texto_bienvenida"
+            android:id="@+id/texto_st_bienvenida"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -17,7 +17,7 @@
             android:textColor="@color/colorPrimary" />
 
         <TextView
-            android:id="@+id/texto_tus_cursos"
+            android:id="@+id/texto_st_tus_cursos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/tus_cursos"
@@ -27,7 +27,7 @@
             android:layout_marginBottom="5dp"/>
 
         <ListView
-            android:id="@+id/lista_tus_cursos"
+            android:id="@+id/lista_st_tus_cursos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

@@ -12,7 +12,8 @@ import android.widget.TextView;
 
 public class TeacherActivity extends AppCompatActivity {
 
-    private Intent intent;
+    Fragment fragment = new TeHomeFragment();
+    Bundle bundle = new Bundle();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -33,7 +34,11 @@ public class TeacherActivity extends AppCompatActivity {
                 case R.id.te_navigation_user:
                     selectedFragment = new TeUserFragment();
                     break;
+                default:
+                    selectedFragment = new TeHomeFragment();
+                    break;
             }
+            cargarBundle(selectedFragment);
             getSupportFragmentManager().beginTransaction().replace(R.id.te_container_activity,
                     selectedFragment).commit();
             return true;
@@ -45,18 +50,31 @@ public class TeacherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher);
 
+        cargarBundle(fragment);
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.te_navView);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.te_container_activity,
-                new TeHomeFragment()).commit();
+                fragment).commit();
+    }
 
-        Intent intent = this.getIntent();
-        String nombre = intent.getStringExtra("nombre");
-        AlertDialog.Builder builder = new AlertDialog.Builder(TeacherActivity.this);
-        builder.setMessage("¡Bienvenido profesor, " + nombre + "!")
-                .setNegativeButton("Continuar", null)
-                .create()
-                .show();
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(TeacherActivity.this, LoginActivity.class));
+    }
+
+    public void cargarBundle(Fragment selectedFragment) {
+        String nombre = this.getIntent().getStringExtra("nombre");
+        String apellidoPaterno = this.getIntent().getStringExtra("apellidoPaterno");
+        String apellidoMaterno = this.getIntent().getStringExtra("apellidoMaterno");
+        String correo = this.getIntent().getStringExtra("correo");
+
+        bundle.putString("nombre", nombre);
+        bundle.putString("apellidoPaterno", apellidoPaterno);
+        bundle.putString("apellidoMaterno", apellidoMaterno);
+        bundle.putString("correo", correo);
+        selectedFragment.setArguments(bundle);
     }
 
 }
