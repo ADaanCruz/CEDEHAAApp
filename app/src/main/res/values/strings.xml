@@ -64,4 +64,6 @@
     <string name="tipo_y_nombre_de_usuario">Tipo y nombre de usuario</string>
     <string name="mensaje_de_la_notificacion">Mensaje de la notificación</string>
     <string name="fecha_de_publicacion">Fecha de publicación</string>
+    <string name="crear_curso_nuevo">Crear curso nuevo</string>
+    <string name="crear_grupo_nuevo">Crear grupo nuevo</string>
 </resources>

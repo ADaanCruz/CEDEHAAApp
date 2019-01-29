@@ -1,11 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
 
-    <TextView
+    <Button
+        android:id="@+id/boton_crear_curso"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/cursos"
-        android:gravity="center_vertical|center_horizontal" />
+        android:text="@string/crear_curso_nuevo"
+        android:textColor="#ffffff"
+        android:background="@color/colorPrimary"/>
 
-</ScrollView>
+    <Button
+        android:id="@+id/boton_crear_grupo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/crear_grupo_nuevo"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/texto_te_cursos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cursos_a_ofrecer"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"/>
+
+    <ListView
+        android:id="@+id/lista_te_cursos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
