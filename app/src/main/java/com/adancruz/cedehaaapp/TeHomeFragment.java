@@ -26,7 +26,7 @@ public class TeHomeFragment extends Fragment {
         tusCursos = (ListView) view.findViewById(R.id.lista_te_tus_cursos);
 
         if (getArguments() != null) {
-            String texto = "¡Bienvenido,\nprofesor " + getArguments().getString("nombre") + "!";
+            String texto = "¡Bienvenido, " + getArguments().getString("nombre") + "!";
             bienvenida.setText(texto);
         }
 

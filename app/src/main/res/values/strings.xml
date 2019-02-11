@@ -66,4 +66,7 @@
     <string name="fecha_de_publicacion">Fecha de publicación</string>
     <string name="crear_curso_nuevo">Crear curso nuevo</string>
     <string name="crear_grupo_nuevo">Crear grupo nuevo</string>
+    <string name="caracteres_contrasena">Mínimo 4 carácteres (mayúsculas, minúsculas, números).</string>
+    <string name="logo_login">logo_login</string>
+    <string name="siguiente">Siguiente</string>
 </resources>

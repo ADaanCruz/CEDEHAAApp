@@ -1,9 +1,9 @@
 package com.adancruz.cedehaaapp;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.AsyncTask;
@@ -17,13 +17,13 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,9 +51,11 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private ScrollView mLoginView;
     Button boton_registrarse;
     Button boton_iniciarSesion;
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,12 @@ public class LoginActivity extends AppCompatActivity {
 
         mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+        mLoginView = findViewById(R.id.vista_login);
+
+        Drawable drawable = getResources().getDrawable(R.drawable.fondo2_2);
+        mLoginView.setBackground(drawable);
 
         boton_registrarse = (Button) findViewById(R.id.boton_registrarse);
         boton_registrarse.setOnClickListener(new OnClickListener() {
@@ -78,9 +86,6 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
     /**
@@ -219,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
         // En Honeycomb MR2 tenemos las API ViewPropertyAnimator, que
         // permiten animaciones muy fáciles. Si está disponible, use
         // estas API para fundir el selector de progreso.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -244,6 +249,14 @@ public class LoginActivity extends AppCompatActivity {
             // muestre y oculte los componentes de UI relevantes.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }*/
+        if (show)
+        {
+            mLoginFormView.setVisibility(View.GONE);
+            mProgressView.setVisibility(View.VISIBLE);
+        } else {
+            mLoginFormView.setVisibility(View.VISIBLE);
+            mProgressView.setVisibility(View.GONE);
         }
     }
 

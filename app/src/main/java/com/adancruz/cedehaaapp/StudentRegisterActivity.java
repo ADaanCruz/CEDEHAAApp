@@ -2,6 +2,7 @@ package com.adancruz.cedehaaapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
     Button boton_aceptarRegistro;
     TextView texto_leerTerminosYCondiciones;
     EditText nombre, apellidoPaterno, apellidoMaterno, correo, contrasena, conf_contrasena, telefono;
+    View focusView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +40,39 @@ public class StudentRegisterActivity extends AppCompatActivity {
         boton_aceptarRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nombres = nombre.getText().toString();
-                String apellido_paterno = apellidoPaterno.getText().toString();
-                String apellido_materno = apellidoMaterno.getText().toString();
-                String correo_electronico = correo.getText().toString();
-                String contrasena_ = contrasena.getText().toString();
-                String conf_contrasena_ = conf_contrasena.getText().toString();
-                String telefono_ = telefono.getText().toString();
+                boolean cancel = false;
+                TextView[] campos = new TextView[7];
+                campos[0] = nombre;
+                campos[1] = apellidoPaterno;
+                campos[2] = apellidoMaterno;
+                campos[3] = correo;
+                campos[4] = contrasena;
+                campos[5] = conf_contrasena;
+                campos[6] = telefono;
 
-                if (correo_electronico.isEmpty() || contrasena_.isEmpty()) {
-                    Toast.makeText(StudentRegisterActivity.this,
-                            "Completa todos los campos",
-                            Toast.LENGTH_LONG).show();
+                cancel = isEmpty(campos);
+
+                if (cancel) {
+                    focusView.requestFocus();
                 } else {
-                    if (conf_contrasena_.equals(contrasena_)) {
+                    cancel = false;
+                    if (!isEmailValid(correo.getText().toString())) {
+                        correo.setError(getString(R.string.error_correo_invalido));
+                        focusView = correo;
+                        cancel = true;
+                    }
+                    if (!isPasswordValid(contrasena.getText().toString())) {
+                        contrasena.setError(getString(R.string.error_correo_invalido));
+                        focusView = contrasena;
+                        cancel = true;
+                    }
+                    if (!(conf_contrasena.getText().toString().equals(contrasena.getText().toString()))) {
+                        conf_contrasena.setError("No coincide la contraseña");
+                        focusView = conf_contrasena;
+                        cancel = true;
+                    } if (cancel) {
+                        focusView.requestFocus();
+                    } else {
                         Response.Listener<String> responseListener = new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -87,14 +108,18 @@ public class StudentRegisterActivity extends AppCompatActivity {
                         };
 
                         StudentRegisterRequest registerRequest = new StudentRegisterRequest(
-                                nombres, apellido_paterno, apellido_materno, correo_electronico, contrasena_, telefono_,
-                                "estudiante", "", responseListener
+                                nombre.getText().toString(),
+                                apellidoPaterno.getText().toString(),
+                                apellidoMaterno.getText().toString(),
+                                correo.getText().toString(),
+                                contrasena.getText().toString(),
+                                telefono.getText().toString(),
+                                "estudiante",
+                                "",
+                                responseListener
                         );
                         RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);
                         queue.add(registerRequest);
-                    } else {
-                        Toast.makeText(StudentRegisterActivity.this, "Confirma la contrasena",
-                                Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -108,4 +133,34 @@ public class StudentRegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+    private boolean isPasswordValid(String password) {
+        //TODO: Reemplaza esto con tu propia lógica
+        return password.length() > 4;
+    }
+
+    private boolean isEmailValid(String email) {
+        //TODO: Reemplaza esto con tu propia lógica
+        return email.contains("@");
+        //return true;
+    }
+
+    private boolean isEmpty(TextView[] campos) {
+        boolean cancel = false;
+        for (int i = 0; i < campos.length; i++) {
+            if (TextUtils.isEmpty(campos[i].getText().toString())) {
+                campos[i].setError(getString(R.string.error_campo_requerido));
+                focusView = campos[i];
+                cancel = true;
+            } else {
+                if (cancel) {
+                    cancel = true;
+                } else {
+                    cancel = false;
+                }
+            }
+        }
+        return cancel;
+    }
+
 }

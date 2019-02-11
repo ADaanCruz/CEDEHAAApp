@@ -26,7 +26,7 @@ public class StHomeFragment extends Fragment {
         tusCursos = (ListView) view.findViewById(R.id.lista_st_tus_cursos);
 
         if (getArguments() != null) {
-            String texto = "¡Bienvenido,\nalumno " + getArguments().getString("nombre") + "!";
+            String texto = "¡Bienvenido, " + getArguments().getString("nombre") + "!";
             bienvenida.setText(texto);
         }
 

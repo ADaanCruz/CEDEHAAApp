@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".StudentRegisterActivity">
+    tools:context=".StudentRegisterActivity"
+    android:background="@color/colorBackgroundGris">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,8 +67,8 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout android:layout_width="190dp"
-        android:layout_height="wrap_content" android:layout_marginBottom="10dp"
-        app:passwordToggleEnabled="true">
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true" android:layout_marginRight="30dp">
 
             <AutoCompleteTextView android:id="@+id/contrasena_reg"
                 android:layout_width="match_parent"
@@ -78,6 +79,12 @@
                 android:singleLine="true" />
 
         </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/caracteres_contrasena"
+            android:textSize="12sp"/>
 
         <android.support.design.widget.TextInputLayout android:layout_width="190dp"
         android:layout_height="wrap_content" android:layout_marginBottom="10dp"
@@ -112,7 +119,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="@string/aceptar_registro"
-             />
+            android:background="@color/colorButtonRed"
+            android:textColor="#ffffff"/>
 
         <TextView
             android:id="@+id/textView"
