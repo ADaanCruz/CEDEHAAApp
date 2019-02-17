@@ -5,21 +5,6 @@
     android:orientation="vertical"
     android:padding="20dp">
 
-    <Button
-        android:id="@+id/boton_crear_curso"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/crear_curso_nuevo"
-        android:textColor="#ffffff"
-        android:background="@color/colorPrimary"/>
-
-    <Button
-        android:id="@+id/boton_crear_grupo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/crear_grupo_nuevo"
-        android:layout_marginBottom="10dp"/>
-
     <TextView
         android:id="@+id/texto_te_cursos"
         android:layout_width="match_parent"

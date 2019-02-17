@@ -69,4 +69,6 @@
     <string name="caracteres_contrasena">Mínimo 4 carácteres (mayúsculas, minúsculas, números).</string>
     <string name="logo_login">logo_login</string>
     <string name="siguiente">Siguiente</string>
+    <string name="img_notification">img_notification</string>
+    <string name="aceptar_curso_nuevo">Aceptar curso nuevo</string>
 </resources>

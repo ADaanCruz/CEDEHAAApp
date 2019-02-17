@@ -1,5 +1,6 @@
 package com.adancruz.cedehaaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,7 +17,9 @@ import java.util.ArrayList;
 public class StHomeFragment extends Fragment {
 
     TextView bienvenida;
-    ListView tusCursos;
+    ListView cursos;
+    Button nuevoCurso;
+    Intent intent;
 
     @Nullable
     @Override
@@ -23,22 +27,27 @@ public class StHomeFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_st_home, container, false);
 
         bienvenida = (TextView) view.findViewById(R.id.texto_st_bienvenida);
-        tusCursos = (ListView) view.findViewById(R.id.lista_st_tus_cursos);
+        cursos = (ListView) view.findViewById(R.id.lista_st_cursos);
+        nuevoCurso = (Button) view.findViewById(R.id.boton_crear_curso);
 
         if (getArguments() != null) {
             String texto = "¡Bienvenido, " + getArguments().getString("nombre") + "!";
             bienvenida.setText(texto);
+            if(getArguments().getString("tipoDeUsuario").equals("admin")) {
+                nuevoCurso.setVisibility(View.VISIBLE);
+            } else{
+                nuevoCurso.setVisibility(View.GONE);
+            }
         }
 
-        tusCursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems()));
-        /*tusCursos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        cursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems()));
+        nuevoCurso.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(view.getContext(), YourCoursesDetailsActivity.class);
-                intent.putExtra("objectData", GetArrayItems().get(position));
-                startActivity(intent);
+            public void onClick(View v) {
+                intent = new Intent(view.getContext(), CreateCourseActivity.class);
+                view.getContext().startActivity(intent);
             }
-        });*/
+        });
 
         return view;
     }

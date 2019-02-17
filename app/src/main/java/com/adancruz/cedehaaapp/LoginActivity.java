@@ -17,7 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ScrollView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private ScrollView mLoginView;
+    private LinearLayout mLoginView;
     Button boton_registrarse;
     Button boton_iniciarSesion;
 
@@ -151,19 +151,15 @@ public class LoginActivity extends AppCompatActivity {
                         boolean success = jsonObject.getBoolean("success");
                         if (success) {
                             String tipoDeUsuario = jsonObject.getString("tipoDeUsuario");
-                            Intent intent = null;
+                            Intent intent = new Intent(LoginActivity.this, StudentActivity.class);;
                             if (tipoDeUsuario.equals("estudiante")) {
-                                intent = new Intent(LoginActivity.this, StudentActivity.class);
                                 intent.putExtra("telefono", jsonObject.getString("telefono"));
-                            } else if (tipoDeUsuario.equals("profesor")) {
-                                intent = new Intent(LoginActivity.this, TeacherActivity.class);
-                            } else {
-                                //intent = new Intent(LoginActivity.this, AdminActivity.class);
                             }
                             intent.putExtra("nombre", jsonObject.getString("nombre"));
                             intent.putExtra("apellidoPaterno", jsonObject.getString("apellidoPaterno"));
                             intent.putExtra("apellidoMaterno", jsonObject.getString("apellidoMaterno"));
                             intent.putExtra("correo", jsonObject.getString("correo"));
+                            intent.putExtra("tipoDeUsuario", jsonObject.getString("tipoDeUsuario"));
                             finish();
                             showProgress(false);
                             startActivity(intent);

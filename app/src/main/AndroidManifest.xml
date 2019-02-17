@@ -37,7 +37,8 @@
             android:name=".LoginActivity"
             android:label="@string/app_name" />
         <activity android:name=".StudentRegisterActivity"></activity>
-        <activity android:name=".YourCoursesDetailsActivity" />
+        <activity android:name=".YourCoursesDetailsActivity"></activity>
+        <activity android:name=".CreateCourseActivity" />
     </application>
 
 </manifest>

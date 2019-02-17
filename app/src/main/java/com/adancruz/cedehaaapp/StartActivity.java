@@ -48,12 +48,13 @@ public class StartActivity extends AppCompatActivity {
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
-           /*mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+
+            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);*/
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
     private final Runnable mShowPart2Runnable = new Runnable() {
@@ -66,6 +67,7 @@ public class StartActivity extends AppCompatActivity {
             }
         }
     };
+
     private boolean mVisible;
     private final Runnable mHideRunnable = new Runnable() {
         @Override
@@ -87,7 +89,9 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
+        mContentView = findViewById(R.id.contenido_start);
         videoCedehaa = (VideoView) findViewById(R.id.video_cedehaa_inicio);
+        hide();
 
         String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.cedehaaintro;
         Uri uri = Uri.parse(videoPath);
@@ -101,38 +105,6 @@ public class StartActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        /*videoCedehaa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent = new Intent(StartActivity.this, LoginActivity.class);
-                StartActivity.this.finish();
-                startActivity(intent);
-            }
-        });*/
-
-        /*MediaController mediaController = new MediaController(this);
-        videoCedehaa.setMediaController(mediaController);
-        mediaController.setAnchorView(videoCedehaa);*/
-
-        // Set up the user interaction to manually show or hide the system UI.
-        /*mContentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                intent = new Intent(StartActivity.this, LoginActivity.class);
-                StartActivity.this.finish();
-                startActivity(intent);
-            }
-        });*/
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        //delayedHide(0);
 
     }
 
@@ -152,8 +124,8 @@ public class StartActivity extends AppCompatActivity {
     @SuppressLint("InlinedApi")
     private void show() {
         // Show the system bar
-        /*mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);*/
+        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mVisible = true;
 
         // Schedule a runnable to display UI elements after a delay

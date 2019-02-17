@@ -23,9 +23,6 @@ public class StudentActivity extends AppCompatActivity {
                 case R.id.st_navigation_home:
                     selectedFragment = fragment;
                     break;
-                case R.id.st_navigation_courses:
-                    selectedFragment = new StCoursesFragment();
-                    break;
                 case R.id.st_navigation_notifications:
                     selectedFragment = new StNotificationsFragment();
                     break;
@@ -68,12 +65,14 @@ public class StudentActivity extends AppCompatActivity {
         String apellidoMaterno = this.getIntent().getStringExtra("apellidoMaterno");
         String correo = this.getIntent().getStringExtra("correo");
         String telefono = this.getIntent().getStringExtra("telefono");
+        String tipoDeUsuario = this.getIntent().getStringExtra("tipoDeUsuario");
 
         bundle.putString("nombre", nombre);
         bundle.putString("apellidoPaterno", apellidoPaterno);
         bundle.putString("apellidoMaterno", apellidoMaterno);
         bundle.putString("correo", correo);
         bundle.putString("telefono", telefono);
+        bundle.putString("tipoDeUsuario", tipoDeUsuario);
         selectedFragment.setArguments(bundle);
     }
 }

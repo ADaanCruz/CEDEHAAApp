@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:id="@+id/contenido_start"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,6 +18,7 @@
         android:layout_width="530dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:foregroundGravity="center"/>
+        android:foregroundGravity="center"
+        android:layout_marginTop="180dp"/>
 
 </LinearLayout>
