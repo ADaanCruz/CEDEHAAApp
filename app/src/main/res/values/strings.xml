@@ -66,9 +66,18 @@
     <string name="fecha_de_publicacion">Fecha de publicación</string>
     <string name="crear_curso_nuevo">Crear curso nuevo</string>
     <string name="crear_grupo_nuevo">Crear grupo nuevo</string>
-    <string name="caracteres_contrasena">Mínimo 4 carácteres (mayúsculas, minúsculas, números).</string>
+    <string name="caracteres_contrasena">Mínimo 5 carácteres, puede usar\nmayúsculas, minúsculas, dígitos y alfanuméricos.</string>
     <string name="logo_login">logo_login</string>
     <string name="siguiente">Siguiente</string>
     <string name="img_notification">img_notification</string>
     <string name="aceptar_curso_nuevo">Aceptar curso nuevo</string>
+    <string name="limite_de_estudiantes">Limite de estudiantes:</string>
+    <string name="fecha_inicio">Fecha inicio:</string>
+    <string name="guion">-</string>
+    <string name="aaaa">AAAA</string>
+    <string name="mm">MM</string>
+    <string name="dd">DD</string>
+    <string name="valor_20">20</string>
+    <string name="presionar_para_cambiar_imagen">Presiona en la imagen para cambiarla</string>
+    <string name="podras_realizar_cambios">Posteriormente podrás realizar cambios</string>
 </resources>

@@ -23,14 +23,21 @@
             android:inputType="text"
             tools:ignore="Autofill"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="@string/presionar_para_cambiar_imagen" />
+
         <ImageButton
             android:id="@+id/imagen_del_curso_nuevo"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_marginBottom="10dp"
             android:layout_gravity="center"
             app:srcCompat="@drawable/placeholder"
+            android:background="#000000"
             android:contentDescription="@string/imagen_del_curso"/>
 
         <EditText
@@ -52,6 +59,51 @@
             android:hint="@string/descripcion_general_del_curso"
             tools:ignore="Autofill"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/limite_de_estudiantes"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/texto_limite_estudiantes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:inputType="number"
+                android:hint="@string/valor_20"
+                tools:ignore="Autofill"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fecha_inicio"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:textSize="16sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_calendar"
+            android:radius="10dp">
+
+            <CalendarView
+                android:id="@+id/calendario_inicio_curso"
+                android:layout_width="match_parent"
+                android:layout_height="320dp" />
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/boton_aceptar_curso_nuevo"
             android:layout_width="match_parent"
@@ -60,6 +112,13 @@
             android:text="@string/aceptar_curso_nuevo"
             android:background="@color/colorAccent"
             android:textColor="#ffffff"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorAccent"
+            android:text="@string/podras_realizar_cambios"/>
 
     </LinearLayout>
 </ScrollView>

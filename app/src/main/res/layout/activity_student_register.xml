@@ -68,7 +68,8 @@
 
         <android.support.design.widget.TextInputLayout android:layout_width="190dp"
         android:layout_height="wrap_content"
-        app:passwordToggleEnabled="true" android:layout_marginRight="30dp">
+        app:passwordToggleEnabled="true"
+        android:layout_marginRight="30dp">
 
             <AutoCompleteTextView android:id="@+id/contrasena_reg"
                 android:layout_width="match_parent"

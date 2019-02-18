@@ -33,7 +33,7 @@ public class StHomeFragment extends Fragment {
         if (getArguments() != null) {
             String texto = "¡Bienvenido, " + getArguments().getString("nombre") + "!";
             bienvenida.setText(texto);
-            if(getArguments().getString("tipoDeUsuario").equals("admin")) {
+            if(getArguments().getString("tipoDeUsuario").equals("administrador")) {
                 nuevoCurso.setVisibility(View.VISIBLE);
             } else{
                 nuevoCurso.setVisibility(View.GONE);
