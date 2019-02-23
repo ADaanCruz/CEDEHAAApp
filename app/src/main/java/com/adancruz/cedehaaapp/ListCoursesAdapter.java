@@ -28,13 +28,24 @@ public class ListCoursesAdapter extends BaseAdapter {
         final View view = inflater.inflate(R.layout.item_courses_list, null);
         final Curso curso = (Curso) getItem(position);
 
-        ImageView imagen = (ImageView) view.findViewById(R.id.imagen_item_del_curso);
         TextView titulo = (TextView) view.findViewById(R.id.texto_titulo_del_curso);
-        TextView descripcion = (TextView) view.findViewById(R.id.texto_descripcion_breve_del_curso);
+        ImageView imagen = (ImageView) view.findViewById(R.id.imagen_item_del_curso);
+        TextView descripcionBreve = (TextView) view.findViewById(R.id.texto_descripcion_breve_del_curso);
 
-        imagen.setImageResource(curso.getImagen());
         titulo.setText(curso.getTitulo());
-        descripcion.setText(curso.getDescripcionBreve());
+        switch (curso.getNumImagen()){
+            case 1 : imagen.setImageResource(R.drawable.diagnostico);
+                break;
+            case 2 : imagen.setImageResource(R.drawable.reparacion);
+                break;
+            case 3 : imagen.setImageResource(R.drawable.electronica);
+                break;
+            case 4 : imagen.setImageResource(R.drawable.programacion);
+                break;
+            default : imagen.setImageResource(R.drawable.reparacion);
+                break;
+        }
+        descripcionBreve.setText(curso.getDescripcionBreve());
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

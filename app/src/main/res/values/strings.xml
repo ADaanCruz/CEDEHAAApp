@@ -80,4 +80,5 @@
     <string name="valor_20">20</string>
     <string name="presionar_para_cambiar_imagen">Presiona en la imagen para cambiarla</string>
     <string name="podras_realizar_cambios">Posteriormente podrás realizar cambios</string>
+    <string name="sin_cursos">Aún no hay cursos disponibles</string>
 </resources>
