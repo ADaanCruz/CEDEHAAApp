@@ -45,10 +45,10 @@
             android:text="@string/descripcion_general_del_curso" />
 
         <Button
-            android:id="@+id/boton_notificaciones_de_tu_curso"
+            android:id="@+id/boton_detalle_de_curso"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="@string/notificaciones" />
+            android:text="@string/button" />
     </LinearLayout>
 </ScrollView>

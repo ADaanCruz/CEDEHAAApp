@@ -2,6 +2,7 @@ package com.adancruz.cedehaaapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -72,11 +73,11 @@ public class StHomeFragment extends Fragment {
                                 arrayList.add(curso);
                             }
                             if (arrayList.size() == 0) {
-                                cursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems()));
+                                cursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems(), tipoDeUsuario));
                                 cursos.setVisibility(View.GONE);
                                 sinCursos.setVisibility(View.VISIBLE);
                             } else {
-                                cursos.setAdapter(new ListCoursesAdapter(view.getContext(), arrayList));
+                                cursos.setAdapter(new ListCoursesAdapter(view.getContext(), arrayList, tipoDeUsuario));
                                 cursos.setVisibility(View.VISIBLE);
                                 sinCursos.setVisibility(View.GONE);
                             }
@@ -112,6 +113,7 @@ public class StHomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 intent = new Intent(view.getContext(), CreateCourseActivity.class);
+                intent.putExtra("editar",false);
                 intent.putExtra("tipoDeUsuario", tipoDeUsuario);
                 view.getContext().startActivity(intent);
             }

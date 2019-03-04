@@ -26,7 +26,7 @@ public class StCoursesFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_st_courses, container, false);
 
         cursos = (ListView) view.findViewById(R.id.lista_cursos);
-        cursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems()));
+        cursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems(), "administrador"));
 
         /*final Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override

@@ -1,8 +1,10 @@
 package com.adancruz.cedehaaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,8 +14,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
     private Curso item;
     private TextView titulo, descripcionBreve, getDescripcionGeneral;
     private ImageView imagen;
-    private Button notificaciones;
-
+    private Button button;
     private String tipoDeUsuario = "";
 
     @Override
@@ -27,8 +28,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
         imagen = (ImageView) findViewById(R.id.imagen_de_tu_curso_details);
         descripcionBreve = (TextView) findViewById(R.id.texto_desc_breve_del_curso_details);
         getDescripcionGeneral = (TextView) findViewById(R.id.texto_desc_gral_del_curso_details);
-
-        notificaciones = (Button) findViewById(R.id.boton_notificaciones_de_tu_curso);
+        button = (Button) findViewById(R.id.boton_detalle_de_curso);
 
         titulo.setText(item.getTitulo());
         switch (item.getNumImagen()){
@@ -47,5 +47,36 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
         getDescripcionGeneral.setText(item.getDescripcionGeneral());
 
         tipoDeUsuario = this.getIntent().getStringExtra("tipoDeUsuario");
+
+        String textoBoton;
+        if (tipoDeUsuario.equals("administrador")) {
+            textoBoton = "Editar curso";
+            button.setText(textoBoton);
+        } else if (tipoDeUsuario.equals("estudiante")){
+            textoBoton = "Estudiante";
+            button.setText(textoBoton);
+        }
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent;
+                intent = new Intent(YourCoursesDetailsActivity.this, CreateCourseActivity.class);
+                String txtBoton = button.getText().toString();
+                if (txtBoton.equals("Editar curso")) {
+                    intent.putExtra("editar", true);
+                    intent.putExtra("titulo", item.getTitulo());
+                    intent.putExtra("imagen", item.getNumImagen());
+                    intent.putExtra("descBreve", item.getDescripcionBreve());
+                    intent.putExtra("descGeneral", item.getDescripcionGeneral());
+                    intent.putExtra("fechaInicio", item.getFechaInicio());
+                    intent.putExtra("limiteEstudiantes", item.getLimiteEstudiantes());
+                    startActivity(intent);
+                } else if (txtBoton.equals("Estudiante")) {
+                    intent.putExtra("editar", false);
+                }
+            }
+        });
+
     }
 }

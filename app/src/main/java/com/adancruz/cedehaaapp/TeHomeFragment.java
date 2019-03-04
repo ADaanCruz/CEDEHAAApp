@@ -30,7 +30,7 @@ public class TeHomeFragment extends Fragment {
             bienvenida.setText(texto);
         }
 
-        tusCursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems()));
+        tusCursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems(), "administrador"));
         /*tusCursos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

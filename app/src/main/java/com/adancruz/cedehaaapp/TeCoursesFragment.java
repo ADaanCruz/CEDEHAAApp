@@ -22,7 +22,7 @@ public class TeCoursesFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_te_courses, container, false);
 
         cursos = (ListView) view.findViewById(R.id.lista_te_cursos);
-        cursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems()));
+        cursos.setAdapter(new ListCoursesAdapter(view.getContext(), GetArrayItems(), "administrador"));
 
         return view;
     }

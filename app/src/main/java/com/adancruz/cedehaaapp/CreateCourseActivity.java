@@ -1,5 +1,6 @@
 package com.adancruz.cedehaaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -27,7 +28,7 @@ import java.text.DateFormat;
 public class CreateCourseActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateCourseActivity";
-    private TextView titulo, descripcionBreve, descripcionGeneral, limiteEstudiantes;
+    private TextView titulo, descripcionBreve, descripcionGeneral, limiteEstudiantes, cambios;
     public CalendarView calendarioFechaInicio;
     private ImageView imagen;
     public Button aceptarCursoNuevo;
@@ -47,6 +48,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         limiteEstudiantes = (TextView) findViewById(R.id.texto_limite_estudiantes);
         calendarioFechaInicio = (CalendarView) findViewById(R.id.calendario_inicio_curso);
         aceptarCursoNuevo = (Button) findViewById(R.id.boton_aceptar_curso_nuevo);
+        cambios = (TextView) findViewById(R.id.texto_proximos_cambios);
 
         imagen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,80 +76,110 @@ public class CreateCourseActivity extends AppCompatActivity {
             }
         });
 
-        aceptarCursoNuevo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean cancel = false;
-                TextView[] campos = new TextView[4];
-                campos[0] = titulo;
-                campos[1] = descripcionBreve;
-                campos[2] = descripcionGeneral;
-                campos[3] = limiteEstudiantes;
+        boolean editar = getIntent().getBooleanExtra("editar", true);
 
-                cancel = isEmpty(campos);
+        if (editar) {
+            cambios.setVisibility(View.GONE);
+            aceptarCursoNuevo.setText(getString(R.string.aceptar_cambios));
 
-                /*if (!cancel && checkDate(campos)) {
-                    cancel = true;
-                }*/
-
-                if (cancel) {
-                    focusView.requestFocus();
-                } else if(numImagen==(-1)){
-                    cancel = true;
-                    Toast.makeText(CreateCourseActivity.this,
-                            "Selecciona una imagen",
-                            Toast.LENGTH_LONG).show();
-                } else if (fechaInicio.isEmpty()) {
-                    cancel = true;
-                    Toast.makeText(CreateCourseActivity.this,
-                            "Selecciona una fecha",
-                            Toast.LENGTH_LONG).show();
-                } else {
-                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                boolean success = jsonObject.getBoolean("success");
-                                if (success) {
-                                    Toast.makeText(CreateCourseActivity.this,
-                                            "Curso creado correctamente",
-                                            Toast.LENGTH_LONG).show();
-                                    finish();
-                                } else {
-                                    String error = jsonObject.getString("message");
-                                    String post = "post";
-                                    if (error.equals(post)) {
-                                        Toast.makeText(CreateCourseActivity.this,
-                                                "Error: Type POST",
-                                                Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(CreateCourseActivity.this,
-                                                "Algo salió mal",
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            } catch (JSONException e) {
-                                Toast.makeText(CreateCourseActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    String numeroDeImagen = numImagen + "";
-                    CreateCourseRequest courseRequest = new CreateCourseRequest(
-                            titulo.getText().toString(),
-                            numeroDeImagen,
-                            descripcionBreve.getText().toString(),
-                            descripcionGeneral.getText().toString(),
-                            fechaInicio,
-                            limiteEstudiantes.getText().toString(),
-                            responseListener
-                    );
-                    RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);
-                    queue.add(courseRequest);
-                }
+            Intent intent = getIntent();
+            titulo.setText(intent.getStringExtra("titulo"));
+            switch (intent.getIntExtra("imagen", 1)) {
+                case 1:
+                    imagen.setImageResource(R.drawable.diagnostico);
+                    break;
+                case 2:
+                    imagen.setImageResource(R.drawable.reparacion);
+                    break;
+                case 3:
+                    imagen.setImageResource(R.drawable.electronica);
+                    break;
+                case 4:
+                    imagen.setImageResource(R.drawable.programacion);
+                    break;
             }
-        });
+            descripcionBreve.setText(intent.getStringExtra("descBreve"));
+            descripcionGeneral.setText(intent.getStringExtra("descGeneral"));
+            fechaInicio = intent.getStringExtra("fechaInicio");
+            String limite = intent.getIntExtra("limiteEstudiantes", 20) + "";
+            limiteEstudiantes.setText(limite);
+        } else {
+            aceptarCursoNuevo.setText(R.string.aceptar_curso_nuevo);
+            aceptarCursoNuevo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean cancel = false;
+                    TextView[] campos = new TextView[4];
+                    campos[0] = titulo;
+                    campos[1] = descripcionBreve;
+                    campos[2] = descripcionGeneral;
+                    campos[3] = limiteEstudiantes;
+
+                    cancel = isEmpty(campos);
+
+                    /*if (!cancel && checkDate(campos)) {
+                        cancel = true;
+                    }*/
+
+                    if (cancel) {
+                        focusView.requestFocus();
+                    } else if (numImagen == (-1)) {
+                        cancel = true;
+                        Toast.makeText(CreateCourseActivity.this,
+                                "Selecciona una imagen",
+                                Toast.LENGTH_LONG).show();
+                    } else if (fechaInicio.isEmpty()) {
+                        cancel = true;
+                        Toast.makeText(CreateCourseActivity.this,
+                                "Selecciona una fecha",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    boolean success = jsonObject.getBoolean("success");
+                                    if (success) {
+                                        Toast.makeText(CreateCourseActivity.this,
+                                                "Curso creado correctamente",
+                                                Toast.LENGTH_LONG).show();
+                                        finish();
+                                    } else {
+                                        String error = jsonObject.getString("message");
+                                        String post = "post";
+                                        if (error.equals(post)) {
+                                            Toast.makeText(CreateCourseActivity.this,
+                                                    "Error: Type POST",
+                                                    Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(CreateCourseActivity.this,
+                                                    "Algo salió mal",
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    Toast.makeText(CreateCourseActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        String numeroDeImagen = numImagen + "";
+                        CreateCourseRequest courseRequest = new CreateCourseRequest(
+                                titulo.getText().toString(),
+                                numeroDeImagen,
+                                descripcionBreve.getText().toString(),
+                                descripcionGeneral.getText().toString(),
+                                fechaInicio,
+                                limiteEstudiantes.getText().toString(),
+                                responseListener
+                        );
+                        RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);
+                        queue.add(courseRequest);
+                    }
+                }
+            });
+        }
     }
 
     private boolean isEmpty(TextView[] campos) {
@@ -167,46 +199,4 @@ public class CreateCourseActivity extends AppCompatActivity {
         }
         return cancel;
     }
-
-    private boolean checkDate(TextView[] campos){
-        boolean cancel = false;
-        String anio = campos[4].getText().toString();
-        String mes = campos[5].getText().toString();
-        String dia = campos[6].getText().toString();
-        int fechaDelSistema = 2019;
-        Toast.makeText(CreateCourseActivity.this,
-                ""+fechaDelSistema,
-                Toast.LENGTH_LONG).show();
-        if (anio.length() != 4) {
-            campos[4].setError("Formato incorrecto (AAAA)");
-            focusView = campos[4];
-            cancel = true;
-        } else if (Integer.parseInt(anio)<fechaDelSistema){
-            campos[4].setError(fechaDelSistema + "en adelante");
-            focusView = campos[4];
-            cancel = true;
-        }
-
-        if (mes.length() != 2) {
-            campos[5].setError("Formato incorrecto (MM)");
-            focusView = campos[5];
-            cancel = true;
-        } else if (Integer.parseInt(mes)>12){
-            campos[5].setError("Formato incorrecto (MM)");
-            focusView = campos[5];
-            cancel = true;
-        }
-
-        if (dia.length() != 2) {
-            campos[6].setError("Formato incorrecto (DD)");
-            focusView = campos[6];
-            cancel = true;
-        } else if (Integer.parseInt(dia)>31){
-            campos[6].setError("Formato incorrecto (DD)");
-            focusView = campos[6];
-            cancel = true;
-        }
-        return cancel;
-    }
-
 }

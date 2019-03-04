@@ -81,4 +81,6 @@
     <string name="presionar_para_cambiar_imagen">Presiona en la imagen para cambiarla</string>
     <string name="podras_realizar_cambios">Posteriormente podrás realizar cambios</string>
     <string name="sin_cursos">Aún no hay cursos disponibles</string>
+    <string name="button">Button</string>
+    <string name="aceptar_cambios">Aceptar cambios</string>
 </resources>
