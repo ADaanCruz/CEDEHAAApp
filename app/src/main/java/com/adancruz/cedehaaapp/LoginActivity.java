@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 
@@ -46,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
     public static final String SERVER_URL = "https://api.backendless.com";
 
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
-    public static int cont = 0;
 
     /**
      * Un almacén de autenticación ficticio que contiene nombres de usuario y contraseñas conocidos
@@ -76,11 +76,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Backendless.setUrl(SERVER_URL);
-        Backendless.initApp(getApplicationContext(),
-                APPLICATION_ID,
-                API_KEY);
-
         mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mLoginFormView = findViewById(R.id.login_form);
@@ -90,9 +85,6 @@ public class LoginActivity extends AppCompatActivity {
 
         Drawable drawable = getResources().getDrawable(R.drawable.fondo2_2);
         mLoginView.setBackground(drawable);
-
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
-        String email = prefs.getString("email", null);
 
         boton_registrarse = (Button) findViewById(R.id.boton_registrarse);
         boton_registrarse.setOnClickListener(new OnClickListener() {
@@ -110,56 +102,6 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
-
-        Backendless.UserService.login("", "", new AsyncCallback<BackendlessUser>() {
-            @Override
-            public void handleResponse(BackendlessUser response) {
-                startActivity(new Intent(LoginActivity.this, StudentActivity.class));
-                finish();
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Toast.makeText(LoginActivity.this,
-                        "Error: "+fault.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-
-        /*Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
-            @Override
-            public void handleResponse(Boolean response) {
-                if (response) {
-                    String userObjectId = UserIdStorageFactory.instance().getStorage().get();
-
-                    Backendless.Data.of(BackendlessUser.class).findById(userObjectId, new AsyncCallback<BackendlessUser>() {
-                        @Override
-                        public void handleResponse(BackendlessUser response) {
-                            startActivity(new Intent(LoginActivity.this, StudentActivity.class));
-                            finish();
-                        }
-
-                        @Override
-                        public void handleFault(BackendlessFault fault) {
-                            Toast.makeText(LoginActivity.this,
-                                    "Error: "+fault.getMessage(),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } else {
-                    Toast.makeText(LoginActivity.this,
-                            "Error: Response",
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Toast.makeText(LoginActivity.this,
-                        "Error: "+fault.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            }
-        });*/
     }
 
     /**
@@ -167,8 +109,6 @@ public class LoginActivity extends AppCompatActivity {
      * Si hay errores de formulario (correo electrónico no válido, campos faltantes, etc.),
      * se presentan los errores y no se realiza ningún intento de inicio de sesión real.
      */
-
-    String correo, contrasena;
 
     private void attemptLogin() {
         if (mAuthTask != null) {
@@ -217,98 +157,81 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             // Muestra un marcador de progreso y comienza una tarea en segundo plano
             // para realizar el intento de inicio de sesión del usuario.
-            correo = mEmailView.getText().toString();
-            contrasena = mPasswordView.getText().toString();
+            String correo = mEmailView.getText().toString();
+            String contrasena = mPasswordView.getText().toString();
 
-            final Response.Listener<String> responseListener = new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        boolean success = jsonObject.getBoolean("success");
-                        if (success) {
-                            String tipoDeUsuario = jsonObject.getString("tipoDeUsuario");
-                            Intent intent = new Intent(LoginActivity.this, StudentActivity.class);;
-                            if (tipoDeUsuario.equals("estudiante")) {
-                                intent.putExtra("telefono", jsonObject.getString("telefono"));
-                            }
-                            String name = jsonObject.getString("nombre");
-                            intent.putExtra("nombre", name);
-                            intent.putExtra("apellidoPaterno", jsonObject.getString("apellidoPaterno"));
-                            intent.putExtra("apellidoMaterno", jsonObject.getString("apellidoMaterno"));
-                            intent.putExtra("correo", jsonObject.getString("correo"));
-                            intent.putExtra("tipoDeUsuario", jsonObject.getString("tipoDeUsuario"));
-
-                            if (sesionAbierta.isChecked() && cont==0) {
-                                //crearEnBackendless(correo, name, contrasena);
-                                guardarPreferencias(correo, contrasena, cont);
-                            }
-
-                            finish();
-                            showProgress(false);
-                            startActivity(intent);
-                        } else {
-                            String error = jsonObject.getString("message");
-                            String password = "password", email = "email", post = "post";
-                            if (error.equals(password)) {
-                                Toast.makeText(LoginActivity.this,
-                                        "La contraseña es incorrecta",
-                                        Toast.LENGTH_LONG).show();
-                            } else if (error.equals(email)) {
-                                Toast.makeText(LoginActivity.this,
-                                        "El correo no está registrado",
-                                        Toast.LENGTH_LONG).show();
-                            } else if (error.equals(post)) {
-                                Toast.makeText(LoginActivity.this,
-                                        "Error: Type POST",
-                                        Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(LoginActivity.this,
-                                        "Acceso fallido, verifica los campos",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                            showProgress(false);
-                        }
-                    } catch (JSONException e) {
-                        Toast.makeText(LoginActivity.this,
-                                "ERROR: "+e.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                        showProgress(false);
-                    }
-                }
-            };
-
-            LoginRequest loginRequest = new LoginRequest(correo, contrasena, responseListener);
-            RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-            queue.add(loginRequest);
+            loginWithBD(correo, contrasena);
         }
     }
 
-    private void crearEnBackendless(String email, String name, String password) {
-        BackendlessUser user = new BackendlessUser();
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setProperty("name", name);
-
-        Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
+    private void loginWithBD(final String correo, final String contrasena) {
+        final Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
-            public void handleResponse(BackendlessUser response) {
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean success = jsonObject.getBoolean("success");
+                    if (success) {
+                        String tipoDeUsuario = jsonObject.getString("tipoDeUsuario");
+                        Intent intent = new Intent(LoginActivity.this, StudentActivity.class);;
+                        if (tipoDeUsuario.equals("estudiante")) {
+                            intent.putExtra("telefono", jsonObject.getString("telefono"));
+                        }
+                        String name = jsonObject.getString("nombre");
+                        intent.putExtra("nombre", name);
+                        intent.putExtra("apellidoPaterno", jsonObject.getString("apellidoPaterno"));
+                        intent.putExtra("apellidoMaterno", jsonObject.getString("apellidoMaterno"));
+                        intent.putExtra("correo", jsonObject.getString("correo"));
+                        intent.putExtra("tipoDeUsuario", jsonObject.getString("tipoDeUsuario"));
 
+                        if (sesionAbierta.isChecked()) {
+                            guardarPreferencias(correo, contrasena);
+                        }
+
+                        finish();
+                        showProgress(false);
+                        startActivity(intent);
+                    } else {
+                        String error = jsonObject.getString("message");
+                        String password = "password", email = "email", post = "post";
+                        if (error.equals(password)) {
+                            Toast.makeText(LoginActivity.this,
+                                    "La contraseña es incorrecta",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error.equals(email)) {
+                            Toast.makeText(LoginActivity.this,
+                                    "El correo no está registrado",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error.equals(post)) {
+                            Toast.makeText(LoginActivity.this,
+                                    "Error: Type POST",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this,
+                                    "Acceso fallido, verifica los campos",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        showProgress(false);
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(LoginActivity.this,
+                            "ERROR: "+e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                    showProgress(false);
+                }
             }
+        };
 
-            @Override
-            public void handleFault(BackendlessFault fault) {
-
-            }
-        });
+        LoginRequest loginRequest = new LoginRequest(correo, contrasena, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+        queue.add(loginRequest);
     }
 
-    private void guardarPreferencias(String email, String password, int cont) {
+    private void guardarPreferencias(String email, String password) {
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
         editor.putString("email", email);
         editor.putString("password", password);
-        editor.putInt("cont", cont);
         editor.apply();
     }
 
