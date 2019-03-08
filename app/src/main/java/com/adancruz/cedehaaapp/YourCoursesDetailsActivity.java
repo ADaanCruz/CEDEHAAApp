@@ -72,6 +72,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                     intent.putExtra("fechaInicio", item.getFechaInicio());
                     intent.putExtra("limiteEstudiantes", item.getLimiteEstudiantes());
                     startActivity(intent);
+                    finish();
                 } else if (txtBoton.equals("Estudiante")) {
                     intent.putExtra("editar", false);
                 }

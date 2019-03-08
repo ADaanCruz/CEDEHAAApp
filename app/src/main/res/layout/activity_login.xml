@@ -86,6 +86,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <Switch
+            android:id="@+id/switch_sesion_abierta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -94,7 +95,7 @@
             android:textSize="16sp"
             android:textColor="@color/black_overlay"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp" />
+            android:paddingRight="15dp"/>
 
         </LinearLayout>
 
@@ -105,17 +106,18 @@
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/registrarse"
-            android:textColor="@color/colorButtonRed"
-            android:background="#ffffff"/>
+            android:textColor="#FFFFFF"
+            android:background="@drawable/boton_secundario" />
 
         <Button
             android:id="@+id/boton_iniciar_sesion"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:text="@string/iniciar_sesion"
+            android:background="@drawable/boton_primario"
             android:textColor="#ffffff"
-            android:background="@color/colorPrimary"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"/>
 

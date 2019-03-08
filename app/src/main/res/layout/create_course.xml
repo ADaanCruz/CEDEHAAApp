@@ -110,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="@string/aceptar_curso_nuevo"
-            android:background="@color/colorAccent"
+            android:background="@drawable/boton_secundario"
             android:textColor="#ffffff"/>
 
         <TextView

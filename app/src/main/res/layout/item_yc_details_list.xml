@@ -49,6 +49,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="@string/button" />
+            android:text="@string/button"
+            android:background="@drawable/boton_primario"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 </ScrollView>

@@ -21,9 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/crear_curso_nuevo"
-            android:layout_marginBottom="10dp"
+            android:background="@drawable/boton_secundario"
             android:textColor="#ffffff"
-            android:background="@color/colorAccent"/>
+            android:layout_marginBottom="10dp"/>
 
         <TextView
             android:id="@+id/texto_st_los_cursos"

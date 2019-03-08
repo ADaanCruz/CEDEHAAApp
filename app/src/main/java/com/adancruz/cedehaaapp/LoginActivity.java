@@ -2,6 +2,7 @@ package com.adancruz.cedehaaapp;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -18,11 +19,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.local.UserIdStorageFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +40,13 @@ import java.util.List;
  * Una pantalla de inicio de sesión que ofrece inicio de sesión por correo electrónico / contraseña.
  */
 public class LoginActivity extends AppCompatActivity {
+
+    public static final String APPLICATION_ID = "1B74BEF9-EABA-5307-FF35-B6F26136E600";
+    public static final String API_KEY = "71714F01-50CA-AE13-FF9E-C0CB3671B600";
+    public static final String SERVER_URL = "https://api.backendless.com";
+
+    public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
+    public static int cont = 0;
 
     /**
      * Un almacén de autenticación ficticio que contiene nombres de usuario y contraseñas conocidos
@@ -51,7 +65,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private LinearLayout mLoginView;
+    LinearLayout mLoginView;
+    Switch sesionAbierta;
     Button boton_registrarse;
     Button boton_iniciarSesion;
 
@@ -61,14 +76,23 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Backendless.setUrl(SERVER_URL);
+        Backendless.initApp(getApplicationContext(),
+                APPLICATION_ID,
+                API_KEY);
+
         mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mLoginView = findViewById(R.id.vista_login);
+        sesionAbierta = (Switch) findViewById(R.id.switch_sesion_abierta);
 
         Drawable drawable = getResources().getDrawable(R.drawable.fondo2_2);
         mLoginView.setBackground(drawable);
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+        String email = prefs.getString("email", null);
 
         boton_registrarse = (Button) findViewById(R.id.boton_registrarse);
         boton_registrarse.setOnClickListener(new OnClickListener() {
@@ -86,6 +110,56 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
+
+        Backendless.UserService.login("", "", new AsyncCallback<BackendlessUser>() {
+            @Override
+            public void handleResponse(BackendlessUser response) {
+                startActivity(new Intent(LoginActivity.this, StudentActivity.class));
+                finish();
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Toast.makeText(LoginActivity.this,
+                        "Error: "+fault.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
+        /*Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
+            @Override
+            public void handleResponse(Boolean response) {
+                if (response) {
+                    String userObjectId = UserIdStorageFactory.instance().getStorage().get();
+
+                    Backendless.Data.of(BackendlessUser.class).findById(userObjectId, new AsyncCallback<BackendlessUser>() {
+                        @Override
+                        public void handleResponse(BackendlessUser response) {
+                            startActivity(new Intent(LoginActivity.this, StudentActivity.class));
+                            finish();
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault fault) {
+                            Toast.makeText(LoginActivity.this,
+                                    "Error: "+fault.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(LoginActivity.this,
+                            "Error: Response",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Toast.makeText(LoginActivity.this,
+                        "Error: "+fault.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });*/
     }
 
     /**
@@ -93,6 +167,9 @@ public class LoginActivity extends AppCompatActivity {
      * Si hay errores de formulario (correo electrónico no válido, campos faltantes, etc.),
      * se presentan los errores y no se realiza ningún intento de inicio de sesión real.
      */
+
+    String correo, contrasena;
+
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
@@ -140,8 +217,8 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             // Muestra un marcador de progreso y comienza una tarea en segundo plano
             // para realizar el intento de inicio de sesión del usuario.
-            String correo = mEmailView.getText().toString();
-            String contrasena = mPasswordView.getText().toString();
+            correo = mEmailView.getText().toString();
+            contrasena = mPasswordView.getText().toString();
 
             final Response.Listener<String> responseListener = new Response.Listener<String>() {
                 @Override
@@ -155,11 +232,18 @@ public class LoginActivity extends AppCompatActivity {
                             if (tipoDeUsuario.equals("estudiante")) {
                                 intent.putExtra("telefono", jsonObject.getString("telefono"));
                             }
-                            intent.putExtra("nombre", jsonObject.getString("nombre"));
+                            String name = jsonObject.getString("nombre");
+                            intent.putExtra("nombre", name);
                             intent.putExtra("apellidoPaterno", jsonObject.getString("apellidoPaterno"));
                             intent.putExtra("apellidoMaterno", jsonObject.getString("apellidoMaterno"));
                             intent.putExtra("correo", jsonObject.getString("correo"));
                             intent.putExtra("tipoDeUsuario", jsonObject.getString("tipoDeUsuario"));
+
+                            if (sesionAbierta.isChecked() && cont==0) {
+                                //crearEnBackendless(correo, name, contrasena);
+                                guardarPreferencias(correo, contrasena, cont);
+                            }
+
                             finish();
                             showProgress(false);
                             startActivity(intent);
@@ -201,6 +285,33 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void crearEnBackendless(String email, String name, String password) {
+        BackendlessUser user = new BackendlessUser();
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setProperty("name", name);
+
+        Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
+            @Override
+            public void handleResponse(BackendlessUser response) {
+
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+
+            }
+        });
+    }
+
+    private void guardarPreferencias(String email, String password, int cont) {
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
+        editor.putString("email", email);
+        editor.putString("password", password);
+        editor.putInt("cont", cont);
+        editor.apply();
+    }
+
     private boolean isEmailValid(String email) {
         //TODO: Reemplaza esto con tu propia lógica
         return email.contains("@");
@@ -220,32 +331,7 @@ public class LoginActivity extends AppCompatActivity {
         // En Honeycomb MR2 tenemos las API ViewPropertyAnimator, que
         // permiten animaciones muy fáciles. Si está disponible, use
         // estas API para fundir el selector de progreso.
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // Las API de ViewPropertyAnimator no están disponibles, así que simplemente
-            // muestre y oculte los componentes de UI relevantes.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }*/
         if (show)
         {
             mLoginFormView.setVisibility(View.GONE);
@@ -256,24 +342,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        // Cree un adaptador para indicar al AutoCompleteTextView qué mostrar en su lista desplegable.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        //mEmailView.setAdapter(adapter);
-    }
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
 
     /**
      * Representa una tarea de inicio de sesión / registro asíncrono

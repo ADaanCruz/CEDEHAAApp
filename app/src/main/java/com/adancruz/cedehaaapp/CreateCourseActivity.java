@@ -29,18 +29,23 @@ public class CreateCourseActivity extends AppCompatActivity {
 
     private static final String TAG = "CreateCourseActivity";
     private TextView titulo, descripcionBreve, descripcionGeneral, limiteEstudiantes, cambios;
+    String exTitulo, exFechaInicio, exDescBreve;
     public CalendarView calendarioFechaInicio;
     private ImageView imagen;
     public Button aceptarCursoNuevo;
     View focusView = null;
-    int numImagen = (-1);
+    int numImagen;
     String fechaInicio = "";
+
+    Response.Listener<String> responseListener;
+    String url;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_course);
 
+        // Componentes bàsico de XML.
         titulo = (TextView) findViewById(R.id.texto_titulo_del_curso_nuevo);
         imagen = (ImageView) findViewById(R.id.imagen_del_curso_nuevo);
         descripcionBreve = (TextView) findViewById(R.id.texto_desc_breve_del_curso_nuevo);
@@ -53,16 +58,16 @@ public class CreateCourseActivity extends AppCompatActivity {
         imagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (numImagen){
-                    case (-1): imagen.setImageResource(R.drawable.diagnostico); numImagen=1;
+                switch ((numImagen+1)){
+                    case 1: imagen.setImageResource(R.drawable.diagnostico); numImagen=1;
                         break;
-                    case 0: imagen.setImageResource(R.drawable.diagnostico); numImagen=1;
+                    case 2: imagen.setImageResource(R.drawable.reparacion); numImagen=2;
                         break;
-                    case 1: imagen.setImageResource(R.drawable.reparacion); numImagen=2;
+                    case 3: imagen.setImageResource(R.drawable.electronica); numImagen=3;
                         break;
-                    case 2: imagen.setImageResource(R.drawable.electronica); numImagen=3;
+                    case 4: imagen.setImageResource(R.drawable.programacion); numImagen=4;
                         break;
-                    case 3: imagen.setImageResource(R.drawable.programacion); numImagen=0;
+                    default: imagen.setImageResource(R.drawable.diagnostico); numImagen=1;
                         break;
                 }
             }
@@ -76,110 +81,163 @@ public class CreateCourseActivity extends AppCompatActivity {
             }
         });
 
-        boolean editar = getIntent().getBooleanExtra("editar", true);
-
+        // Identificar si es "editar curso" o "crear curso".
+        final boolean editar = getIntent().getBooleanExtra("editar", true);
         if (editar) {
             cambios.setVisibility(View.GONE);
             aceptarCursoNuevo.setText(getString(R.string.aceptar_cambios));
 
+            // Guardar valores para buscar en la base de datos.
             Intent intent = getIntent();
-            titulo.setText(intent.getStringExtra("titulo"));
+            exTitulo = intent.getStringExtra("titulo");
+            exDescBreve = intent.getStringExtra("descBreve");
+            exFechaInicio = intent.getStringExtra("fechaInicio");
+
+            // Obtener los valores para mostrarlos y editarlos.
+            titulo.setText(exTitulo);
             switch (intent.getIntExtra("imagen", 1)) {
                 case 1:
-                    imagen.setImageResource(R.drawable.diagnostico);
+                    imagen.setImageResource(R.drawable.diagnostico); numImagen = 1;
                     break;
                 case 2:
-                    imagen.setImageResource(R.drawable.reparacion);
+                    imagen.setImageResource(R.drawable.reparacion); numImagen = 2;
                     break;
                 case 3:
-                    imagen.setImageResource(R.drawable.electronica);
+                    imagen.setImageResource(R.drawable.electronica); numImagen = 3;
                     break;
                 case 4:
-                    imagen.setImageResource(R.drawable.programacion);
+                    imagen.setImageResource(R.drawable.programacion); numImagen = 4;
                     break;
             }
-            descripcionBreve.setText(intent.getStringExtra("descBreve"));
+            descripcionBreve.setText(exDescBreve);
             descripcionGeneral.setText(intent.getStringExtra("descGeneral"));
-            fechaInicio = intent.getStringExtra("fechaInicio");
+            fechaInicio = exFechaInicio;
             String limite = intent.getIntExtra("limiteEstudiantes", 20) + "";
             limiteEstudiantes.setText(limite);
-        } else {
-            aceptarCursoNuevo.setText(R.string.aceptar_curso_nuevo);
-            aceptarCursoNuevo.setOnClickListener(new View.OnClickListener() {
+
+            responseListener = new Response.Listener<String>() {
                 @Override
-                public void onClick(View v) {
-                    boolean cancel = false;
-                    TextView[] campos = new TextView[4];
-                    campos[0] = titulo;
-                    campos[1] = descripcionBreve;
-                    campos[2] = descripcionGeneral;
-                    campos[3] = limiteEstudiantes;
-
-                    cancel = isEmpty(campos);
-
-                    /*if (!cancel && checkDate(campos)) {
-                        cancel = true;
-                    }*/
-
-                    if (cancel) {
-                        focusView.requestFocus();
-                    } else if (numImagen == (-1)) {
-                        cancel = true;
-                        Toast.makeText(CreateCourseActivity.this,
-                                "Selecciona una imagen",
-                                Toast.LENGTH_LONG).show();
-                    } else if (fechaInicio.isEmpty()) {
-                        cancel = true;
-                        Toast.makeText(CreateCourseActivity.this,
-                                "Selecciona una fecha",
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        Response.Listener<String> responseListener = new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    boolean success = jsonObject.getBoolean("success");
-                                    if (success) {
-                                        Toast.makeText(CreateCourseActivity.this,
-                                                "Curso creado correctamente",
-                                                Toast.LENGTH_LONG).show();
-                                        finish();
-                                    } else {
-                                        String error = jsonObject.getString("message");
-                                        String post = "post";
-                                        if (error.equals(post)) {
-                                            Toast.makeText(CreateCourseActivity.this,
-                                                    "Error: Type POST",
-                                                    Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(CreateCourseActivity.this,
-                                                    "Algo salió mal",
-                                                    Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                } catch (JSONException e) {
-                                    Toast.makeText(CreateCourseActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                    e.printStackTrace();
-                                }
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("success");
+                        if (success) {
+                            Toast.makeText(CreateCourseActivity.this,
+                                    "Curso editado correctamente",
+                                    Toast.LENGTH_LONG).show();
+                            finish();
+                        } else {
+                            String error = jsonObject.getString("message");
+                            String select = "select";
+                            if (error.equals(select)) {
+                                Toast.makeText(CreateCourseActivity.this,
+                                        "Error: Query select",
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(CreateCourseActivity.this,
+                                        "Algo salió mal",
+                                        Toast.LENGTH_LONG).show();
                             }
-                        };
-                        String numeroDeImagen = numImagen + "";
-                        CreateCourseRequest courseRequest = new CreateCourseRequest(
-                                titulo.getText().toString(),
-                                numeroDeImagen,
-                                descripcionBreve.getText().toString(),
-                                descripcionGeneral.getText().toString(),
-                                fechaInicio,
-                                limiteEstudiantes.getText().toString(),
-                                responseListener
-                        );
-                        RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);
-                        queue.add(courseRequest);
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(CreateCourseActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
                     }
                 }
-            });
+            };
+            url = "https://cedehaa-app.000webhostapp.com/edit-course.php";
+        } else {
+            cambios.setVisibility(View.VISIBLE);
+            aceptarCursoNuevo.setText(R.string.aceptar_curso_nuevo);
+            numImagen = 0;
+
+            responseListener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("success");
+                        if (success) {
+                            Toast.makeText(CreateCourseActivity.this,
+                                    "Curso creado correctamente",
+                                    Toast.LENGTH_LONG).show();
+                            finish();
+                        } else {
+                            String error = jsonObject.getString("message");
+                            String post = "post";
+                            if (error.equals(post)) {
+                                Toast.makeText(CreateCourseActivity.this,
+                                        "Error: Type POST",
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(CreateCourseActivity.this,
+                                        "Algo salió mal",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(CreateCourseActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+                }
+            };
+            url = "https://cedehaa-app.000webhostapp.com/new-course.php";
         }
+
+        aceptarCursoNuevo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean cancel;
+                cancel = validarCampos();
+
+                if (!cancel) {
+                    String numeroDeImagen = numImagen + "";
+                    CreateCourseRequest courseRequest = new CreateCourseRequest(
+                            editar,
+                            url,
+                            exTitulo,
+                            exDescBreve,
+                            exFechaInicio,
+
+                            titulo.getText().toString(),
+                            numeroDeImagen,
+                            descripcionBreve.getText().toString(),
+                            descripcionGeneral.getText().toString(),
+                            fechaInicio,
+                            limiteEstudiantes.getText().toString(),
+                            responseListener
+                    );
+                    RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);
+                    queue.add(courseRequest);
+                }
+            }
+        });
+    }
+
+    private boolean validarCampos() {
+        boolean cancel;
+        TextView[] campos = new TextView[4];
+        campos[0] = titulo;
+        campos[1] = descripcionBreve;
+        campos[2] = descripcionGeneral;
+        campos[3] = limiteEstudiantes;
+        cancel = isEmpty(campos);
+
+        if (cancel) {
+            focusView.requestFocus();
+        } else if (numImagen == (-1)) {
+            cancel = true;
+            Toast.makeText(CreateCourseActivity.this,
+                    "Selecciona una imagen",
+                    Toast.LENGTH_LONG).show();
+        } else if (fechaInicio.isEmpty()) {
+            cancel = true;
+            Toast.makeText(CreateCourseActivity.this,
+                    "Selecciona una fecha",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        return cancel;
     }
 
     private boolean isEmpty(TextView[] campos) {
