@@ -232,6 +232,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
         editor.putString("email", email);
         editor.putString("password", password);
+        editor.putBoolean("sesion", true);
         editor.apply();
     }
 

@@ -1,6 +1,7 @@
 package com.adancruz.cedehaaapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -56,7 +57,19 @@ public class StudentActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(StudentActivity.this, LoginActivity.class));
+        verifyPreferences();
+    }
+
+    public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
+
+    private void verifyPreferences() {
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+        Boolean mantenerSesion = prefs.getBoolean("sesion", false);
+
+        finish();
+        if (!mantenerSesion) {
+            startActivity(new Intent(StudentActivity.this, LoginActivity.class));
+        }
     }
 
     public void cargarBundle(Fragment selectedFragment) {

@@ -1,11 +1,20 @@
 package com.adancruz.cedehaaapp;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -88,8 +97,15 @@ public class StartActivity extends AppCompatActivity {
      * while interacting with activity UI.
      */
 
-    private Intent intent;
     VideoView videoCedehaa;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            finishAffinity();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +119,32 @@ public class StartActivity extends AppCompatActivity {
         String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.cedehaaintro;
         Uri uri = Uri.parse(videoPath);
         videoCedehaa.setVideoURI(uri);
-        videoCedehaa.start();
-        videoCedehaa.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                verifyPreferences();
-            }
-        });
+
+        ConnectivityManager con = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo network = con.getActiveNetworkInfo();
+
+        if (network != null && network.isConnected()) {
+            videoCedehaa.start();
+            videoCedehaa.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    verifyPreferences();
+                }
+            });
+        } else {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage("Necesitas conexión a Internet (WiFi o datos móviles) para el uso de la app.")
+                    .setTitle("Verifica tu Internet");
+
+            dialog.setPositiveButton("Entendido", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+
+            dialog.show();
+        }
     }
 
     private void verifyPreferences() {
