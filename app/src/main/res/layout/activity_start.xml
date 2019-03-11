@@ -16,9 +16,18 @@
     <VideoView
         android:id="@+id/video_cedehaa_inicio"
         android:layout_width="530dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
         android:foregroundGravity="center"
         android:layout_marginTop="180dp"/>
+
+    <Button
+        android:id="@+id/boton_omitir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/omitir"
+        android:textColor="#FFFFFF"
+        android:background="#000000"/>
 
 </LinearLayout>

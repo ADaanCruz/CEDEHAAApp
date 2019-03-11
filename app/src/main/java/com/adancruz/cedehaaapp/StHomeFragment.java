@@ -68,7 +68,8 @@ public class StHomeFragment extends Fragment {
                                         jsonObject.optString("descGeneral"),
                                         jsonObject.optString("fechaInicio"),
                                         Integer.parseInt(jsonObject.optString("totalEstudiantes")),
-                                        Integer.parseInt(jsonObject.optString("limiteEstudiantes"))
+                                        Integer.parseInt(jsonObject.optString("limiteEstudiantes")),
+                                        jsonObject.optString("estado")
                                 );
                                 arrayList.add(curso);
                             }

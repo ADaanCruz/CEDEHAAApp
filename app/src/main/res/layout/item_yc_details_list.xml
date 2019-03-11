@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="@color/colorPrimary"
             android:gravity="center"
             android:text="@string/titulo_del_curso" />
 
@@ -35,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:textColor="#000000"
             android:textSize="16sp"
             android:text="@string/descripcion_del_curso" />
 
@@ -42,7 +43,21 @@
             android:id="@+id/texto_desc_gral_del_curso_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/descripcion_general_del_curso" />
+            android:textColor="#000000"
+            android:text="@string/descripcion_general_del_curso"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fecha_inicio" />
+
+        <TextView
+            android:id="@+id/texto_fecha_inicio_yc_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ejemplo_de_fecha"
+            android:textColor="@color/colorAccent"/>
 
         <Button
             android:id="@+id/boton_detalle_de_curso"

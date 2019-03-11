@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +34,11 @@ public class CreateCourseActivity extends AppCompatActivity {
     public CalendarView calendarioFechaInicio;
     private ImageView imagen;
     public Button aceptarCursoNuevo;
+    private Switch estadoCurso;
     View focusView = null;
     int numImagen;
     String fechaInicio = "";
+    String estado = "Cerrado";
 
     Response.Listener<String> responseListener;
     String url;
@@ -52,6 +55,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         descripcionGeneral = (TextView) findViewById(R.id.texto_desc_gral_del_curso_nuevo);
         limiteEstudiantes = (TextView) findViewById(R.id.texto_limite_estudiantes);
         calendarioFechaInicio = (CalendarView) findViewById(R.id.calendario_inicio_curso);
+        estadoCurso = (Switch) findViewById(R.id.switch_estado_curso);
         aceptarCursoNuevo = (Button) findViewById(R.id.boton_aceptar_curso_nuevo);
         cambios = (TextView) findViewById(R.id.texto_proximos_cambios);
 
@@ -164,10 +168,14 @@ public class CreateCourseActivity extends AppCompatActivity {
                             finish();
                         } else {
                             String error = jsonObject.getString("message");
-                            String post = "post";
+                            String post = "post", insert = "insert";
                             if (error.equals(post)) {
                                 Toast.makeText(CreateCourseActivity.this,
                                         "Error: Type POST",
+                                        Toast.LENGTH_LONG).show();
+                            } if (error.equals(insert)) {
+                                Toast.makeText(CreateCourseActivity.this,
+                                        "Error: Type SQL",
                                         Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(CreateCourseActivity.this,
@@ -189,6 +197,11 @@ public class CreateCourseActivity extends AppCompatActivity {
             public void onClick(View v) {
                 boolean cancel;
                 cancel = validarCampos();
+                if (estadoCurso.isChecked()) {
+                    estado = "Abierto";
+                } else {
+                    estado = "Cerrado";
+                }
 
                 if (!cancel) {
                     String numeroDeImagen = numImagen + "";
@@ -205,6 +218,7 @@ public class CreateCourseActivity extends AppCompatActivity {
                             descripcionGeneral.getText().toString(),
                             fechaInicio,
                             limiteEstudiantes.getText().toString(),
+                            estado,
                             responseListener
                     );
                     RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);

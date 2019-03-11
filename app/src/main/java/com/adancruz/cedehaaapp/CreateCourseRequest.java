@@ -16,7 +16,8 @@ public class CreateCourseRequest extends StringRequest {
     public CreateCourseRequest (Boolean editar, String url, String exTitulo, String exDescBreve,
                                 String exFechaInicio, String titulo, String numImagen,
                                 String descBreve, String descGeneral, String fechaInicio,
-                                String limiteEstudiantes, Response.Listener<String> listener) {
+                                String limiteEstudiantes, String estado,
+                                Response.Listener<String> listener) {
         super(Request.Method.POST, url, listener, null);
         params = new HashMap<>();
         if (editar) {
@@ -30,6 +31,7 @@ public class CreateCourseRequest extends StringRequest {
         params.put("descGeneral", descGeneral);
         params.put("fechaInicio", fechaInicio);
         params.put("limiteEstudiantes", limiteEstudiantes);
+        params.put("estado", estado);
     }
 
     @Override

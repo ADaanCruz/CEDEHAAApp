@@ -11,4 +11,7 @@
 
     <color name="colorButtonRed">#B25E23</color>
     <color name="colorButtonBlue">#4B67D6</color>
+
+    <color name="colorTextGreen">#388E3C</color>
+    <color name="colorTextRed">#D32F2F</color>
 </resources>

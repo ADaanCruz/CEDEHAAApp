@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -98,6 +99,7 @@ public class StartActivity extends AppCompatActivity {
      */
 
     VideoView videoCedehaa;
+    Button btnOmitir;
 
     @Override
     protected void onPause() {
@@ -114,6 +116,7 @@ public class StartActivity extends AppCompatActivity {
 
         mContentView = findViewById(R.id.contenido_start);
         videoCedehaa = (VideoView) findViewById(R.id.video_cedehaa_inicio);
+        btnOmitir = (Button) findViewById(R.id.boton_omitir);
         hide();
 
         String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.cedehaaintro;
@@ -124,6 +127,14 @@ public class StartActivity extends AppCompatActivity {
         NetworkInfo network = con.getActiveNetworkInfo();
 
         if (network != null && network.isConnected()) {
+            btnOmitir.setVisibility(View.VISIBLE);
+            btnOmitir.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    verifyPreferences();
+                }
+            });
+
             videoCedehaa.start();
             videoCedehaa.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -132,6 +143,8 @@ public class StartActivity extends AppCompatActivity {
                 }
             });
         } else {
+            btnOmitir.setVisibility(View.GONE);
+
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setMessage("Necesitas conexión a Internet (WiFi o datos móviles) para el uso de la app.")
                     .setTitle("Verifica tu Internet");
@@ -153,16 +166,19 @@ public class StartActivity extends AppCompatActivity {
         String password = prefs.getString("password", "");
 
         if (!email.isEmpty() && !password.isEmpty()) {
-            try {
-                Thread.sleep(400);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+            retardar(200);
             loginWithBD(email, password);
         } else {
+            retardar(200);
             startActivity(new Intent(StartActivity.this, LoginActivity.class));
-            finish();
+        }
+    }
+
+    private void retardar(int milis) {
+        try {
+            Thread.sleep(milis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -190,16 +206,8 @@ public class StartActivity extends AppCompatActivity {
                         finish();
                     } else {
                         String error = jsonObject.getString("message");
-                        String password = "password", email = "email", post = "post";
-                        if (error.equals(password)) {
-                            Toast.makeText(StartActivity.this,
-                                    "La contraseña es incorrecta",
-                                    Toast.LENGTH_LONG).show();
-                        } else if (error.equals(email)) {
-                            Toast.makeText(StartActivity.this,
-                                    "El correo no está registrado",
-                                    Toast.LENGTH_LONG).show();
-                        } else if (error.equals(post)) {
+                        String post = "post";
+                        if (error.equals(post)) {
                             Toast.makeText(StartActivity.this,
                                     "Error: Type POST",
                                     Toast.LENGTH_LONG).show();
@@ -208,6 +216,8 @@ public class StartActivity extends AppCompatActivity {
                                     "Acceso fallido, verifica los campos",
                                     Toast.LENGTH_LONG).show();
                         }
+                        startActivity(new Intent(StartActivity.this, LoginActivity.class));
+                        finish();
                     }
                 } catch (JSONException e) {
                     Toast.makeText(StartActivity.this,

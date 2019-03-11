@@ -33,6 +33,8 @@ public class ListCoursesAdapter extends BaseAdapter {
         TextView titulo = (TextView) view.findViewById(R.id.texto_titulo_del_curso);
         ImageView imagen = (ImageView) view.findViewById(R.id.imagen_item_del_curso);
         TextView descripcionBreve = (TextView) view.findViewById(R.id.texto_descripcion_breve_del_curso);
+        TextView fecha = (TextView) view.findViewById(R.id.texto_fecha_del_curso);
+        TextView estado = (TextView) view.findViewById(R.id.texto_estado_del_curso);
 
         titulo.setText(curso.getTitulo());
         switch (curso.getNumImagen()){
@@ -48,6 +50,14 @@ public class ListCoursesAdapter extends BaseAdapter {
                 break;
         }
         descripcionBreve.setText(curso.getDescripcionBreve());
+        fecha.setText(curso.getFechaInicio(true));
+        estado.setText(curso.getEstado());
+
+        if (estado.getText().toString().equals("Abierto")) {
+            estado.setTextColor(view.getResources().getColor(R.color.colorTextGreen));
+        } else {
+            estado.setTextColor(view.getResources().getColor(R.color.colorTextRed));
+        }
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

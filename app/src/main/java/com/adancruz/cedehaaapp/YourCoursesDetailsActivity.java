@@ -12,7 +12,7 @@ import android.widget.TextView;
 public class YourCoursesDetailsActivity extends AppCompatActivity {
 
     private Curso item;
-    private TextView titulo, descripcionBreve, getDescripcionGeneral;
+    private TextView titulo, descripcionBreve, descripcionGeneral, fechaInicio;
     private ImageView imagen;
     private Button button;
     private String tipoDeUsuario = "";
@@ -27,7 +27,8 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
         titulo = (TextView) findViewById(R.id.texto_titulo_de_tu_curso_details);
         imagen = (ImageView) findViewById(R.id.imagen_de_tu_curso_details);
         descripcionBreve = (TextView) findViewById(R.id.texto_desc_breve_del_curso_details);
-        getDescripcionGeneral = (TextView) findViewById(R.id.texto_desc_gral_del_curso_details);
+        descripcionGeneral = (TextView) findViewById(R.id.texto_desc_gral_del_curso_details);
+        fechaInicio = (TextView) findViewById(R.id.texto_fecha_inicio_yc_details);
         button = (Button) findViewById(R.id.boton_detalle_de_curso);
 
         titulo.setText(item.getTitulo());
@@ -44,7 +45,8 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                 break;
         }
         descripcionBreve.setText(item.getDescripcionBreve());
-        getDescripcionGeneral.setText(item.getDescripcionGeneral());
+        descripcionGeneral.setText(item.getDescripcionGeneral());
+        fechaInicio.setText(item.getFechaInicio(true));
 
         tipoDeUsuario = this.getIntent().getStringExtra("tipoDeUsuario");
 
@@ -69,8 +71,9 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                     intent.putExtra("imagen", item.getNumImagen());
                     intent.putExtra("descBreve", item.getDescripcionBreve());
                     intent.putExtra("descGeneral", item.getDescripcionGeneral());
-                    intent.putExtra("fechaInicio", item.getFechaInicio());
+                    intent.putExtra("fechaInicio", item.getFechaInicio(false));
                     intent.putExtra("limiteEstudiantes", item.getLimiteEstudiantes());
+                    intent.putExtra("estado", item.getEstado());
                     startActivity(intent);
                     finish();
                 } else if (txtBoton.equals("Estudiante")) {

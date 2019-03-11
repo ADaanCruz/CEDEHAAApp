@@ -73,6 +73,7 @@
     <string name="aceptar_curso_nuevo">Aceptar curso nuevo</string>
     <string name="limite_de_estudiantes">Limite de estudiantes:</string>
     <string name="fecha_inicio">Fecha inicio:</string>
+    <string name="selecciona_fecha_inicio">Selecciona la fecha de inicio</string>
     <string name="guion">-</string>
     <string name="aaaa">AAAA</string>
     <string name="mm">MM</string>
@@ -83,4 +84,9 @@
     <string name="sin_cursos">Aún no hay cursos disponibles</string>
     <string name="button">Button</string>
     <string name="aceptar_cambios">Aceptar cambios</string>
+    <string name="ejemplo_de_fecha">dd-mm-yyyy</string>
+    <string name="omitir">Omitir</string>
+    <string name="mantener_curso">Mantener curso</string>
+    <string name="abierto">Abierto</string>
+    <string name="cerrado">Cerrado</string>
 </resources>
