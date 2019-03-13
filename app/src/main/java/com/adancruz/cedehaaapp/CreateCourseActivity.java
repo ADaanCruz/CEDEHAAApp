@@ -239,7 +239,7 @@ public class CreateCourseActivity extends AppCompatActivity {
 
         if (cancel) {
             focusView.requestFocus();
-        } else if (numImagen == (-1)) {
+        } else if (numImagen == (0)) {
             cancel = true;
             Toast.makeText(CreateCourseActivity.this,
                     "Selecciona una imagen",

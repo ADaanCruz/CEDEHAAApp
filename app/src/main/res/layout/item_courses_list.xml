@@ -61,6 +61,16 @@
             android:layout_marginRight="5dp">
 
             <TextView
+                android:id="@+id/texto_estado_del_curso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/estado"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fecha_inicio"
@@ -76,14 +86,6 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="12sp"
                 android:textStyle="italic"/>
-
-            <TextView
-                android:id="@+id/texto_estado_del_curso"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/estado"
-                android:textSize="12sp"
-                android:textStyle="bold" />
 
         </LinearLayout>
     </LinearLayout>

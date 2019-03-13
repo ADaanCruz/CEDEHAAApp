@@ -67,5 +67,15 @@
             android:text="@string/button"
             android:background="@drawable/boton_primario"
             android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/boton_eliminar_curso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/eliminar_curso"
+            android:background="@drawable/boton_secundario"
+            android:textColor="#FFFFFF"
+            android:visibility="gone"/>
     </LinearLayout>
 </ScrollView>

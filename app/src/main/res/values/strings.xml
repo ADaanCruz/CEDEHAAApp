@@ -86,7 +86,8 @@
     <string name="aceptar_cambios">Aceptar cambios</string>
     <string name="ejemplo_de_fecha">dd-mm-yyyy</string>
     <string name="omitir">Omitir</string>
-    <string name="mantener_curso">Mantener curso</string>
+    <string name="mantener_curso">Mantener curso (Cerrado/Abierto)</string>
     <string name="abierto">Abierto</string>
     <string name="cerrado">Cerrado</string>
+    <string name="eliminar_curso">Eliminar curso</string>
 </resources>
