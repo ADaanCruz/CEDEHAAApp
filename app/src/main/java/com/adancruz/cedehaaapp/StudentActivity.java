@@ -63,27 +63,29 @@ public class StudentActivity extends AppCompatActivity {
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
 
     private void verifyPreferences() {
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
-        Boolean mantenerSesion = prefs.getBoolean("sesion", false);
-
         finish();
-        if (!mantenerSesion) {
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+        if (!prefs.getBoolean("sesion", false)) {
             startActivity(new Intent(StudentActivity.this, LoginActivity.class));
         }
     }
 
     public void cargarBundle(Fragment selectedFragment) {
-        String nombre = this.getIntent().getStringExtra("nombre");
-        String apellidoPaterno = this.getIntent().getStringExtra("apellidoPaterno");
-        String apellidoMaterno = this.getIntent().getStringExtra("apellidoMaterno");
-        String correo = this.getIntent().getStringExtra("correo");
-        String telefono = this.getIntent().getStringExtra("telefono");
-        String tipoDeUsuario = this.getIntent().getStringExtra("tipoDeUsuario");
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+
+        String nombre = prefs.getString("nombre", null);
+        String apellidoPaterno = prefs.getString("apellidoPaterno", null);
+        String apellidoMaterno = prefs.getString("apellidoMaterno", null);
+        String correo = prefs.getString("correo", null);
+        String contrasena = prefs.getString("contrasena", null);
+        String telefono = prefs.getString("telefono", null);
+        String tipoDeUsuario = prefs.getString("tipoDeUsuario", null);
 
         bundle.putString("nombre", nombre);
         bundle.putString("apellidoPaterno", apellidoPaterno);
         bundle.putString("apellidoMaterno", apellidoMaterno);
         bundle.putString("correo", correo);
+        bundle.putString("contrasena", contrasena);
         bundle.putString("telefono", telefono);
         bundle.putString("tipoDeUsuario", tipoDeUsuario);
         selectedFragment.setArguments(bundle);

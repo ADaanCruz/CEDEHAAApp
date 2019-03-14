@@ -162,27 +162,16 @@ public class StartActivity extends AppCompatActivity {
 
     private void verifyPreferences() {
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
-        String email = prefs.getString("email", "");
-        String password = prefs.getString("password", "");
+        boolean guardarSesion = prefs.getBoolean("sesion", false);
 
-        if (!email.isEmpty() && !password.isEmpty()) {
-            retardar(200);
-            loginWithBD(email, password);
+        if (guardarSesion) {
+            loginWithBD();
         } else {
-            retardar(200);
             startActivity(new Intent(StartActivity.this, LoginActivity.class));
         }
     }
 
-    private void retardar(int milis) {
-        try {
-            Thread.sleep(milis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loginWithBD(final String correo, final String contrasena) {
+    private void loginWithBD() {
         final Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -190,19 +179,7 @@ public class StartActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     if (success) {
-                        String tipoDeUsuario = jsonObject.getString("tipoDeUsuario");
-                        Intent intent = new Intent(StartActivity.this, StudentActivity.class);
-                        if (tipoDeUsuario.equals("estudiante")) {
-                            intent.putExtra("telefono", jsonObject.getString("telefono"));
-                        }
-                        String name = jsonObject.getString("nombre");
-                        intent.putExtra("nombre", name);
-                        intent.putExtra("apellidoPaterno", jsonObject.getString("apellidoPaterno"));
-                        intent.putExtra("apellidoMaterno", jsonObject.getString("apellidoMaterno"));
-                        intent.putExtra("correo", jsonObject.getString("correo"));
-                        intent.putExtra("tipoDeUsuario", jsonObject.getString("tipoDeUsuario"));
-
-                        startActivity(intent);
+                        startActivity(new Intent(StartActivity.this, StudentActivity.class));
                         finish();
                     } else {
                         String error = jsonObject.getString("message");
@@ -227,6 +204,10 @@ public class StartActivity extends AppCompatActivity {
                 }
             }
         };
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+        String correo = prefs.getString("correo", "");
+        String contrasena = prefs.getString("contrasena", "");
 
         LoginRequest loginRequest = new LoginRequest(correo, contrasena, responseListener);
         RequestQueue queue = Volley.newRequestQueue(StartActivity.this);

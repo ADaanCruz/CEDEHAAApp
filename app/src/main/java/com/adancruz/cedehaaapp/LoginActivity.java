@@ -42,9 +42,9 @@ import java.util.List;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    public static final String APPLICATION_ID = "1B74BEF9-EABA-5307-FF35-B6F26136E600";
-    public static final String API_KEY = "71714F01-50CA-AE13-FF9E-C0CB3671B600";
-    public static final String SERVER_URL = "https://api.backendless.com";
+    //public static final String APPLICATION_ID = "1B74BEF9-EABA-5307-FF35-B6F26136E600";
+    //public static final String API_KEY = "71714F01-50CA-AE13-FF9E-C0CB3671B600";
+    //public static final String SERVER_URL = "https://api.backendless.com";
 
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
 
@@ -172,25 +172,25 @@ public class LoginActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     if (success) {
-                        String tipoDeUsuario = jsonObject.getString("tipoDeUsuario");
-                        Intent intent = new Intent(LoginActivity.this, StudentActivity.class);;
-                        if (tipoDeUsuario.equals("estudiante")) {
-                            intent.putExtra("telefono", jsonObject.getString("telefono"));
-                        }
-                        String name = jsonObject.getString("nombre");
-                        intent.putExtra("nombre", name);
-                        intent.putExtra("apellidoPaterno", jsonObject.getString("apellidoPaterno"));
-                        intent.putExtra("apellidoMaterno", jsonObject.getString("apellidoMaterno"));
-                        intent.putExtra("correo", jsonObject.getString("correo"));
-                        intent.putExtra("tipoDeUsuario", jsonObject.getString("tipoDeUsuario"));
+                        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
 
-                        if (sesionAbierta.isChecked()) {
-                            guardarPreferencias(correo, contrasena);
+                        String nombre = jsonObject.getString("nombre");
+                        String apellidoPaterno = jsonObject.getString("apellidoPaterno");
+                        String apellidoMaterno = jsonObject.getString("apellidoMaterno");
+                        String email = prefs.getString("correo", null);
+                        String tipoDeUsuario = jsonObject.getString("tipoDeUsuario");
+                        String telefono = "";
+                        if (!tipoDeUsuario.equals("administrador")) {
+                            telefono = jsonObject.getString("telefono");
                         }
+
+                        boolean infoBasica = prefs.getBoolean("infoBasica", false);
+                        guardarInfoBasica(nombre, apellidoPaterno, apellidoMaterno, correo, email,
+                                        contrasena, tipoDeUsuario, telefono, infoBasica);
 
                         finish();
                         showProgress(false);
-                        startActivity(intent);
+                        startActivity(new Intent(LoginActivity.this, StudentActivity.class));
                     } else {
                         String error = jsonObject.getString("message");
                         String password = "password", email = "email", post = "post";
@@ -228,11 +228,28 @@ public class LoginActivity extends AppCompatActivity {
         queue.add(loginRequest);
     }
 
-    private void guardarPreferencias(String email, String password) {
+    private void guardarInfoBasica(String nombre, String apellidoPaterno, String apellidoMaterno,
+                                   String correo, String email, String contrasena, String tipoDeUsuario,
+                                   String telefono, boolean infoBasica) {
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
-        editor.putString("email", email);
-        editor.putString("password", password);
-        editor.putBoolean("sesion", true);
+        if (!infoBasica || !email.equals(correo)) {
+            editor.putString("nombre", nombre);
+            editor.putString("apellidoPaterno", apellidoPaterno);
+            editor.putString("apellidoMaterno", apellidoMaterno);
+            editor.putString("correo", correo);
+            editor.putString("contrasena", contrasena);
+            if (!tipoDeUsuario.equals("administrador")) {
+                editor.putString("telefono", telefono);
+            }
+            editor.putString("tipoDeUsuario", tipoDeUsuario);
+            editor.putBoolean("infoBasica", true);
+        }
+        if (sesionAbierta.isChecked()) {
+            editor.putBoolean("sesion", true);
+        } else {
+            editor.putBoolean("sesion", false);
+        }
+
         editor.apply();
     }
 
