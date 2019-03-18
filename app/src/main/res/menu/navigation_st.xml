@@ -7,9 +7,9 @@
         android:title="@string/inicio" />
 
     <item
-        android:id="@+id/st_navigation_notifications"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/notificaciones" />
+        android:id="@+id/st_navigation_courses"
+        android:icon="@drawable/ic_courses_black_24dp"
+        android:title="@string/cursos" />
 
     <item
         android:id="@+id/st_navigation_user"

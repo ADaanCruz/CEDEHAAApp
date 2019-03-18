@@ -12,6 +12,7 @@ import android.view.MenuItem;
 public class StudentActivity extends AppCompatActivity {
 
     Fragment fragment = new StHomeFragment();
+    BottomNavigationView navigation;
     Bundle bundle = new Bundle();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -24,7 +25,7 @@ public class StudentActivity extends AppCompatActivity {
                 case R.id.st_navigation_home:
                     selectedFragment = fragment;
                     break;
-                case R.id.st_navigation_notifications:
+                case R.id.st_navigation_courses:
                     selectedFragment = new StNotificationsFragment();
                     break;
                 case R.id.st_navigation_user:
@@ -45,6 +46,16 @@ public class StudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
+        navigation = (BottomNavigationView) findViewById(R.id.st_navView);
+        MenuItem opcion2 = navigation.getMenu().getItem(1);
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+        String tipoDeUsuario = prefs.getString("tipoDeUsuario", "estudiante");
+        if (tipoDeUsuario.equals("administrador")) {
+            opcion2.setTitle("Solicitudes");
+        } else {
+            opcion2.setTitle("Cursos");
+        }
 
         cargarBundle(fragment);
 

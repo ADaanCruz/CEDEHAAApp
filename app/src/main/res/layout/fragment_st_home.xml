@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:paddingLeft="20dp"
+    android:paddingTop="20dp"
+    android:paddingRight="20dp">
 
         <TextView
             android:id="@+id/texto_st_bienvenida"
@@ -44,7 +46,6 @@
         <ListView
             android:id="@+id/lista_st_cursos"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"/>
+            android:layout_height="wrap_content"/>
 
 </LinearLayout>

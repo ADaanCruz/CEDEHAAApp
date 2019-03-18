@@ -76,10 +76,11 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
             } else if (item.getEstado().equals("Abierto")) {
                 textoBoton = "Inscribirse";
             } else {
-                textoBoton = "Estudiante";
+                textoBoton = "Curso cerrado";
                 button.setVisibility(View.GONE);
             }
             button.setText(textoBoton);
+            verifySolicit();
         }
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +104,9 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                 } else if (txtBoton.equals("Curso cerrado")) {
                     Toast.makeText(YourCoursesDetailsActivity.this,
                             "El grupo está cerrado", Toast.LENGTH_LONG).show();
+                } else if (txtBoton.equals("Inscrito")) {
+                    Toast.makeText(YourCoursesDetailsActivity.this,
+                            "Ya estás inscrito", Toast.LENGTH_LONG).show();
                 } else if (txtBoton.equals("Inscribirse")) {
                     Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
@@ -116,8 +120,17 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                                     finish();
                                 } else {
                                     String error = jsonObject.getString("message");
-                                    String exist = "exist", insert = "insert", post = "post";
-                                    if (error.equals(exist)) {
+                                    String cursoyusuario = "cursoyusuario", exist = "exist",
+                                            insert = "insert", post = "post", verificar = "verificar";
+                                    if (error.equals(cursoyusuario)) {
+                                        Toast.makeText(YourCoursesDetailsActivity.this,
+                                                "Hay un problema con el curso",
+                                                Toast.LENGTH_LONG).show();
+                                    } else if (error.equals(verificar)) {
+                                        Toast.makeText(YourCoursesDetailsActivity.this,
+                                                "Hay un problema con la verificación",
+                                                Toast.LENGTH_LONG).show();
+                                    } else if (error.equals(exist)) {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
                                                 "Su solicitud sigue en espera",
                                                 Toast.LENGTH_LONG).show();
@@ -146,14 +159,14 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                     SolicitCourseRequest solicitRequest = new SolicitCourseRequest(
                             item.getTitulo(),
                             item.getFechaInicio(false),
-                            prefs.getString("nombre", null),
-                            prefs.getString("apellidoPaterno", null),
                             prefs.getString("correo", null),
-                            prefs.getString("telefono", null),
+                            "no",
                             responseListener
                     );
                     RequestQueue queue = Volley.newRequestQueue(YourCoursesDetailsActivity.this);
                     queue.add(solicitRequest);
+                } else {
+
                 }
             }
         });
@@ -205,5 +218,60 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void verifySolicit() {
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(response);
+                    boolean success = jsonObject.getBoolean("success");
+                    if (success) {
+                        String inscrito = jsonObject.getString("message");
+                        String si = "inscrito";
+                        if (inscrito.equals(si)) {
+                            String textoBoton = "Inscrito";
+                            button.setText(textoBoton);
+                        }
+                    } else {
+                        String error = jsonObject.getString("message");
+                        String cursoyusuario = "cursoyusuario", post = "post", verificar = "verificar";
+                        if (error.equals(cursoyusuario)) {
+                            Toast.makeText(YourCoursesDetailsActivity.this,
+                                    "Hay un problema con el curso",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error.equals(verificar)) {
+                            Toast.makeText(YourCoursesDetailsActivity.this,
+                                    "Hay un problema con la verificación",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error.equals(post)) {
+                            Toast.makeText(YourCoursesDetailsActivity.this,
+                                    "Error: Type POST",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(YourCoursesDetailsActivity.this,
+                                    "Algo salió mal",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(YourCoursesDetailsActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+        SolicitCourseRequest solicitRequest = new SolicitCourseRequest(
+                item.getTitulo(),
+                item.getFechaInicio(false),
+                prefs.getString("correo", null),
+                "si",
+                responseListener
+        );
+        RequestQueue queue = Volley.newRequestQueue(YourCoursesDetailsActivity.this);
+        queue.add(solicitRequest);
     }
 }
