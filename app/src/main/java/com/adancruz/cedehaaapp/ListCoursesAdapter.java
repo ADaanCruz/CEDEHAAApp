@@ -17,11 +17,13 @@ public class ListCoursesAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Curso> listItems;
     private String tipoDeUsuario;
+    private boolean myCourses;
 
-    public ListCoursesAdapter(Context context, ArrayList<Curso> listItems, String tipoDeUsuario) {
+    public ListCoursesAdapter(Context context, ArrayList<Curso> listItems, String tipoDeUsuario, boolean myCourses) {
         this.context = context;
         this.listItems = listItems;
         this.tipoDeUsuario = tipoDeUsuario;
+        this.myCourses = myCourses;
         inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -62,10 +64,14 @@ public class ListCoursesAdapter extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, YourCoursesDetailsActivity.class);
-                intent.putExtra("objectData", curso);
-                intent.putExtra("tipoDeUsuario", tipoDeUsuario);
-                context.startActivity(intent);
+                if (myCourses) {
+
+                } else {
+                    Intent intent = new Intent(context, YourCoursesDetailsActivity.class);
+                    intent.putExtra("objectData", curso);
+                    intent.putExtra("tipoDeUsuario", tipoDeUsuario);
+                    context.startActivity(intent);
+                }
             }
         });
 
