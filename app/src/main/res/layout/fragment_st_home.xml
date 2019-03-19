@@ -7,45 +7,45 @@
     android:paddingTop="20dp"
     android:paddingRight="20dp">
 
-        <TextView
-            android:id="@+id/texto_st_bienvenida"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/bienvenido"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp"
-            android:textColor="@color/colorPrimary" />
+    <TextView
+        android:id="@+id/texto_st_bienvenida"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/bienvenido"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/colorPrimary" />
 
-        <Button
-            android:id="@+id/boton_crear_curso"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/crear_curso_nuevo"
-            android:background="@drawable/boton_secundario"
-            android:textColor="#ffffff"
-            android:layout_marginBottom="10dp"/>
+    <Button
+        android:id="@+id/boton_crear_curso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/crear_curso_nuevo"
+        android:background="@drawable/boton_secundario"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="10dp"/>
 
-        <TextView
-            android:id="@+id/texto_st_los_cursos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/cursos"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#000"/>
+    <TextView
+        android:id="@+id/texto_st_los_cursos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cursos"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#000"/>
 
-        <TextView
-            android:id="@+id/texto_sin_cursos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/sin_cursos"/>
+    <TextView
+        android:id="@+id/texto_sin_cursos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/sin_cursos"/>
 
-        <ListView
-            android:id="@+id/lista_st_cursos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+    <ListView
+        android:id="@+id/lista_st_cursos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

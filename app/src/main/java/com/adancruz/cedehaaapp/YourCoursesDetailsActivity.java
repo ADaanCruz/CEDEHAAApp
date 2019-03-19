@@ -23,7 +23,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
     private Curso item;
     private TextView titulo, descripcionBreve, descripcionGeneral, fechaInicio;
     private ImageView imagen;
-    private Button button, eliminarCurso;
+    private Button verMensajes, button, eliminarCurso;
     private String tipoDeUsuario = "";
 
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
@@ -40,6 +40,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
         descripcionBreve = (TextView) findViewById(R.id.texto_desc_breve_del_curso_details);
         descripcionGeneral = (TextView) findViewById(R.id.texto_desc_gral_del_curso_details);
         fechaInicio = (TextView) findViewById(R.id.texto_fecha_inicio_yc_details);
+        verMensajes = (Button) findViewById(R.id.boton_ver_mensajes_admin);
         button = (Button) findViewById(R.id.boton_detalle_de_curso);
         eliminarCurso = (Button) findViewById(R.id.boton_eliminar_curso);
 
@@ -64,11 +65,13 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
 
         String textoBoton;
         if (tipoDeUsuario.equals("administrador")) {
+            verMensajes.setVisibility(View.VISIBLE);
             eliminarCurso.setVisibility(View.VISIBLE);
 
             textoBoton = "Editar curso";
             button.setText(textoBoton);
         } else if (tipoDeUsuario.equals("estudiante")){
+            verMensajes.setVisibility(View.GONE);
             eliminarCurso.setVisibility(View.GONE);
 
             if (item.getEstado().equals("Cerrado")) {
@@ -82,6 +85,13 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
             button.setText(textoBoton);
             verifySolicit();
         }
+
+        verMensajes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

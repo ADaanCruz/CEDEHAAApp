@@ -90,4 +90,6 @@
     <string name="abierto">Abierto</string>
     <string name="cerrado">Cerrado</string>
     <string name="eliminar_curso">Eliminar curso</string>
+    <string name="ver_mensajes">Ver mensajes</string>
+    <string name="sin_curso_inscrito">Aún no estás dentro de un curso</string>
 </resources>

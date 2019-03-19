@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,20 +24,28 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+
 public class StNotificationsFragment extends Fragment {
 
-    private static final String MY_COURSES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/my-courses.php";
+    private static String MY_COURSES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/my-courses.php?correo=ninguno";
 
     ArrayList<Curso> arrayList = new ArrayList<Curso>();
 
     ListView misCursos;
+    TextView sinCursosInscrito;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_st_notifications, container, false);
 
-        misCursos = (ListView) view.findViewById(R.id.lista_notificaciones);
+        misCursos = (ListView) view.findViewById(R.id.lista_mis_cursos);
+        sinCursosInscrito = (TextView) view.findViewById(R.id.texto_sin_cursos_inscrito);
+
+        if (getArguments() != null) {
+            String correo = getArguments().getString("correo");
+            MY_COURSES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/my-courses.php?correo=" + correo;
+        }
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, MY_COURSES_REQUEST_URL, null,
                 new Response.Listener<JSONObject>() {
@@ -62,10 +71,12 @@ public class StNotificationsFragment extends Fragment {
                                 arrayList.add(curso);
                             }
                             if (arrayList.size() == 0) {
-
+                                misCursos.setVisibility(View.GONE);
+                                sinCursosInscrito.setVisibility(View.VISIBLE);
                             } else {
                                 misCursos.setAdapter(new ListCoursesAdapter(view.getContext(), arrayList, "estudiante", true));
                                 misCursos.setVisibility(View.VISIBLE);
+                                sinCursosInscrito.setVisibility(View.GONE);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

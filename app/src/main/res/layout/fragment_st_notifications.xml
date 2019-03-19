@@ -11,14 +11,21 @@
         android:id="@+id/texto_notificaciones"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/notificaciones"
+        android:text="@string/tus_cursos"
         android:textSize="16sp"
         android:textColor="#000000"
         android:textStyle="bold"
         android:layout_marginBottom="5dp"/>
 
+    <TextView
+        android:id="@+id/texto_sin_cursos_inscrito"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/sin_curso_inscrito"/>
+
     <ListView
-        android:id="@+id/lista_notificaciones"
+        android:id="@+id/lista_mis_cursos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

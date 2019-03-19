@@ -54,6 +54,9 @@ public class ListCoursesAdapter extends BaseAdapter {
         descripcionBreve.setText(curso.getDescripcionBreve());
         fecha.setText(curso.getFechaInicio(true));
         estado.setText(curso.getEstado());
+        if (myCourses) {
+            estado.setVisibility(View.GONE);
+        }
 
         if (estado.getText().toString().equals("Abierto")) {
             estado.setTextColor(view.getResources().getColor(R.color.colorTextGreen));
