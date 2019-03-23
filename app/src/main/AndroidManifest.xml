@@ -30,9 +30,10 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name" />
-        <activity android:name=".StudentRegisterActivity"></activity>
-        <activity android:name=".YourCoursesDetailsActivity"></activity>
+        <activity android:name=".StudentRegisterActivity" />
+        <activity android:name=".YourCoursesDetailsActivity" />
         <activity android:name=".CreateCourseActivity" />
+        <activity android:name=".MessagesActivity"></activity>
     </application>
 
 </manifest>

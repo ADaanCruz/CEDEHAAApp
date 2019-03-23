@@ -17,19 +17,17 @@ public class ListCoursesAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Curso> listItems;
     private String tipoDeUsuario;
-    private boolean myCourses;
 
-    public ListCoursesAdapter(Context context, ArrayList<Curso> listItems, String tipoDeUsuario, boolean myCourses) {
+    public ListCoursesAdapter(Context context, ArrayList<Curso> listItems, String tipoDeUsuario) {
         this.context = context;
         this.listItems = listItems;
         this.tipoDeUsuario = tipoDeUsuario;
-        this.myCourses = myCourses;
         inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final View view = inflater.inflate(R.layout.item_courses_list, null);
+        final View view = inflater.inflate(R.layout.item_course_list, null);
         final Curso curso = (Curso) getItem(position);
 
         TextView titulo = (TextView) view.findViewById(R.id.texto_titulo_del_curso);
@@ -54,9 +52,6 @@ public class ListCoursesAdapter extends BaseAdapter {
         descripcionBreve.setText(curso.getDescripcionBreve());
         fecha.setText(curso.getFechaInicio(true));
         estado.setText(curso.getEstado());
-        if (myCourses) {
-            estado.setVisibility(View.GONE);
-        }
 
         if (estado.getText().toString().equals("Abierto")) {
             estado.setTextColor(view.getResources().getColor(R.color.colorTextGreen));
@@ -67,14 +62,10 @@ public class ListCoursesAdapter extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (myCourses) {
-
-                } else {
                     Intent intent = new Intent(context, YourCoursesDetailsActivity.class);
                     intent.putExtra("objectData", curso);
                     intent.putExtra("tipoDeUsuario", tipoDeUsuario);
                     context.startActivity(intent);
-                }
             }
         });
 

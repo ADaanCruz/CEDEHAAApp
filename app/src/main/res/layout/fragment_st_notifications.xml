@@ -18,14 +18,14 @@
         android:layout_marginBottom="5dp"/>
 
     <TextView
-        android:id="@+id/texto_sin_cursos_inscrito"
+        android:id="@+id/texto_sin_lista"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/sin_curso_inscrito"/>
 
     <ListView
-        android:id="@+id/lista_mis_cursos"
+        android:id="@+id/lista_cursos_o_solicitudes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

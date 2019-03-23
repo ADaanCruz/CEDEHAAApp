@@ -92,4 +92,7 @@
     <string name="eliminar_curso">Eliminar curso</string>
     <string name="ver_mensajes">Ver mensajes</string>
     <string name="sin_curso_inscrito">Aún no estás dentro de un curso</string>
+    <string name="sin_solicitudes_curso">Aún no tienes solicitudes de curso</string>
+    <string name="error_tipo_de_usuario">Error con el tipo de usuario</string>
+    <string name="solicitudes">Solicitudes</string>
 </resources>
