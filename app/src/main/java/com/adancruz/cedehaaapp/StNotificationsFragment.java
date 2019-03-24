@@ -67,7 +67,7 @@ public class StNotificationsFragment extends Fragment {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                                     Solicitud solicitud = new Solicitud(
-                                            jsonObject.optString("curso"),
+                                            jsonObject.optString("titulo"),
                                             jsonObject.optString("fechaInicio"),
                                             jsonObject.optString("nombre"),
                                             jsonObject.optString("apellidoPaterno"),
@@ -115,6 +115,7 @@ public class StNotificationsFragment extends Fragment {
                         public void onResponse(JSONObject response) {
                             try {
                                 JSONArray jsonArray = response.getJSONArray("cursos");
+                                arrayListCur = new ArrayList<Curso>();
                                 for (int i=0; i<jsonArray.length(); i++) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
 

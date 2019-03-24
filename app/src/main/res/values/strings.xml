@@ -95,4 +95,7 @@
     <string name="sin_solicitudes_curso">Aún no tienes solicitudes de curso</string>
     <string name="error_tipo_de_usuario">Error con el tipo de usuario</string>
     <string name="solicitudes">Solicitudes</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="rechazar">Rechazar</string>
+    <string name="llamar">Llamar</string>
 </resources>

@@ -5,7 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class ListSolicitudesAdapter extends BaseAdapter {
@@ -24,7 +27,7 @@ public class ListSolicitudesAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final View view = inflater.inflate(R.layout.item_course_list, null);
+        final View view = inflater.inflate(R.layout.item_solicitud_list, null);
         final Solicitud solicitud = (Solicitud) getItem(position);
 
         TextView titulo = (TextView) view.findViewById(R.id.texto_curso_solicita);
@@ -33,13 +36,41 @@ public class ListSolicitudesAdapter extends BaseAdapter {
         TextView apellidoPaterno = (TextView) view.findViewById(R.id.texto_apellido_pat_solicita);
         TextView correo = (TextView) view.findViewById(R.id.texto_correo_solicita);
         TextView telefono = (TextView) view.findViewById(R.id.texto_telefono_solicita);
+        Button llamar = (Button) view.findViewById(R.id.boton_llamar_solicitud);
+        Button aceptar = (Button) view.findViewById(R.id.boton_aceptar_solicitud);
+        Button rechazar = (Button) view.findViewById(R.id.boton_rechazar_solicitud) ;
 
-        titulo.setText(solicitud.getCurso());
+        titulo.setText(solicitud.getTitulo());
         fecha.setText(solicitud.getFechaInicio(true));
         nombre.setText(solicitud.getNombre());
         apellidoPaterno.setText(solicitud.getApellidoPaterno());
         correo.setText(solicitud.getCorreo());
         telefono.setText(solicitud.getTelefono());
+
+        llamar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(view.getContext(),
+                        "Llamando...",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+        aceptar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(view.getContext(),
+                        "Aceptado",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+        rechazar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(view.getContext(),
+                        "Rechazado",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
 
         return view;
     }

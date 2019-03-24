@@ -4,15 +4,15 @@ import java.io.Serializable;
 
 public class Solicitud implements Serializable {
 
-    private String curso;
+    private String titulo;
     private String fechaInicio;
     private String nombre;
     private String apellidoPaterno;
     private String correo;
     private String telefono;
 
-    public Solicitud(String curso, String fechaInicio, String nombre, String apellidoPaterno, String correo, String telefono) {
-        this.curso = curso;
+    public Solicitud(String titulo, String fechaInicio, String nombre, String apellidoPaterno, String correo, String telefono) {
+        this.titulo = titulo;
         this.fechaInicio = fechaInicio;
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
@@ -20,12 +20,12 @@ public class Solicitud implements Serializable {
         this.telefono = telefono;
     }
 
-    public String getCurso() {
-        return curso;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setCurso(String curso) {
-        this.curso = curso;
+    public void setTitulo(String curso) {
+        this.titulo = curso;
     }
 
     public String getFechaInicio(boolean formato) {
