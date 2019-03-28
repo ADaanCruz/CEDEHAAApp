@@ -9,6 +9,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class ListSolicitudesAdapter extends BaseAdapter {
@@ -17,6 +24,7 @@ public class ListSolicitudesAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Solicitud> listItems;
     private String tipoDeUsuario;
+    private Response.Listener<String> stringListener;
 
     public ListSolicitudesAdapter(Context context, ArrayList<Solicitud> listItems, String tipoDeUsuario) {
         this.context = context;
@@ -40,12 +48,19 @@ public class ListSolicitudesAdapter extends BaseAdapter {
         Button aceptar = (Button) view.findViewById(R.id.boton_aceptar_solicitud);
         Button rechazar = (Button) view.findViewById(R.id.boton_rechazar_solicitud) ;
 
-        titulo.setText(solicitud.getTitulo());
-        fecha.setText(solicitud.getFechaInicio(true));
-        nombre.setText(solicitud.getNombre());
-        apellidoPaterno.setText(solicitud.getApellidoPaterno());
-        correo.setText(solicitud.getCorreo());
-        telefono.setText(solicitud.getTelefono());
+        final String cursoTitulo = solicitud.getTitulo();
+        final String cursoFecha = solicitud.getFechaInicio(true);
+        final String usuarioNombre = solicitud.getNombre();
+        String usuarioApellidoPaterno = solicitud.getApellidoPaterno();
+        final String usuarioCorreo = solicitud.getCorreo();
+        String usuarioTelefono = solicitud.getTelefono();
+
+        titulo.setText(cursoTitulo);
+        fecha.setText(cursoFecha);
+        nombre.setText(usuarioNombre);
+        apellidoPaterno.setText(usuarioApellidoPaterno);
+        correo.setText(usuarioCorreo);
+        telefono.setText(usuarioTelefono);
 
         llamar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,17 +73,94 @@ public class ListSolicitudesAdapter extends BaseAdapter {
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(view.getContext(),
-                        "Aceptado",
-                        Toast.LENGTH_LONG).show();
+                stringListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            boolean success = jsonObject.getBoolean("success");
+                            if (success) {
+                                Toast.makeText(view.getContext(),
+                                        "Aceptado",
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                String error = jsonObject.getString("message");
+                                String cursoyusuario = "cursoyusuario", update = "update", post = "post";
+                                if (error.equals(cursoyusuario)) {
+                                    Toast.makeText(view.getContext(),
+                                            "Hay un problema con el curso",
+                                            Toast.LENGTH_LONG).show();
+                                } else if (error.equals(update)) {
+                                Toast.makeText(view.getContext(),
+                                        "Error: Type SQL ",
+                                        Toast.LENGTH_LONG).show();
+                                } else if (error.equals(post)) {
+                                    Toast.makeText(view.getContext(),
+                                            "Error: Type POST",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(view.getContext(),
+                                    "ERROR: "+e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+                        }
+                    }
+                };
+
+                SolicitudesRequest solicitudesRequest = new SolicitudesRequest(
+                        "aceptar",
+                        cursoTitulo,
+                        solicitud.getFechaInicio(false),
+                        usuarioCorreo,
+                        stringListener
+                );
+                RequestQueue queue = Volley.newRequestQueue(view.getContext());
+                queue.add(solicitudesRequest);
             }
         });
         rechazar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(view.getContext(),
-                        "Rechazado",
-                        Toast.LENGTH_LONG).show();
+                stringListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            boolean success = jsonObject.getBoolean("success");
+                            if (success) {
+                                Toast.makeText(view.getContext(),
+                                        "Rechazado",
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                String error = jsonObject.getString("message");
+                                String password = "password", email = "email", post = "post";
+                                if (error.equals(post)) {
+                                    Toast.makeText(view.getContext(),
+                                            "Error: Type POST",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(view.getContext(),
+                                    "ERROR: "+e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+                        }
+
+                    }
+                };
+
+                SolicitudesRequest solicitudesRequest = new SolicitudesRequest(
+                        "rechazar",
+                        cursoTitulo,
+                        cursoFecha,
+                        usuarioCorreo,
+                        stringListener
+                );
+                RequestQueue queue = Volley.newRequestQueue(view.getContext());
+                queue.add(solicitudesRequest);
             }
         });
 

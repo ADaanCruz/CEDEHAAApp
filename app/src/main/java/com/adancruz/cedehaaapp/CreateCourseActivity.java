@@ -41,7 +41,7 @@ public class CreateCourseActivity extends AppCompatActivity {
     String estado = "Cerrado";
 
     Response.Listener<String> responseListener;
-    String url;
+    private static String url;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

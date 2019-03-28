@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class StNotificationsFragment extends Fragment {
 
     private static String MY_COURSES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/my-courses.php?correo=ninguno";
-    private static String SOLICITUDES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/solicitudes.php";
+    private static String ALL_SOLICITUDES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/all-solicitudes.php";
 
     ArrayList<Curso> arrayListCur;
     ArrayList<Solicitud> arrayListSol;
@@ -56,7 +56,7 @@ public class StNotificationsFragment extends Fragment {
         JsonObjectRequest request;
         if (tipoDeUsuario.equals("administrador")) {
             notificacion.setText(getString(R.string.solicitudes));
-            request = new JsonObjectRequest(Request.Method.GET, SOLICITUDES_REQUEST_URL, null,
+            request = new JsonObjectRequest(Request.Method.GET, ALL_SOLICITUDES_REQUEST_URL, null,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
