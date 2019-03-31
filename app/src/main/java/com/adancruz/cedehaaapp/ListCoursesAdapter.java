@@ -62,10 +62,10 @@ public class ListCoursesAdapter extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Intent intent = new Intent(context, YourCoursesDetailsActivity.class);
-                    intent.putExtra("objectData", curso);
-                    intent.putExtra("tipoDeUsuario", tipoDeUsuario);
-                    context.startActivity(intent);
+                Intent intent = new Intent(context, YourCoursesDetailsActivity.class);
+                intent.putExtra("objectData", curso);
+                intent.putExtra("tipoDeUsuario", tipoDeUsuario);
+                context.startActivity(intent);
             }
         });
 

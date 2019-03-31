@@ -125,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
             focusView = mEmailView;
             cancel = true;
         } else
-            // Comprueba si hay una contraseña válida.
+        // Comprueba si hay una contraseña válida.
         if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_campo_requerido));
             focusView = mPasswordView;
@@ -136,7 +136,6 @@ public class LoginActivity extends AppCompatActivity {
             cancel = true;
         } else {
             showProgress(true);
-            cancel = false;
         }
 
         if (cancel) {
@@ -170,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                         String tipoDeUsuario = jsonObject.getString("tipoDeUsuario");
                         String telefono = "";
                         if (!tipoDeUsuario.equals("administrador")) {
-                            telefono = jsonObject.getString("telefono");
+                            telefono = jsonObject.getString("numero");
                         }
 
                         boolean infoBasica = prefs.getBoolean("infoBasica", false);
@@ -228,7 +227,7 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("correo", correo);
             editor.putString("contrasena", contrasena);
             if (!tipoDeUsuario.equals("administrador")) {
-                editor.putString("telefono", telefono);
+                editor.putString("numero", telefono);
             }
             editor.putString("tipoDeUsuario", tipoDeUsuario);
             editor.putBoolean("infoBasica", true);

@@ -23,7 +23,7 @@ public class StudentRegisterRequest extends StringRequest {
         params.put("apellidoMaterno", apellidoMaterno);
         params.put("correo", correo);
         params.put("contrasena", contrasena);
-        params.put("telefono", telefono);
+        params.put("numero", telefono);
         params.put("tipoDeUsuario", tipoDeUsuario);
         params.put("fotoDePerfil", fotoDePerfil);
 

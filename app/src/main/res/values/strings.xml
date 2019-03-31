@@ -35,7 +35,7 @@
     </string>
     <string name="nombres">Nombre/s</string>
     <string name="apellidos">Apellidos</string>
-    <string name="numero_telefonico">Número telefónico</string>
+    <string name="numero_telefonico">Número telefónico (7 números)</string>
     <string name="estado">Estado</string>
     <string name="ciudad">Ciudad</string>
     <string name="aceptar_registro">Aceptar registro</string>
@@ -92,10 +92,18 @@
     <string name="eliminar_curso">Eliminar curso</string>
     <string name="ver_mensajes">Ver mensajes</string>
     <string name="sin_curso_inscrito">Aún no estás dentro de un curso</string>
-    <string name="sin_solicitudes_curso">Aún no tienes solicitudes de curso</string>
+    <string name="sin_solicitudes_cursos">Aún no tienes solicitudes de cursos</string>
     <string name="error_tipo_de_usuario">Error con el tipo de usuario</string>
     <string name="solicitudes">Solicitudes</string>
     <string name="aceptar">Aceptar</string>
     <string name="rechazar">Rechazar</string>
     <string name="llamar">Llamar</string>
+    <string name="comilla_simple">No puede contener (\').</string>
+    <string name="verificar_contrasena">No coincide la contraseña.</string>
+    <string name="telefono_invalido">El número de teléfono es inválido.</string>
+    <string name="verifica_tu_telefono">Verifica que sea correcto tu teléfono.</string>
+    <string name="verificar_correo">Correo que revise con más frecuencia.</string>
+    <string name="prefijo">Prefijo (722)</string>
+    <string name="prefijo_invalido">El prefijo es inválido</string>
+    <string name="espacios">No puede contener espacios.</string>
 </resources>

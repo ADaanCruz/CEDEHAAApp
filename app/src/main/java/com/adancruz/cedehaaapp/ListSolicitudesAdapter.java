@@ -83,6 +83,7 @@ public class ListSolicitudesAdapter extends BaseAdapter {
                                 Toast.makeText(view.getContext(),
                                         "Aceptado",
                                         Toast.LENGTH_LONG).show();
+                                view.setVisibility(View.GONE);
                             } else {
                                 String error = jsonObject.getString("message");
                                 String cursoyusuario = "cursoyusuario", update = "update", post = "post";

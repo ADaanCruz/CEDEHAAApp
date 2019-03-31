@@ -89,7 +89,7 @@ public class StudentActivity extends AppCompatActivity {
         String apellidoMaterno = prefs.getString("apellidoMaterno", null);
         String correo = prefs.getString("correo", null);
         String contrasena = prefs.getString("contrasena", null);
-        String telefono = prefs.getString("telefono", null);
+        String telefono = prefs.getString("numero", null);
         String tipoDeUsuario = prefs.getString("tipoDeUsuario", null);
 
         bundle.putString("nombre", nombre);
@@ -97,7 +97,7 @@ public class StudentActivity extends AppCompatActivity {
         bundle.putString("apellidoMaterno", apellidoMaterno);
         bundle.putString("correo", correo);
         bundle.putString("contrasena", contrasena);
-        bundle.putString("telefono", telefono);
+        bundle.putString("numero", telefono);
         bundle.putString("tipoDeUsuario", tipoDeUsuario);
         selectedFragment.setArguments(bundle);
     }

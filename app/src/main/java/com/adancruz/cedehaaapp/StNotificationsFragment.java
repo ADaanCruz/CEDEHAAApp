@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class StNotificationsFragment extends Fragment {
 
     private static String MY_COURSES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/my-courses.php?correo=ninguno";
-    private static String ALL_SOLICITUDES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/all-solicitudes.php";
+    private static String COURSE_SOLICIT_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/all-solicitudes.php";
 
     ArrayList<Curso> arrayListCur;
     ArrayList<Solicitud> arrayListSol;
@@ -55,15 +55,16 @@ public class StNotificationsFragment extends Fragment {
 
         JsonObjectRequest request;
         if (tipoDeUsuario.equals("administrador")) {
+            sinLista.setText(getString(R.string.sin_solicitudes_cursos));
             notificacion.setText(getString(R.string.solicitudes));
-            request = new JsonObjectRequest(Request.Method.GET, ALL_SOLICITUDES_REQUEST_URL, null,
+            request = new JsonObjectRequest(Request.Method.GET, COURSE_SOLICIT_REQUEST_URL, null,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
                                 JSONArray jsonArray = response.getJSONArray("solicitudes");
                                 arrayListSol = new ArrayList<Solicitud>();
-                                for (int i=0; i<jsonArray.length(); i++) {
+                                for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                                     Solicitud solicitud = new Solicitud(
@@ -72,21 +73,14 @@ public class StNotificationsFragment extends Fragment {
                                             jsonObject.optString("nombre"),
                                             jsonObject.optString("apellidoPaterno"),
                                             jsonObject.optString("correo"),
-                                            jsonObject.optString("telefono")
+                                            jsonObject.optString("numero")
                                     );
 
                                     arrayListSol.add(solicitud);
                                 }
-                                if (arrayListSol.size() == 0) {
-                                    sinLista.setText(getString(R.string.sin_solicitudes_curso));
-
-                                    lista.setVisibility(View.GONE);
-                                    sinLista.setVisibility(View.VISIBLE);
-                                } else {
-                                    lista.setAdapter(new ListSolicitudesAdapter(view.getContext(), arrayListSol, "administrador"));
-                                    lista.setVisibility(View.VISIBLE);
-                                    sinLista.setVisibility(View.GONE);
-                                }
+                                lista.setAdapter(new ListSolicitudesAdapter(view.getContext(), arrayListSol, "administrador"));
+                                lista.setVisibility(View.VISIBLE);
+                                sinLista.setVisibility(View.GONE);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 Toast.makeText(view.getContext(),
@@ -98,9 +92,8 @@ public class StNotificationsFragment extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
-                    Toast.makeText(view.getContext(),
-                            "Error: VollleyError",
-                            Toast.LENGTH_LONG).show();
+                    lista.setVisibility(View.GONE);
+                    sinLista.setVisibility(View.VISIBLE);
                 }
             });
 
@@ -108,6 +101,7 @@ public class StNotificationsFragment extends Fragment {
             queue.add(request);
 
         } else if (tipoDeUsuario.equals("estudiante")) {
+            sinLista.setText(getString(R.string.sin_curso_inscrito));
             notificacion.setText(getString(R.string.tus_cursos));
             request = new JsonObjectRequest(Request.Method.GET, MY_COURSES_REQUEST_URL, null,
                     new Response.Listener<JSONObject>() {
@@ -131,16 +125,9 @@ public class StNotificationsFragment extends Fragment {
                                     );
                                     arrayListCur.add(curso);
                                 }
-                                if (arrayListCur.size() == 0) {
-                                    sinLista.setText(getString(R.string.sin_curso_inscrito));
-
-                                    lista.setVisibility(View.GONE);
-                                    sinLista.setVisibility(View.VISIBLE);
-                                } else {
-                                    lista.setAdapter(new ListCoursesAdapter(view.getContext(), arrayListCur, "estudiante"));
-                                    lista.setVisibility(View.VISIBLE);
-                                    sinLista.setVisibility(View.GONE);
-                                }
+                                lista.setAdapter(new ListCoursesAdapter(view.getContext(), arrayListCur, "estudiante"));
+                                lista.setVisibility(View.VISIBLE);
+                                sinLista.setVisibility(View.GONE);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 Toast.makeText(view.getContext(),
@@ -152,9 +139,8 @@ public class StNotificationsFragment extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
-                    Toast.makeText(view.getContext(),
-                            "Error: VollleyError",
-                            Toast.LENGTH_LONG).show();
+                    lista.setVisibility(View.GONE);
+                    sinLista.setVisibility(View.VISIBLE);
                 }
             });
 

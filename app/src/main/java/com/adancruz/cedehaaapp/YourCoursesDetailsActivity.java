@@ -77,7 +77,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
             if (item.getEstado().equals("Cerrado")) {
                 textoBoton = "Curso cerrado";
             } else if (item.getEstado().equals("Abierto")) {
-                textoBoton = "Inscribirse";
+                textoBoton = "Curso cerrado";
             } else {
                 textoBoton = "Curso cerrado";
                 button.setVisibility(View.GONE);
@@ -243,6 +243,9 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                         String si = "inscrito";
                         if (inscrito.equals(si)) {
                             String textoBoton = "Inscrito";
+                            button.setText(textoBoton);
+                        } else {
+                            String textoBoton = "Inscribirse";
                             button.setText(textoBoton);
                         }
                     } else {
