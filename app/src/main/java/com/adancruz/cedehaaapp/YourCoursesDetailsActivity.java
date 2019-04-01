@@ -79,7 +79,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
             } else if (item.getEstado().equals("Abierto")) {
                 textoBoton = "Curso cerrado";
             } else {
-                textoBoton = "Curso cerrado";
+                textoBoton = "Curso inactivo";
                 button.setVisibility(View.GONE);
             }
             button.setText(textoBoton);
@@ -89,7 +89,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
         verMensajes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+
             }
         });
 
@@ -130,36 +130,46 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                                     finish();
                                 } else {
                                     String error = jsonObject.getString("message");
-                                    String cursoyusuario = "cursoyusuario", exist = "exist",
-                                            insert = "insert", post = "post", verificar = "verificar";
-                                    if (error.equals(cursoyusuario)) {
+                                    String post = "post",
+                                            cursoyusuario = "cursoyusuario",
+                                            verificar = "verificar",
+                                            exist = "exist",
+                                            totalylimite = "totalylimite",
+                                            lleno = "lleno",
+                                            insert = "insert",
+                                            update = "update";
+                                    if (error.equals(post)) {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "Hay un problema con el curso",
-                                                Toast.LENGTH_LONG).show();
+                                                "Error: Type POST", Toast.LENGTH_LONG).show();
+                                    } else if (error.equals(cursoyusuario)) {
+                                        Toast.makeText(YourCoursesDetailsActivity.this,
+                                                "Hay un problema con el usuario", Toast.LENGTH_LONG).show();
                                     } else if (error.equals(verificar)) {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "Hay un problema con la verificación",
-                                                Toast.LENGTH_LONG).show();
+                                                "Hay un problema con la verificación", Toast.LENGTH_LONG).show();
                                     } else if (error.equals(exist)) {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "Su solicitud sigue en espera",
-                                                Toast.LENGTH_LONG).show();
+                                                "Su solicitud sigue en espera", Toast.LENGTH_LONG).show();
+                                    } else if (error.equals(totalylimite)) {
+                                        Toast.makeText(YourCoursesDetailsActivity.this,
+                                                "Hay un problema con el curso", Toast.LENGTH_LONG).show();
+                                    } else if (error.equals(lleno)) {
+                                        Toast.makeText(YourCoursesDetailsActivity.this,
+                                                "El curso se acaba de llenar", Toast.LENGTH_LONG).show();
                                     } else if (error.equals(insert)) {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "Error: Type SQL ",
-                                                Toast.LENGTH_LONG).show();
-                                    } else if (error.equals(post)) {
+                                                "Error: Type SQL - Insert ", Toast.LENGTH_LONG).show();
+                                    }  else if (error.equals(update)) {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "Error: Type POST",
-                                                Toast.LENGTH_LONG).show();
+                                                "Error: Type SQL - Update", Toast.LENGTH_LONG).show();
                                     } else {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "Algo salió mal",
-                                                Toast.LENGTH_LONG).show();
+                                                "Algo salió mal", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             } catch (JSONException e) {
-                                Toast.makeText(YourCoursesDetailsActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(YourCoursesDetailsActivity.this,
+                                        "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                 e.printStackTrace();
                             }
                         }
@@ -176,7 +186,8 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                     RequestQueue queue = Volley.newRequestQueue(YourCoursesDetailsActivity.this);
                     queue.add(solicitRequest);
                 } else {
-
+                    Toast.makeText(YourCoursesDetailsActivity.this,
+                            "Regrese y vuelva a seleccionar el curso", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -199,16 +210,13 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                                 String delete = "delete", post = "post";
                                 if (error.equals(delete)) {
                                     Toast.makeText(YourCoursesDetailsActivity.this,
-                                            "Error: Type SQL",
-                                            Toast.LENGTH_LONG).show();
+                                            "Error: Type SQL", Toast.LENGTH_LONG).show();
                                 } else if(error.equals(post)) {
                                     Toast.makeText(YourCoursesDetailsActivity.this,
-                                            "Error: Type POST",
-                                            Toast.LENGTH_LONG).show();
+                                            "Error: Type POST", Toast.LENGTH_LONG).show();
                                 } else {
                                     Toast.makeText(YourCoursesDetailsActivity.this,
-                                            "Algo salió mal",
-                                            Toast.LENGTH_LONG).show();
+                                            "Algo salió mal", Toast.LENGTH_LONG).show();
                                 }
                             }
                         } catch (JSONException e) {
@@ -240,11 +248,11 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                     boolean success = jsonObject.getBoolean("success");
                     if (success) {
                         String inscrito = jsonObject.getString("message");
-                        String si = "inscrito";
+                        String si = "inscrito", no = "no inscrito";
                         if (inscrito.equals(si)) {
                             String textoBoton = "Inscrito";
                             button.setText(textoBoton);
-                        } else {
+                        } else if (inscrito.equals(no)){
                             String textoBoton = "Inscribirse";
                             button.setText(textoBoton);
                         }
@@ -253,24 +261,21 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                         String cursoyusuario = "cursoyusuario", post = "post", verificar = "verificar";
                         if (error.equals(cursoyusuario)) {
                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                    "Hay un problema con el curso",
-                                    Toast.LENGTH_LONG).show();
+                                    "Hay un problema con el curso", Toast.LENGTH_LONG).show();
                         } else if (error.equals(verificar)) {
                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                    "Hay un problema con la verificación",
-                                    Toast.LENGTH_LONG).show();
+                                    "Hay un problema con la verificación", Toast.LENGTH_LONG).show();
                         } else if (error.equals(post)) {
                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                    "Error: Type POST",
-                                    Toast.LENGTH_LONG).show();
+                                    "Error: Type POST", Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                    "Algo salió mal",
-                                    Toast.LENGTH_LONG).show();
+                                    "Algo salió mal", Toast.LENGTH_LONG).show();
                         }
                     }
                 } catch (JSONException e) {
-                    Toast.makeText(YourCoursesDetailsActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(YourCoursesDetailsActivity.this,
+                            "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }

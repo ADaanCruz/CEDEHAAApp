@@ -169,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                         String tipoDeUsuario = jsonObject.getString("tipoDeUsuario");
                         String telefono = "";
                         if (!tipoDeUsuario.equals("administrador")) {
-                            telefono = jsonObject.getString("numero");
+                            telefono = jsonObject.getString("telefono");
                         }
 
                         boolean infoBasica = prefs.getBoolean("infoBasica", false);
@@ -227,7 +227,7 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("correo", correo);
             editor.putString("contrasena", contrasena);
             if (!tipoDeUsuario.equals("administrador")) {
-                editor.putString("numero", telefono);
+                editor.putString("telefono", telefono);
             }
             editor.putString("tipoDeUsuario", tipoDeUsuario);
             editor.putBoolean("infoBasica", true);
