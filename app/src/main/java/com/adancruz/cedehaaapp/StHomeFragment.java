@@ -77,7 +77,7 @@ public class StHomeFragment extends Fragment {
                                 cursos.setVisibility(View.GONE);
                                 sinCursos.setVisibility(View.VISIBLE);
                             } else {
-                                cursos.setAdapter(new ListCoursesAdapter(view.getContext(), arrayList, tipoDeUsuario));
+                                cursos.setAdapter(new ListCoursesAdapter(view.getContext(), arrayList, tipoDeUsuario, false));
                                 cursos.setVisibility(View.VISIBLE);
                                 sinCursos.setVisibility(View.GONE);
                             }

@@ -17,11 +17,14 @@ public class ListCoursesAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Curso> listItems;
     private String tipoDeUsuario;
+    private boolean notificacones;
 
-    public ListCoursesAdapter(Context context, ArrayList<Curso> listItems, String tipoDeUsuario) {
+    public ListCoursesAdapter(Context context, ArrayList<Curso> listItems,
+                              String tipoDeUsuario, boolean notificaciones) {
         this.context = context;
         this.listItems = listItems;
         this.tipoDeUsuario = tipoDeUsuario;
+        this.notificacones = notificaciones;
         inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -53,10 +56,15 @@ public class ListCoursesAdapter extends BaseAdapter {
         fecha.setText(curso.getFechaInicio(true));
         estado.setText(curso.getEstado());
 
-        if (estado.getText().toString().equals("Abierto")) {
-            estado.setTextColor(view.getResources().getColor(R.color.colorTextGreen));
+        if (notificacones) {
+            estado.setVisibility(View.GONE);
         } else {
-            estado.setTextColor(view.getResources().getColor(R.color.colorTextRed));
+            estado.setVisibility(View.VISIBLE);
+            if (estado.getText().toString().equals("Abierto")) {
+                estado.setTextColor(view.getResources().getColor(R.color.colorTextGreen));
+            } else {
+                estado.setTextColor(view.getResources().getColor(R.color.colorTextRed));
+            }
         }
 
         view.setOnClickListener(new View.OnClickListener() {

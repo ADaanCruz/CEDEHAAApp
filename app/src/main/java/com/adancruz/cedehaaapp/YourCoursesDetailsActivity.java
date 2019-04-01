@@ -136,8 +136,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                                             exist = "exist",
                                             totalylimite = "totalylimite",
                                             lleno = "lleno",
-                                            insert = "insert",
-                                            update = "update";
+                                            insert = "insert";
                                     if (error.equals(post)) {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
                                                 "Error: Type POST", Toast.LENGTH_LONG).show();
@@ -159,9 +158,6 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                                     } else if (error.equals(insert)) {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
                                                 "Error: Type SQL - Insert ", Toast.LENGTH_LONG).show();
-                                    }  else if (error.equals(update)) {
-                                        Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "Error: Type SQL - Update", Toast.LENGTH_LONG).show();
                                     } else {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
                                                 "Algo salió mal", Toast.LENGTH_LONG).show();

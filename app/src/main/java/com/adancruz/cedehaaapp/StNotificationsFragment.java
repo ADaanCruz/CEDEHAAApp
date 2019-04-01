@@ -73,7 +73,7 @@ public class StNotificationsFragment extends Fragment {
                                             jsonObject.optString("nombre"),
                                             jsonObject.optString("apellidoPaterno"),
                                             jsonObject.optString("correo"),
-                                            jsonObject.optString("numero")
+                                            jsonObject.optString("telefono")
                                     );
 
                                     arrayListSol.add(solicitud);
@@ -125,7 +125,7 @@ public class StNotificationsFragment extends Fragment {
                                     );
                                     arrayListCur.add(curso);
                                 }
-                                lista.setAdapter(new ListCoursesAdapter(view.getContext(), arrayListCur, "estudiante"));
+                                lista.setAdapter(new ListCoursesAdapter(view.getContext(), arrayListCur,"estudiante", true));
                                 lista.setVisibility(View.VISIBLE);
                                 sinLista.setVisibility(View.GONE);
                             } catch (JSONException e) {

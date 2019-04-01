@@ -81,24 +81,39 @@ public class ListSolicitudesAdapter extends BaseAdapter {
                             boolean success = jsonObject.getBoolean("success");
                             if (success) {
                                 Toast.makeText(view.getContext(),
-                                        "Aceptado",
+                                        "Usuario aceptado",
                                         Toast.LENGTH_LONG).show();
                                 view.setVisibility(View.GONE);
                             } else {
                                 String error = jsonObject.getString("message");
-                                String cursoyusuario = "cursoyusuario", update = "update", post = "post";
-                                if (error.equals(cursoyusuario)) {
+                                String post = "post",
+                                        cursoyusuario = "cursoyusuario",
+                                        boton = "boton",
+                                        totalylimite = "totalylimite",
+                                        lleno = "lleno",
+                                        update = "update";
+                                if (error.equals(post)) {
                                     Toast.makeText(view.getContext(),
-                                            "Hay un problema con el curso",
-                                            Toast.LENGTH_LONG).show();
+                                            "Error: Type POST", Toast.LENGTH_LONG).show();
+                                } else if (error.equals(cursoyusuario)) {
+                                    Toast.makeText(view.getContext(),
+                                            "Hay un problema con el usuario", Toast.LENGTH_LONG).show();
+                                } else if (error.equals(boton)) {
+                                    Toast.makeText(view.getContext(),
+                                            "Hay un problema con botón", Toast.LENGTH_LONG).show();
+                                } else if (error.equals(totalylimite)) {
+                                    Toast.makeText(view.getContext(),
+                                            "Hay un problema con el curso", Toast.LENGTH_LONG).show();
+                                } else if (error.equals(lleno)) {
+                                     Toast.makeText(view.getContext(),
+                                             "El curso se acaba de llenar", Toast.LENGTH_LONG).show();
                                 } else if (error.equals(update)) {
-                                Toast.makeText(view.getContext(),
-                                        "Error: Type SQL ",
-                                        Toast.LENGTH_LONG).show();
-                                } else if (error.equals(post)) {
                                     Toast.makeText(view.getContext(),
-                                            "Error: Type POST",
-                                            Toast.LENGTH_LONG).show();
+                                        "Error: Type SQL - Update",
+                                        Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(view.getContext(),
+                                            "Algo salió mal", Toast.LENGTH_LONG).show();
                                 }
                             }
                         } catch (JSONException e) {
