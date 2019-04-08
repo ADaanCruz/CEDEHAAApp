@@ -1,6 +1,8 @@
 package com.adancruz.cedehaaapp;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +64,13 @@ public class ListSolicitudesAdapter extends BaseAdapter {
         correo.setText(usuarioCorreo);
         telefono.setText(usuarioTelefono);
 
+        view.refreshDrawableState();
+
+        final Button[] botones = new Button[3];
+        botones[0] = llamar;
+        botones[1] = aceptar;
+        botones[2] = rechazar;
+
         llamar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,9 +90,9 @@ public class ListSolicitudesAdapter extends BaseAdapter {
                             boolean success = jsonObject.getBoolean("success");
                             if (success) {
                                 Toast.makeText(view.getContext(),
-                                        "Usuario aceptado",
+                                        "Solicitud aceptada",
                                         Toast.LENGTH_LONG).show();
-                                view.setVisibility(View.GONE);
+                                botonesVisible(botones, false);
                             } else {
                                 String error = jsonObject.getString("message");
                                 String post = "post",
@@ -100,7 +109,7 @@ public class ListSolicitudesAdapter extends BaseAdapter {
                                             "Hay un problema con el usuario", Toast.LENGTH_LONG).show();
                                 } else if (error.equals(boton)) {
                                     Toast.makeText(view.getContext(),
-                                            "Hay un problema con botón", Toast.LENGTH_LONG).show();
+                                            "Hay un problema con el botón", Toast.LENGTH_LONG).show();
                                 } else if (error.equals(totalylimite)) {
                                     Toast.makeText(view.getContext(),
                                             "Hay un problema con el curso", Toast.LENGTH_LONG).show();
@@ -147,15 +156,30 @@ public class ListSolicitudesAdapter extends BaseAdapter {
                             boolean success = jsonObject.getBoolean("success");
                             if (success) {
                                 Toast.makeText(view.getContext(),
-                                        "Rechazado",
+                                        "Solicitud rechazada",
                                         Toast.LENGTH_LONG).show();
+                                botonesVisible(botones, false);
                             } else {
                                 String error = jsonObject.getString("message");
-                                String password = "password", email = "email", post = "post";
+                                String post = "post",
+                                        cursoyusuario = "cursoyusuario",
+                                        boton = "boton",
+                                        delete = "delete";
                                 if (error.equals(post)) {
                                     Toast.makeText(view.getContext(),
-                                            "Error: Type POST",
-                                            Toast.LENGTH_LONG).show();
+                                            "Error: Type POST", Toast.LENGTH_LONG).show();
+                                } else if (error.equals(cursoyusuario)) {
+                                    Toast.makeText(view.getContext(),
+                                            "Hay un problema con el usuario", Toast.LENGTH_LONG).show();
+                                } else if (error.equals(boton)) {
+                                    Toast.makeText(view.getContext(),
+                                            "Hay un problema con el botón", Toast.LENGTH_LONG).show();
+                                } else if (error.equals(delete)) {
+                                    Toast.makeText(view.getContext(),
+                                            "Error: Type SQL - delete", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(view.getContext(),
+                                            "Algo salió mal", Toast.LENGTH_LONG).show();
                                 }
                             }
                         } catch (JSONException e) {
@@ -196,6 +220,18 @@ public class ListSolicitudesAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return 0;
+    }
+
+    private void botonesVisible (Button[] botones, boolean visible) {
+        if (visible) {
+            for (int i = 0; i < botones.length; i++) {
+                botones[i].setVisibility(View.VISIBLE);
+            }
+        } else {
+            for (int i = 0; i < botones.length; i++) {
+                botones[i].setVisibility(View.GONE);
+            }
+        }
     }
 
 }
