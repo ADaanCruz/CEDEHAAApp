@@ -2,7 +2,6 @@ package com.adancruz.cedehaaapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -15,16 +14,11 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.text.DateFormat;
 
 public class CreateCourseActivity extends AppCompatActivity {
 
@@ -49,15 +43,15 @@ public class CreateCourseActivity extends AppCompatActivity {
         setContentView(R.layout.create_course);
 
         // Componentes bàsico de XML.
-        titulo = (TextView) findViewById(R.id.texto_titulo_del_curso_nuevo);
-        imagen = (ImageView) findViewById(R.id.imagen_del_curso_nuevo);
-        descripcionBreve = (TextView) findViewById(R.id.texto_desc_breve_del_curso_nuevo);
-        descripcionGeneral = (TextView) findViewById(R.id.texto_desc_gral_del_curso_nuevo);
-        limiteEstudiantes = (TextView) findViewById(R.id.texto_limite_estudiantes);
-        calendarioFechaInicio = (CalendarView) findViewById(R.id.calendario_inicio_curso);
-        estadoCurso = (Switch) findViewById(R.id.switch_estado_curso);
-        aceptarCursoNuevo = (Button) findViewById(R.id.boton_aceptar_curso_nuevo);
-        cambios = (TextView) findViewById(R.id.texto_proximos_cambios);
+        titulo = findViewById(R.id.texto_titulo_del_curso_nuevo);
+        imagen = findViewById(R.id.imagen_del_curso_nuevo);
+        descripcionBreve = findViewById(R.id.texto_desc_breve_del_curso_nuevo);
+        descripcionGeneral = findViewById(R.id.texto_desc_gral_del_curso_nuevo);
+        limiteEstudiantes = findViewById(R.id.texto_limite_estudiantes);
+        calendarioFechaInicio = findViewById(R.id.calendario_inicio_curso);
+        estadoCurso = findViewById(R.id.switch_estado_curso);
+        aceptarCursoNuevo = findViewById(R.id.boton_aceptar_curso_nuevo);
+        cambios = findViewById(R.id.texto_proximos_cambios);
 
         imagen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,8 +189,10 @@ public class CreateCourseActivity extends AppCompatActivity {
         aceptarCursoNuevo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                aceptarCursoNuevo.setEnabled(false);
                 boolean cancel;
                 cancel = validarCampos();
+
                 if (estadoCurso.isChecked()) {
                     estado = "Abierto";
                 } else {
@@ -224,31 +220,38 @@ public class CreateCourseActivity extends AppCompatActivity {
                     RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);
                     queue.add(courseRequest);
                 }
+                aceptarCursoNuevo.setEnabled(true);
             }
         });
     }
 
     private boolean validarCampos() {
-        boolean cancel;
+        boolean cancel = false;
         TextView[] campos = new TextView[4];
         campos[0] = titulo;
         campos[1] = descripcionBreve;
         campos[2] = descripcionGeneral;
         campos[3] = limiteEstudiantes;
-        cancel = isEmpty(campos);
 
-        if (cancel) {
+        if (isEmpty(campos) || containSpace(campos) || containComilla(campos)) {
             focusView.requestFocus();
-        } else if (numImagen == (0)) {
             cancel = true;
-            Toast.makeText(CreateCourseActivity.this,
-                    "Selecciona una imagen",
-                    Toast.LENGTH_LONG).show();
-        } else if (fechaInicio.isEmpty()) {
-            cancel = true;
-            Toast.makeText(CreateCourseActivity.this,
-                    "Selecciona una fecha",
-                    Toast.LENGTH_LONG).show();
+        } else {
+            if (isNotNumberValid(campos[3].getText().toString())) {
+                cancel = true;
+                limiteEstudiantes.setError(getString(R.string.numero_invalido));
+                focusView = limiteEstudiantes;
+            } else if (numImagen == (0)) {
+                cancel = true;
+                Toast.makeText(CreateCourseActivity.this,
+                        "Selecciona una imagen",
+                        Toast.LENGTH_LONG).show();
+            } else if (fechaInicio.isEmpty()) {
+                cancel = true;
+                Toast.makeText(CreateCourseActivity.this,
+                        "Selecciona una fecha",
+                        Toast.LENGTH_LONG).show();
+            }
         }
 
         return cancel;
@@ -256,19 +259,50 @@ public class CreateCourseActivity extends AppCompatActivity {
 
     private boolean isEmpty(TextView[] campos) {
         boolean cancel = false;
-        for (int i = 0; i < campos.length; i++) {
-            if (TextUtils.isEmpty(campos[i].getText().toString())) {
-                campos[i].setError(getString(R.string.error_campo_requerido));
-                focusView = campos[i];
+        for (TextView campo : campos) {
+            if (TextUtils.isEmpty(campo.getText().toString())) {
+                campo.setError(getString(R.string.error_campo_requerido));
+                focusView = campo;
                 cancel = true;
-            } else {
-                if (cancel) {
-                    cancel = true;
-                } else {
-                    cancel = false;
-                }
             }
         }
         return cancel;
+    }
+
+    private boolean containSpace(TextView[] campos) {
+        boolean cancel = false;
+        for (TextView campo : campos) {
+            String vacio = campo.getText().toString();
+            if (vacio.replace(" ", "").isEmpty()) {
+                campo.setError(getString(R.string.no_vacio));
+                focusView = campo;
+                cancel = true;
+            }
+        }
+        return cancel;
+    }
+
+    private boolean containComilla(TextView[] campos){
+        boolean cancel = false;
+        for (TextView campo : campos) {
+            if (campo.getText().toString().contains("'")) {
+                campo.setError(getString(R.string.comilla_simple));
+                focusView = campo;
+                cancel = true;
+            }
+        }
+        return cancel;
+    }
+
+    private boolean isNotNumberValid(String string) {
+        if (string.length() <= 2) {
+            try {
+                return Integer.parseInt(string) <= 0;
+            } catch (NumberFormatException nfe) {
+                return true;
+            }
+        } else {
+            return true;
+        }
     }
 }

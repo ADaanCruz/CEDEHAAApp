@@ -43,9 +43,9 @@ public class StNotificationsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_st_notifications, container, false);
 
-        notificacion = (TextView) view.findViewById(R.id.texto_notificaciones);
-        lista = (ListView) view.findViewById(R.id.lista_cursos_o_solicitudes);
-        sinLista = (TextView) view.findViewById(R.id.texto_sin_lista);
+        notificacion = view.findViewById(R.id.texto_notificaciones);
+        lista = view.findViewById(R.id.lista_cursos_o_solicitudes);
+        sinLista = view.findViewById(R.id.texto_sin_lista);
 
         if (getArguments() != null) {
             String correo = getArguments().getString("correo");
@@ -54,104 +54,111 @@ public class StNotificationsFragment extends Fragment {
         }
 
         JsonObjectRequest request;
-        if (tipoDeUsuario.equals("administrador")) {
-            sinLista.setText(getString(R.string.sin_solicitudes_cursos));
-            notificacion.setText(getString(R.string.solicitudes));
-            request = new JsonObjectRequest(Request.Method.GET, COURSE_SOLICIT_REQUEST_URL, null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                JSONArray jsonArray = response.getJSONArray("solicitudes");
-                                arrayListSol = new ArrayList<Solicitud>();
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+        assert tipoDeUsuario != null;
+        switch (tipoDeUsuario) {
+            case "administrador": {
+                sinLista.setText(getString(R.string.sin_solicitudes_cursos));
+                notificacion.setText(getString(R.string.solicitudes));
+                request = new JsonObjectRequest(Request.Method.GET, COURSE_SOLICIT_REQUEST_URL, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    JSONArray jsonArray = response.getJSONArray("solicitudes");
+                                    arrayListSol = new ArrayList<>();
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                                    Solicitud solicitud = new Solicitud(
-                                            jsonObject.optString("titulo"),
-                                            jsonObject.optString("fechaInicio"),
-                                            jsonObject.optString("nombre"),
-                                            jsonObject.optString("apellidoPaterno"),
-                                            jsonObject.optString("correo"),
-                                            jsonObject.optString("telefono")
-                                    );
+                                        Solicitud solicitud = new Solicitud(
+                                                jsonObject.optString("titulo"),
+                                                jsonObject.optString("fechaInicio"),
+                                                jsonObject.optString("nombre"),
+                                                jsonObject.optString("apellidoPaterno"),
+                                                jsonObject.optString("correo"),
+                                                jsonObject.optString("telefono")
+                                        );
 
-                                    arrayListSol.add(solicitud);
+                                        arrayListSol.add(solicitud);
+                                    }
+                                    lista.setAdapter(new ListSolicitudesAdapter(view.getContext(), arrayListSol));
+                                    lista.setVisibility(View.VISIBLE);
+                                    sinLista.setVisibility(View.GONE);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(view.getContext(),
+                                            "Error: JSONException",
+                                            Toast.LENGTH_LONG).show();
                                 }
-                                lista.setAdapter(new ListSolicitudesAdapter(view.getContext(), arrayListSol, "administrador"));
-                                lista.setVisibility(View.VISIBLE);
-                                sinLista.setVisibility(View.GONE);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Toast.makeText(view.getContext(),
-                                        "Error: JSONException",
-                                        Toast.LENGTH_LONG).show();
                             }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-                    lista.setVisibility(View.GONE);
-                    sinLista.setVisibility(View.VISIBLE);
-                }
-            });
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        lista.setVisibility(View.GONE);
+                        sinLista.setVisibility(View.VISIBLE);
+                    }
+                });
 
-            RequestQueue queue = Volley.newRequestQueue(view.getContext());
-            queue.add(request);
+                RequestQueue queue = Volley.newRequestQueue(view.getContext());
+                queue.add(request);
 
-        } else if (tipoDeUsuario.equals("estudiante")) {
-            sinLista.setText(getString(R.string.sin_curso_inscrito));
-            notificacion.setText(getString(R.string.tus_cursos));
-            request = new JsonObjectRequest(Request.Method.GET, MY_COURSES_REQUEST_URL, null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                JSONArray jsonArray = response.getJSONArray("cursos");
-                                arrayListCur = new ArrayList<Curso>();
-                                for (int i=0; i<jsonArray.length(); i++) {
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                break;
+            }
+            case "estudiante": {
+                sinLista.setText(getString(R.string.sin_curso_inscrito));
+                notificacion.setText(getString(R.string.tus_cursos));
+                request = new JsonObjectRequest(Request.Method.GET, MY_COURSES_REQUEST_URL, null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    JSONArray jsonArray = response.getJSONArray("cursos");
+                                    arrayListCur = new ArrayList<>();
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                                    Curso curso = new Curso(
-                                            jsonObject.optString("titulo"),
-                                            Integer.parseInt(jsonObject.optString("numImagen")),
-                                            jsonObject.optString("descBreve"),
-                                            jsonObject.optString("descGeneral"),
-                                            jsonObject.optString("fechaInicio"),
-                                            Integer.parseInt(jsonObject.optString("totalEstudiantes")),
-                                            Integer.parseInt(jsonObject.optString("limiteEstudiantes")),
-                                            jsonObject.optString("estado")
-                                    );
-                                    arrayListCur.add(curso);
+                                        Curso curso = new Curso(
+                                                jsonObject.optString("titulo"),
+                                                Integer.parseInt(jsonObject.optString("numImagen")),
+                                                jsonObject.optString("descBreve"),
+                                                jsonObject.optString("descGeneral"),
+                                                jsonObject.optString("fechaInicio"),
+                                                Integer.parseInt(jsonObject.optString("totalEstudiantes")),
+                                                Integer.parseInt(jsonObject.optString("limiteEstudiantes")),
+                                                jsonObject.optString("estado")
+                                        );
+                                        arrayListCur.add(curso);
+                                    }
+                                    lista.setAdapter(new ListCoursesAdapter(view.getContext(), arrayListCur, "estudiante", true));
+                                    lista.setVisibility(View.VISIBLE);
+                                    sinLista.setVisibility(View.GONE);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(view.getContext(),
+                                            "Error: JSONException",
+                                            Toast.LENGTH_LONG).show();
                                 }
-                                lista.setAdapter(new ListCoursesAdapter(view.getContext(), arrayListCur,"estudiante", true));
-                                lista.setVisibility(View.VISIBLE);
-                                sinLista.setVisibility(View.GONE);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Toast.makeText(view.getContext(),
-                                        "Error: JSONException",
-                                        Toast.LENGTH_LONG).show();
                             }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-                    lista.setVisibility(View.GONE);
-                    sinLista.setVisibility(View.VISIBLE);
-                }
-            });
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        lista.setVisibility(View.GONE);
+                        sinLista.setVisibility(View.VISIBLE);
+                    }
+                });
 
-            RequestQueue queue = Volley.newRequestQueue(view.getContext());
-            queue.add(request);
-        } else {
-            notificacion.setText(getString(R.string.notificaciones));
-            sinLista.setText(getString(R.string.error_tipo_de_usuario));
+                RequestQueue queue = Volley.newRequestQueue(view.getContext());
+                queue.add(request);
+                break;
+            }
+            default:
+                notificacion.setText(getString(R.string.notificaciones));
+                sinLista.setText(getString(R.string.error_tipo_de_usuario));
 
-            lista.setVisibility(View.GONE);
-            sinLista.setVisibility(View.VISIBLE);
+                lista.setVisibility(View.GONE);
+                sinLista.setVisibility(View.VISIBLE);
+                break;
         }
 
         return view;

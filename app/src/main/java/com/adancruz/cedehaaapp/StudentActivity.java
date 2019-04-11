@@ -65,21 +65,7 @@ public class StudentActivity extends AppCompatActivity {
                 fragment).commit();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        verifyPreferences();
-    }
-
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
-
-    private void verifyPreferences() {
-        finish();
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
-        if (!prefs.getBoolean("sesion", false)) {
-            startActivity(new Intent(StudentActivity.this, LoginActivity.class));
-        }
-    }
 
     public void cargarBundle(Fragment selectedFragment) {
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);

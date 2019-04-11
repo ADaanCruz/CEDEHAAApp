@@ -2,7 +2,6 @@ package com.adancruz.cedehaaapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,13 +12,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -35,9 +32,8 @@ public class StHomeFragment extends Fragment {
     TextView bienvenida, sinCursos;
     ListView cursos;
     Button nuevoCurso;
-    ArrayList<Curso> arrayList = new ArrayList<Curso>();
+    ArrayList<Curso> arrayList = new ArrayList<>();
     Intent intent;
-    Bundle bundle = new Bundle();
     String tipoDeUsuario = "";
 
     @Nullable
@@ -45,10 +41,10 @@ public class StHomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_st_home, container, false);
 
-        bienvenida = (TextView) view.findViewById(R.id.texto_st_bienvenida);
-        nuevoCurso = (Button) view.findViewById(R.id.boton_crear_curso);
-        sinCursos = (TextView) view.findViewById(R.id.texto_sin_cursos);
-        cursos = (ListView) view.findViewById(R.id.lista_st_cursos);
+        bienvenida = view.findViewById(R.id.texto_st_bienvenida);
+        nuevoCurso = view.findViewById(R.id.boton_crear_curso);
+        sinCursos = view.findViewById(R.id.texto_sin_cursos);
+        cursos = view.findViewById(R.id.lista_st_cursos);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, COURSE_REQUEST_URL, null,
                 new Response.Listener<JSONObject>() {
@@ -57,7 +53,7 @@ public class StHomeFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray jsonArray = response.getJSONArray("cursos");
-                            arrayList = new ArrayList<Curso>();
+                            arrayList = new ArrayList<>();
                             for (int i=0; i<jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 

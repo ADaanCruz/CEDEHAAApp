@@ -13,8 +13,8 @@ public class Curso implements Serializable {
     private int limiteEstudiantes;
     private String estado;
 
-    public Curso(String titulo, int numImagen, String descripcionBreve, String descripcionGeneral,
-                 String fechaInicio, int totalEstudiantes, int limiteEstudiantes, String estado) {
+    Curso(String titulo, int numImagen, String descripcionBreve, String descripcionGeneral,
+          String fechaInicio, int totalEstudiantes, int limiteEstudiantes, String estado) {
         this.titulo = titulo;
         this.numImagen = numImagen;
         this.descripcionBreve = descripcionBreve;
@@ -51,7 +51,7 @@ public class Curso implements Serializable {
         }
     }
 
-    public String formato(String fechaInicio){
+    private String formato(String fechaInicio){
         char[] fecha = fechaInicio.toCharArray();
         fechaInicio = "";
         for (int i = 8; i <= 9; i++) {
@@ -70,7 +70,7 @@ public class Curso implements Serializable {
         return fechaInicio;
     }
 
-    public String sacarMes(String mes) {
+    private String sacarMes(String mes) {
         switch (mes) {
             case "01": mes = "Enero"; break;
             case "02": mes = "Febrero"; break;

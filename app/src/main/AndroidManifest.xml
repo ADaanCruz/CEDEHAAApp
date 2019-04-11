@@ -15,12 +15,14 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".StudentActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".StartActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme">
+            android:theme="@style/FullscreenTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,11 +31,20 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name" />
-        <activity android:name=".StudentRegisterActivity" />
-        <activity android:name=".YourCoursesDetailsActivity" />
-        <activity android:name=".CreateCourseActivity" />
-        <activity android:name=".MessagesActivity"></activity>
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".StudentRegisterActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".YourCoursesDetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".CreateCourseActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".MessagesActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

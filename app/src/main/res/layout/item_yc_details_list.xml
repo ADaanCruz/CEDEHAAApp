@@ -60,11 +60,11 @@
             android:textColor="@color/colorAccent"/>
 
         <Button
-            android:id="@+id/boton_ver_mensajes_admin"
+            android:id="@+id/boton_ver_alumnos_admin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="@string/ver_mensajes"
+            android:text="@string/ver_alumnos"
             android:background="@drawable/boton_secundario"
             android:textColor="#FFFFFF"
             android:visibility="gone"/>
@@ -73,7 +73,7 @@
             android:id="@+id/boton_detalle_de_curso"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:text="@string/button"
             android:background="@drawable/boton_secundario"
             android:textColor="#FFFFFF"/>

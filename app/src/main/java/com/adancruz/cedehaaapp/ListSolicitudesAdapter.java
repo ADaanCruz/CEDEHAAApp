@@ -23,16 +23,12 @@ import java.util.ArrayList;
 public class ListSolicitudesAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    private Context context;
     private ArrayList<Solicitud> listItems;
-    private String tipoDeUsuario;
     private Response.Listener<String> stringListener;
 
-    public ListSolicitudesAdapter(Context context, ArrayList<Solicitud> listItems, String tipoDeUsuario) {
-        this.context = context;
+    public ListSolicitudesAdapter(Context context, ArrayList<Solicitud> listItems) {
         this.listItems = listItems;
-        this.tipoDeUsuario = tipoDeUsuario;
-        inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -40,15 +36,15 @@ public class ListSolicitudesAdapter extends BaseAdapter {
         final View view = inflater.inflate(R.layout.item_solicitud_list, null);
         final Solicitud solicitud = (Solicitud) getItem(position);
 
-        TextView titulo = (TextView) view.findViewById(R.id.texto_curso_solicita);
-        TextView fecha = (TextView) view.findViewById(R.id.texto_fecha_curso_solicita);
-        TextView nombre = (TextView) view.findViewById(R.id.texto_nombre_solicita);
-        TextView apellidoPaterno = (TextView) view.findViewById(R.id.texto_apellido_pat_solicita);
-        TextView correo = (TextView) view.findViewById(R.id.texto_correo_solicita);
-        TextView telefono = (TextView) view.findViewById(R.id.texto_telefono_solicita);
-        Button llamar = (Button) view.findViewById(R.id.boton_llamar_solicitud);
-        Button aceptar = (Button) view.findViewById(R.id.boton_aceptar_solicitud);
-        Button rechazar = (Button) view.findViewById(R.id.boton_rechazar_solicitud) ;
+        TextView titulo = view.findViewById(R.id.texto_curso_solicita);
+        TextView fecha = view.findViewById(R.id.texto_fecha_curso_solicita);
+        TextView nombre = view.findViewById(R.id.texto_nombre_solicita);
+        TextView apellidoPaterno = view.findViewById(R.id.texto_apellido_pat_solicita);
+        TextView correo = view.findViewById(R.id.texto_correo_solicita);
+        TextView telefono = view.findViewById(R.id.texto_telefono_solicita);
+        Button llamar = view.findViewById(R.id.boton_llamar_solicitud);
+        Button aceptar = view.findViewById(R.id.boton_aceptar_solicitud);
+        Button rechazar = view.findViewById(R.id.boton_rechazar_solicitud) ;
 
         final String cursoTitulo = solicitud.getTitulo();
         final String cursoFecha = solicitud.getFechaInicio(true);
@@ -64,8 +60,6 @@ public class ListSolicitudesAdapter extends BaseAdapter {
         correo.setText(usuarioCorreo);
         telefono.setText(usuarioTelefono);
 
-        view.refreshDrawableState();
-
         final Button[] botones = new Button[3];
         botones[0] = llamar;
         botones[1] = aceptar;
@@ -74,14 +68,17 @@ public class ListSolicitudesAdapter extends BaseAdapter {
         llamar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                botonesEnable(botones, false);
                 Toast.makeText(view.getContext(),
                         "Llamando...",
                         Toast.LENGTH_LONG).show();
+                botonesEnable(botones, true);
             }
         });
         aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                botonesEnable(botones, false);
                 stringListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -124,12 +121,14 @@ public class ListSolicitudesAdapter extends BaseAdapter {
                                     Toast.makeText(view.getContext(),
                                             "Algo salió mal", Toast.LENGTH_LONG).show();
                                 }
+                                botonesEnable(botones, true);
                             }
                         } catch (JSONException e) {
                             Toast.makeText(view.getContext(),
                                     "ERROR: "+e.getMessage(),
                                     Toast.LENGTH_LONG).show();
                             e.printStackTrace();
+                            botonesEnable(botones, true);
                         }
                     }
                 };
@@ -148,6 +147,7 @@ public class ListSolicitudesAdapter extends BaseAdapter {
         rechazar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                botonesEnable(botones, false);
                 stringListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -181,12 +181,14 @@ public class ListSolicitudesAdapter extends BaseAdapter {
                                     Toast.makeText(view.getContext(),
                                             "Algo salió mal", Toast.LENGTH_LONG).show();
                                 }
+                                botonesEnable(botones, true);
                             }
                         } catch (JSONException e) {
                             Toast.makeText(view.getContext(),
                                     "ERROR: "+e.getMessage(),
                                     Toast.LENGTH_LONG).show();
                             e.printStackTrace();
+                            botonesEnable(botones, true);
                         }
 
                     }
@@ -222,14 +224,20 @@ public class ListSolicitudesAdapter extends BaseAdapter {
         return 0;
     }
 
+    private void botonesEnable(Button[] botones, boolean enable) {
+        for (Button boton : botones) {
+            boton.setEnabled(enable);
+        }
+    }
+
     private void botonesVisible (Button[] botones, boolean visible) {
         if (visible) {
-            for (int i = 0; i < botones.length; i++) {
-                botones[i].setVisibility(View.VISIBLE);
+            for (Button boton : botones) {
+                boton.setVisibility(View.VISIBLE);
             }
         } else {
-            for (int i = 0; i < botones.length; i++) {
-                botones[i].setVisibility(View.GONE);
+            for (Button boton : botones) {
+                boton.setVisibility(View.GONE);
             }
         }
     }

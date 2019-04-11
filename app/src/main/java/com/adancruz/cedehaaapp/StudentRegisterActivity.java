@@ -29,16 +29,17 @@ public class StudentRegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_register);
 
-        nombre = (EditText) findViewById(R.id.nombre);
-        apellidoPaterno = (EditText) findViewById(R.id.apellidoPaterno);
-        apellidoMaterno = (EditText) findViewById(R.id.apellidoMaterno);
-        correo = (EditText) findViewById(R.id.correo_reg);
-        contrasena = (EditText) findViewById(R.id.contrasena_reg);
-        conf_contrasena = (EditText) findViewById(R.id.conf_contrasena_reg);
-        numero = (EditText) findViewById(R.id.numero_telefonico);
-        prefijo = (EditText) findViewById(R.id.prefijo_telefonico);
+        nombre = findViewById(R.id.nombre);
+        apellidoPaterno = findViewById(R.id.apellidoPaterno);
+        apellidoMaterno = findViewById(R.id.apellidoMaterno);
+        correo = findViewById(R.id.correo_reg);
+        contrasena = findViewById(R.id.contrasena_reg);
+        conf_contrasena = findViewById(R.id.conf_contrasena_reg);
+        numero = findViewById(R.id.numero_telefonico);
+        prefijo = findViewById(R.id.prefijo_telefonico);
+        boton_aceptarRegistro = findViewById(R.id.boton_aceptar_registro);
+        texto_leerTerminosYCondiciones = findViewById(R.id.terminos_y_condiciones);
 
-        boton_aceptarRegistro = (Button) findViewById(R.id.boton_aceptar_registro);
         boton_aceptarRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,7 +139,6 @@ public class StudentRegisterActivity extends AppCompatActivity {
             }
         });
 
-        texto_leerTerminosYCondiciones = (TextView) findViewById(R.id.terminos_y_condiciones);
         texto_leerTerminosYCondiciones.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,12 +150,10 @@ public class StudentRegisterActivity extends AppCompatActivity {
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Reemplaza esto con tu propia lógica
         return password.length() > 4;
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Reemplaza esto con tu propia lógica
         return email.contains("@");
     }
 
@@ -178,10 +176,10 @@ public class StudentRegisterActivity extends AppCompatActivity {
 
     private boolean isEmpty(TextView[] campos) {
         boolean cancel = false;
-        for (int i = 0; i < campos.length; i++) {
-            if ( TextUtils.isEmpty(campos[i].getText().toString()) ) {
-                campos[i].setError(getString(R.string.error_campo_requerido));
-                focusView = campos[i];
+        for (TextView campo : campos) {
+            if (TextUtils.isEmpty(campo.getText().toString())) {
+                campo.setError(getString(R.string.error_campo_requerido));
+                focusView = campo;
                 cancel = true;
             }
         }
@@ -202,13 +200,11 @@ public class StudentRegisterActivity extends AppCompatActivity {
 
     private boolean containComilla(TextView[] campos){
         boolean cancel = false;
-        for (int i = 0; i < campos.length; i++) {
-            if (i != 5) {
-                if (campos[i].getText().toString().contains("'")) {
-                    campos[i].setError(getString(R.string.comilla_simple));
-                    focusView = campos[i];
-                    cancel = true;
-                }
+        for (TextView campo : campos) {
+            if (campo.getText().toString().contains("'")) {
+                campo.setError(getString(R.string.comilla_simple));
+                focusView = campo;
+                cancel = true;
             }
         }
         return cancel;

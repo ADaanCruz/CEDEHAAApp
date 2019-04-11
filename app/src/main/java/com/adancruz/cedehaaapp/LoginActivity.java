@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,38 +15,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 /**
  * Una pantalla de inicio de sesión que ofrece inicio de sesión por correo electrónico / contraseña.
  */
 public class LoginActivity extends AppCompatActivity {
 
-    //public static final String APPLICATION_ID = "1B74BEF9-EABA-5307-FF35-B6F26136E600";
-    //public static final String API_KEY = "71714F01-50CA-AE13-FF9E-C0CB3671B600";
-    //public static final String SERVER_URL = "https://api.backendless.com";
-
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
-
-    /**
-     * Un almacén de autenticación ficticio que contiene nombres de usuario y contraseñas conocidos
-     * TODO: Eliminar después de conectarse a un sistema de autenticación real.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Realiza un seguimiento de la tarea de inicio de sesión para garantizar que podamos cancelarla si así lo solicita.
-     */
-    private UserLoginTask mAuthTask = null;
 
     // Referencias de la interfaz de usuario.
     private EditText mEmailView;
@@ -59,23 +40,27 @@ public class LoginActivity extends AppCompatActivity {
     Button boton_registrarse;
     Button boton_iniciarSesion;
 
+    View focusView = null;
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mEmailView = (EditText) findViewById(R.id.email);
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mEmailView = findViewById(R.id.email);
+        mPasswordView = findViewById(R.id.password);
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         mLoginView = findViewById(R.id.vista_login);
-        sesionAbierta = (Switch) findViewById(R.id.switch_sesion_abierta);
+        sesionAbierta = findViewById(R.id.switch_sesion_abierta);
+
+        boton_registrarse = findViewById(R.id.boton_registrarse);
+        boton_iniciarSesion = findViewById(R.id.boton_iniciar_sesion);
 
         Drawable drawable = getResources().getDrawable(R.drawable.fondo2_2);
         mLoginView.setBackground(drawable);
 
-        boton_registrarse = (Button) findViewById(R.id.boton_registrarse);
         boton_registrarse.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,11 +69,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        boton_iniciarSesion = (Button) findViewById(R.id.boton_iniciar_sesion);
         boton_iniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boton_iniciarSesion.setEnabled(false);
+                showProgress(true);
                 attemptLogin();
+                boton_iniciarSesion.setEnabled(true);
             }
         });
     }
@@ -100,55 +87,47 @@ public class LoginActivity extends AppCompatActivity {
      */
 
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Restablecer errores.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
-        // Almacenar valores en el momento del intento de inicio de sesión.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
         boolean cancel = false;
-        View focusView = null;
+        // Almacenar valores en el momento del intento de inicio de sesión.
+        TextView[] campos = new TextView[2];
+        campos[0] = mEmailView;
+        campos[1] = mPasswordView;
 
         // Comprueba si hay una dirección de correo electrónico válida.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_campo_requerido));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_correo_invalido));
-            focusView = mEmailView;
-            cancel = true;
-        } else
-        // Comprueba si hay una contraseña válida.
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_campo_requerido));
-            focusView = mPasswordView;
-            cancel = true;
-        } else if (!isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_contrasena_invalida));
-            focusView = mPasswordView;
-            cancel = true;
-        } else {
-            showProgress(true);
-        }
-
-        if (cancel) {
-            // Hubo un error; no intenta iniciar sesión y enfoca el
-            // primer campo de formulario con un error.
+        if (isEmpty(campos) || containSpace(campos) || containComilla(campos)) {
             focusView.requestFocus();
+            showProgress(false);
         } else {
-            // Muestra un marcador de progreso y comienza una tarea en segundo plano
-            // para realizar el intento de inicio de sesión del usuario.
             String correo = mEmailView.getText().toString();
             String contrasena = mPasswordView.getText().toString();
 
-            loginWithBD(correo, contrasena);
+            if (!isEmailValid(correo)) {
+                mEmailView.setError(getString(R.string.error_correo_invalido));
+                focusView = mEmailView;
+                focusView.requestFocus();
+                cancel = true;
+            }
+            // Comprueba si hay una contraseña válida.
+            if (!isPasswordValid(contrasena)) {
+                mPasswordView.setError(getString(R.string.error_contrasena_invalida));
+                focusView = mPasswordView;
+                focusView.requestFocus();
+                cancel = true;
+            }
+
+            if (cancel) {
+                // Hubo un error y enfoca el campo con un error.
+                focusView.requestFocus();
+            } else {
+                // Muestra un marcador de progreso y comienza una tarea en segundo plano
+                // para realizar el intento de inicio de sesión del usuario.
+                loginWithBD(correo, contrasena);
+            }
+            showProgress(false);
         }
     }
 
@@ -177,7 +156,6 @@ public class LoginActivity extends AppCompatActivity {
                                         contrasena, tipoDeUsuario, telefono, infoBasica);
 
                         finish();
-                        showProgress(false);
                         startActivity(new Intent(LoginActivity.this, StudentActivity.class));
                     } else {
                         String error = jsonObject.getString("message");
@@ -196,17 +174,15 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(LoginActivity.this,
-                                    "Acceso fallido, verifica los campos",
+                                    "Algo salió mal",
                                     Toast.LENGTH_LONG).show();
                         }
-                        showProgress(false);
                     }
                 } catch (JSONException e) {
                     Toast.makeText(LoginActivity.this,
                             "ERROR: "+e.getMessage(),
                             Toast.LENGTH_LONG).show();
                     e.printStackTrace();
-                    showProgress(false);
                 }
             }
         };
@@ -242,14 +218,49 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Reemplaza esto con tu propia lógica
         return email.contains("@");
         //return true;
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Reemplaza esto con tu propia lógica
         return password.length() > 4;
+    }
+
+    private boolean isEmpty(TextView[] campos) {
+        boolean cancel = false;
+        for (TextView campo : campos) {
+            if (TextUtils.isEmpty(campo.getText().toString())) {
+                campo.setError(getString(R.string.error_campo_requerido));
+                focusView = campo;
+                cancel = true;
+            }
+        }
+        return cancel;
+    }
+
+    private boolean containSpace(TextView[] campos) {
+        boolean cancel = false;
+        for (TextView campo : campos) {
+            String vacio = campo.getText().toString();
+            if (vacio.replace(" ", "").isEmpty()) {
+                campo.setError(getString(R.string.espacios));
+                focusView = campo;
+                cancel = true;
+            }
+        }
+        return cancel;
+    }
+
+    private boolean containComilla(TextView[] campos){
+        boolean cancel = false;
+        for (TextView campo : campos) {
+            if (campo.getText().toString().contains("'")) {
+                campo.setError(getString(R.string.comilla_simple));
+                focusView = campo;
+                cancel = true;
+            }
+        }
+        return cancel;
     }
 
     /**
@@ -268,66 +279,6 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             mLoginFormView.setVisibility(View.VISIBLE);
             mProgressView.setVisibility(View.GONE);
-        }
-    }
-
-
-    /**
-     * Representa una tarea de inicio de sesión / registro asíncrono
-     * utilizada para autenticar al usuario.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: Intento de autenticación contra un servicio de red.
-
-            try {
-                // Simular el acceso a la red.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // La cuenta existe, devuelve verdadero si la contraseña coincide.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: Registre la nueva cuenta aquí.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                //Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
-                //finish();
-                //startActivity(intent);
-            } else {
-                mPasswordView.setError(getString(R.string.error_contrasena_incorrecta));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
         }
     }
 }

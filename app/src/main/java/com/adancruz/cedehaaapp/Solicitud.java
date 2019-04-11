@@ -11,7 +11,7 @@ public class Solicitud implements Serializable {
     private String correo;
     private String telefono;
 
-    public Solicitud(String titulo, String fechaInicio, String nombre, String apellidoPaterno, String correo, String telefono) {
+    Solicitud(String titulo, String fechaInicio, String nombre, String apellidoPaterno, String correo, String telefono) {
         this.titulo = titulo;
         this.fechaInicio = fechaInicio;
         this.nombre = nombre;
@@ -28,7 +28,7 @@ public class Solicitud implements Serializable {
         this.titulo = curso;
     }
 
-    public String getFechaInicio(boolean formato) {
+    String getFechaInicio(boolean formato) {
         if (formato) {
             return formato(fechaInicio);
         } else {
@@ -36,7 +36,7 @@ public class Solicitud implements Serializable {
         }
     }
 
-    public String formato(String fechaInicio){
+    private String formato(String fechaInicio){
         char[] fecha = fechaInicio.toCharArray();
         fechaInicio = "";
         for (int i = 8; i <= 9; i++) {
@@ -55,7 +55,7 @@ public class Solicitud implements Serializable {
         return fechaInicio;
     }
 
-    public String sacarMes(String mes) {
+    private String sacarMes(String mes) {
         switch (mes) {
             case "01": mes = "Enero"; break;
             case "02": mes = "Febrero"; break;

@@ -106,4 +106,7 @@
     <string name="prefijo">Prefijo (722)</string>
     <string name="prefijo_invalido">El prefijo es inválido</string>
     <string name="espacios">No puede contener espacios.</string>
+    <string name="numero_invalido">Número inválido</string>
+    <string name="ver_alumnos">Ver alumnos</string>
+    <string name="no_vacio">No puede estar vacío</string>
 </resources>
