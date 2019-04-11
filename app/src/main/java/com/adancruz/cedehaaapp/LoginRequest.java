@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class LoginRequest extends StringRequest {
 
-  private static final String LOGIN_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/login.php";
+  private static final String LOGIN_REQUEST_URL = "http://projects-as-a-developer.online/login.php";
   private Map<String, String> params;
 
   public LoginRequest (String correo, String contrasena, Response.Listener<String> listener) {

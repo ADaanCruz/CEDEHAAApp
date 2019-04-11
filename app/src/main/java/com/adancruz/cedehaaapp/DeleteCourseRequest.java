@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class DeleteCourseRequest extends StringRequest {
 
-    private static final String DELETE_COURSE_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/delete-course.php";
+    private static final String DELETE_COURSE_REQUEST_URL = "http://projects-as-a-developer.online/delete-course.php";
     private Map<String, String> params;
 
     public DeleteCourseRequest(String titulo, String fechaInicio,

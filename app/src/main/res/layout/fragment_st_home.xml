@@ -5,48 +5,49 @@
     android:orientation="vertical"
     android:paddingLeft="20dp"
     android:paddingTop="20dp"
-    android:paddingRight="20dp">
+    android:paddingRight="20dp"
+    android:background="@color/colorBackgroundGris">
 
     <TextView
         android:id="@+id/texto_st_bienvenida"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:text="@string/bienvenido"
+        android:textColor="@color/colorPrimary"
         android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/colorPrimary" />
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/boton_crear_curso"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/crear_curso_nuevo"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/boton_secundario"
+        android:text="@string/crear_curso_nuevo"
         android:textColor="#ffffff"
-        android:textSize="16sp"
-        android:layout_marginBottom="10dp"/>
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/texto_st_los_cursos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/cursos"
+        android:textColor="#000"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#000"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/texto_sin_cursos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/sin_cursos"/>
+        android:text="@string/sin_cursos" />
 
     <ListView
         android:id="@+id/lista_st_cursos"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -27,8 +27,8 @@ import java.util.ArrayList;
 
 public class StNotificationsFragment extends Fragment {
 
-    private static String MY_COURSES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/my-courses.php?correo=ninguno";
-    private static String COURSE_SOLICIT_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/all-solicitudes.php";
+    private static String MY_COURSES_REQUEST_URL = "http://projects-as-a-developer.online/my-courses.php?correo=ninguno";
+    private static String COURSE_SOLICIT_REQUEST_URL = "http://projects-as-a-developer.online/all-solicitudes.php";
 
     ArrayList<Curso> arrayListCur;
     ArrayList<Solicitud> arrayListSol;
@@ -50,7 +50,7 @@ public class StNotificationsFragment extends Fragment {
         if (getArguments() != null) {
             String correo = getArguments().getString("correo");
             tipoDeUsuario = getArguments().getString("tipoDeUsuario");
-            MY_COURSES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/my-courses.php?correo=" + correo;
+            MY_COURSES_REQUEST_URL = "http://projects-as-a-developer.online/my-courses.php?correo=" + correo;
         }
 
         JsonObjectRequest request;

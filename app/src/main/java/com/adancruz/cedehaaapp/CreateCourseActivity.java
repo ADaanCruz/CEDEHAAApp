@@ -149,7 +149,7 @@ public class CreateCourseActivity extends AppCompatActivity {
                     }
                 }
             };
-            url = "https://cedehaa-app.000webhostapp.com/edit-course.php";
+            url = "http://projects-as-a-developer.online/edit-course.php";
         } else {
             cambios.setVisibility(View.VISIBLE);
             aceptarCursoNuevo.setText(R.string.aceptar_curso_nuevo);
@@ -189,7 +189,7 @@ public class CreateCourseActivity extends AppCompatActivity {
                     }
                 }
             };
-            url = "https://cedehaa-app.000webhostapp.com/new-course.php";
+            url = "http://projects-as-a-developer.online/new-course.php";
         }
 
         aceptarCursoNuevo.setOnClickListener(new View.OnClickListener() {

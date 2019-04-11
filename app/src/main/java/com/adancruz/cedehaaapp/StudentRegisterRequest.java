@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class StudentRegisterRequest extends StringRequest {
 
-    private static final String STUDENT_REGISTER_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/student-register.php";
+    private static final String STUDENT_REGISTER_REQUEST_URL = "http://projects-as-a-developer.online/student-register.php";
     private Map<String, String> params;
 
     public StudentRegisterRequest (String nombre, String apellidoPaterno, String apellidoMaterno,

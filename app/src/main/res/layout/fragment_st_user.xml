@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@color/colorBackgroundGris">
 
   <ImageView
       android:id="@+id/imagen_foto_de_perfil"
@@ -15,7 +16,7 @@
       android:layout_marginRight="10dp"
       android:layout_marginTop="10dp"
       android:layout_gravity="center"
-      app:srcCompat="@drawable/placeholder" />
+      app:srcCompat="@drawable/profile_photo" />
 
   <TextView
       android:id="@+id/texto_nombre"

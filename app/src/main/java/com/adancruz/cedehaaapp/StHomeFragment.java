@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class StHomeFragment extends Fragment {
 
-    private static final String COURSE_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/all-courses.php";
+    private static final String COURSE_REQUEST_URL = "http://projects-as-a-developer.online/all-courses.php";
 
     TextView bienvenida, sinCursos;
     ListView cursos;

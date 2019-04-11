@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:paddingLeft="20dp"
     android:paddingTop="20dp"
-    android:paddingRight="20dp">
+    android:paddingRight="20dp"
+    android:background="@color/colorBackgroundGris">
 
     <TextView
         android:id="@+id/texto_notificaciones"

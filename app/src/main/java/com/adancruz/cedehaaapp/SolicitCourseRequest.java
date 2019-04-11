@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SolicitCourseRequest extends StringRequest {
-    private static final String SOLICIT_COURSE_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/solicit-course.php";
+    private static final String SOLICIT_COURSE_REQUEST_URL = "http://projects-as-a-developer.online/solicit-course.php";
     private Map<String, String> params;
 
     public SolicitCourseRequest(String titulo, String fechaInicio, String correo, String verificar,

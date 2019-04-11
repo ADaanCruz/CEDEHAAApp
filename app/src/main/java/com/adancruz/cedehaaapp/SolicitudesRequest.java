@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class SolicitudesRequest extends StringRequest {
 
-    private static final String SOLICITUDES_REQUEST_URL = "https://cedehaa-app.000webhostapp.com/solicitudes.php";
+    private static final String SOLICITUDES_REQUEST_URL = "http://projects-as-a-developer.online/solicitudes.php";
     private Map<String, String> params;
 
     public SolicitudesRequest(  String boton, String titulo, String fecha, String correo,
