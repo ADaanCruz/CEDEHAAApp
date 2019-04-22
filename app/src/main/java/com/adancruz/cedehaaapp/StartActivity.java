@@ -127,6 +127,9 @@ public class StartActivity extends AppCompatActivity {
         NetworkInfo network = con.getActiveNetworkInfo();
 
         if (network != null && network.isConnected()) {
+            MyFirebaseMessagingService myFireBase = new MyFirebaseMessagingService();
+            myFireBase.mandarNotificacion();
+
             btnOmitir.setVisibility(View.VISIBLE);
             btnOmitir.setOnClickListener(new View.OnClickListener() {
                 @Override

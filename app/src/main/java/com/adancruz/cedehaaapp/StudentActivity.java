@@ -1,6 +1,5 @@
 package com.adancruz.cedehaaapp;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -46,12 +45,12 @@ public class StudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
-        navigation = (BottomNavigationView) findViewById(R.id.st_navView);
+        navigation = findViewById(R.id.st_navView);
         MenuItem opcion2 = navigation.getMenu().getItem(1);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
         String tipoDeUsuario = prefs.getString("tipoDeUsuario", "estudiante");
-        if (tipoDeUsuario.equals("administrador")) {
+        if (tipoDeUsuario != null && tipoDeUsuario.equals("administrador")) {
             opcion2.setTitle("Solicitudes");
         } else {
             opcion2.setTitle("Cursos");

@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     Switch sesionAbierta;
     Button boton_registrarse;
     Button boton_iniciarSesion;
+    TextView olvidaste;
 
     View focusView = null;
 
@@ -54,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.login_progress);
         mLoginView = findViewById(R.id.vista_login);
         sesionAbierta = findViewById(R.id.switch_sesion_abierta);
+        olvidaste = findViewById(R.id.olvidaste);
 
         boton_registrarse = findViewById(R.id.boton_registrarse);
         boton_iniciarSesion = findViewById(R.id.boton_iniciar_sesion);
@@ -65,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, StudentRegisterActivity.class);
+                finish();
                 startActivity(intent);
             }
         });
@@ -76,6 +79,13 @@ public class LoginActivity extends AppCompatActivity {
                 showProgress(true);
                 attemptLogin();
                 boton_iniciarSesion.setEnabled(true);
+            }
+        });
+
+        olvidaste.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mandarNotificaciones();
             }
         });
     }
@@ -280,6 +290,52 @@ public class LoginActivity extends AppCompatActivity {
             mLoginFormView.setVisibility(View.VISIBLE);
             mProgressView.setVisibility(View.GONE);
         }
+    }
+
+    private void mandarNotificaciones() {
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean success = jsonObject.getBoolean("success");
+                    if (success) {
+                        Toast.makeText(LoginActivity.this,
+                                "Notificación enviada",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        String error = jsonObject.getString("message");
+                        String post = "post", tokens = "tokens";
+                        if (error.equals(post)) {
+                            Toast.makeText(LoginActivity.this,
+                                    "Error: Type POST",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error.equals(tokens)) {
+                            Toast.makeText(LoginActivity.this,
+                                    "Error con los tokens de los usuarios",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this,
+                                    "Notificación no enviada",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(LoginActivity.this,
+                            "ERROR: "+e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        NotificacionesRequest notificacionesRequest = new NotificacionesRequest(
+                "Usuario en app",
+                "Notificación enviada con éxito",
+                responseListener
+        );
+        RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+        queue.add(notificacionesRequest);
     }
 }
 

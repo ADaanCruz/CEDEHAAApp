@@ -1,5 +1,7 @@
 package com.adancruz.cedehaaapp;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +20,8 @@ import org.json.JSONObject;
 
 public class StudentRegisterActivity extends AppCompatActivity {
 
+    public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
+
     Button boton_aceptarRegistro;
     TextView texto_leerTerminosYCondiciones;
     EditText nombre, apellidoPaterno, apellidoMaterno, correo, contrasena,
@@ -35,8 +39,8 @@ public class StudentRegisterActivity extends AppCompatActivity {
         correo = findViewById(R.id.correo_reg);
         contrasena = findViewById(R.id.contrasena_reg);
         conf_contrasena = findViewById(R.id.conf_contrasena_reg);
-        numero = findViewById(R.id.numero_telefonico);
         prefijo = findViewById(R.id.prefijo_telefonico);
+        numero = findViewById(R.id.numero_telefonico);
         boton_aceptarRegistro = findViewById(R.id.boton_aceptar_registro);
         texto_leerTerminosYCondiciones = findViewById(R.id.terminos_y_condiciones);
 
@@ -95,7 +99,15 @@ public class StudentRegisterActivity extends AppCompatActivity {
                                 if (success) {
                                     Toast.makeText(StudentRegisterActivity.this,
                                             "¡Registro realizado!", Toast.LENGTH_LONG).show();
+                                    guardarInfoBasica(nombre.getText().toString(),
+                                            apellidoPaterno.getText().toString(),
+                                            apellidoMaterno.getText().toString(),
+                                            correo.getText().toString(),
+                                            contrasena.getText().toString(),
+                                            (prefijo.getText().toString() + numero.getText().toString()) );
                                     finish();
+                                    startActivity(new Intent(StudentRegisterActivity.this, StudentActivity.class));
+
                                 } else {
                                     String error = jsonObject.getString("message");
                                     String existing = "existing", post = "post";
@@ -130,6 +142,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
                             telefono,
                             "estudiante",
                             "",
+                            MyFirebaseMessagingService.token,
                             responseListener
                     );
                     RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);
@@ -147,6 +160,30 @@ public class StudentRegisterActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void guardarInfoBasica(String nombre, String apellidoPaterno, String apellidoMaterno,
+                                   String correo, String contrasena,
+                                   String telefono) {
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
+
+        editor.putString("nombre", nombre);
+        editor.putString("apellidoPaterno", apellidoPaterno);
+        editor.putString("apellidoMaterno", apellidoMaterno);
+        editor.putString("correo", correo);
+        editor.putString("contrasena", contrasena);
+        editor.putString("telefono", telefono);
+        editor.putString("tipoDeUsuario", "estudiante");
+        editor.putBoolean("infoBasica", true);
+        editor.putBoolean("sesion", true);
+
+        editor.apply();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(StudentRegisterActivity.this, LoginActivity.class));
     }
 
     private boolean isPasswordValid(String password) {

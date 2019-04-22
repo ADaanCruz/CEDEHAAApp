@@ -14,7 +14,7 @@ public class StudentRegisterRequest extends StringRequest {
 
     public StudentRegisterRequest (String nombre, String apellidoPaterno, String apellidoMaterno,
                                    String correo, String contrasena, String telefono, String tipoDeUsuario,
-                                   String fotoDePerfil, Response.Listener<String> listener) {
+                                   String fotoDePerfil, String token, Response.Listener<String> listener) {
 
         super(Request.Method.POST, STUDENT_REGISTER_REQUEST_URL, listener, null);
         params = new HashMap<>();
@@ -23,10 +23,10 @@ public class StudentRegisterRequest extends StringRequest {
         params.put("apellidoMaterno", apellidoMaterno);
         params.put("correo", correo);
         params.put("contrasena", contrasena);
-        params.put("numero", telefono);
+        params.put("telefono", telefono);
         params.put("tipoDeUsuario", tipoDeUsuario);
         params.put("fotoDePerfil", fotoDePerfil);
-
+        params.put("token", token);
     }
 
     @Override

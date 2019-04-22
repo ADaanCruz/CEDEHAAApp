@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "854994759798",
+    "firebase_url": "https://cedehaa.firebaseio.com",
+    "project_id": "cedehaa",
+    "storage_bucket": "cedehaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854994759798:android:c24fa47826b66f91",
+        "android_client_info": {
+          "package_name": "com.adancruz.cedehaaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854994759798-qvr5jurfuab8b4fobao5mu2fk6ejjcu6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuFAFgsfhZSsmcET2NGFfIQ9Eu2n5ilgo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "854994759798-qvr5jurfuab8b4fobao5mu2fk6ejjcu6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "854994759798-ov0cl0dfl6opgj82mb2e45r21nbd0vot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.adancruz.cedehaaapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
