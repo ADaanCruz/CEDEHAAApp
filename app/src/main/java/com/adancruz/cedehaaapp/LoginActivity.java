@@ -330,12 +330,13 @@ public class LoginActivity extends AppCompatActivity {
         };
 
         NotificacionesRequest notificacionesRequest = new NotificacionesRequest(
-                "Usuario en app",
-                "Notificación enviada con éxito",
+                "Cursos nuevos",
+                "Una nueva oportunidad para ti.",
                 responseListener
         );
         RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
         queue.add(notificacionesRequest);
     }
+
 }
 

@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import static android.support.v4.app.NotificationCompat.CATEGORY_RECOMMENDATION;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -61,11 +63,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "0")
-                .setSmallIcon(R.drawable.cedehaa_logo_1)
+                .setSmallIcon(R.drawable.ic_stat_cedehaa)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
+                .setPriority(1)
                 .setSound(soundUri)
+                .setGroup("CURSO_NUEVO")
+                .setGroupSummary(true)
+                .setCategory(CATEGORY_RECOMMENDATION)
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

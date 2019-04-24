@@ -197,7 +197,7 @@ public class ListSolicitudesAdapter extends BaseAdapter {
                 SolicitudesRequest solicitudesRequest = new SolicitudesRequest(
                         "rechazar",
                         cursoTitulo,
-                        cursoFecha,
+                        solicitud.getFechaInicio(false),
                         usuarioCorreo,
                         stringListener
                 );

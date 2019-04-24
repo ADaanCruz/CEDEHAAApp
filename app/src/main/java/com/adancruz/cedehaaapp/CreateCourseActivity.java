@@ -159,6 +159,7 @@ public class CreateCourseActivity extends AppCompatActivity {
                             Toast.makeText(CreateCourseActivity.this,
                                     "Curso creado correctamente",
                                     Toast.LENGTH_LONG).show();
+                            mandarNotificaciones();
                             finish();
                         } else {
                             String error = jsonObject.getString("message");
@@ -304,5 +305,51 @@ public class CreateCourseActivity extends AppCompatActivity {
         } else {
             return true;
         }
+    }
+
+    private void mandarNotificaciones() {
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean success = jsonObject.getBoolean("success");
+                    if (success) {
+                        Toast.makeText(CreateCourseActivity.this,
+                                "Notificación enviada",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        String error = jsonObject.getString("message");
+                        String post = "post", tokens = "tokens";
+                        if (error.equals(post)) {
+                            Toast.makeText(CreateCourseActivity.this,
+                                    "Error: Type POST",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error.equals(tokens)) {
+                            Toast.makeText(CreateCourseActivity.this,
+                                    "Error con los tokens de los usuarios",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(CreateCourseActivity.this,
+                                    "Notificación no enviada",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(CreateCourseActivity.this,
+                            "ERROR: "+e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        NotificacionesRequest notificacionesRequest = new NotificacionesRequest(
+                "Cursos nuevos",
+                "Una nueva oportunidad para ti.",
+                responseListener
+        );
+        RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);
+        queue.add(notificacionesRequest);
     }
 }
