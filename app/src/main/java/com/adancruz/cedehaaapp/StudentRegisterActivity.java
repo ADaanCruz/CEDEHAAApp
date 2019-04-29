@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,17 +23,26 @@ import org.json.JSONObject;
 public class StudentRegisterActivity extends AppCompatActivity {
 
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
+    private SharedPreferences.Editor editor;
+    private SharedPreferences prefs;
 
-    Button boton_aceptarRegistro;
-    TextView texto_leerTerminosYCondiciones;
-    EditText nombre, apellidoPaterno, apellidoMaterno, correo, contrasena,
-            conf_contrasena, numero, prefijo;
-    View focusView = null;
+    private Button boton_aceptarRegistro;
+    private TextView registro_telefono, texto_leerTerminosYCondiciones;
+    private EditText nombre, apellidoPaterno, apellidoMaterno, correo, contrasena,
+            conf_contrasena, numero, prefijo, codigo_registro;
+    private RadioGroup tipo_registro;
+    private View focusView = null;
+
+    private TextView[] campos;
+    private String tipoDeUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_register);
+
+        tipo_registro = findViewById(R.id.tipo_de_registro);
+        codigo_registro = findViewById(R.id.codigo_registro);
 
         nombre = findViewById(R.id.nombre);
         apellidoPaterno = findViewById(R.id.apellidoPaterno);
@@ -39,28 +50,39 @@ public class StudentRegisterActivity extends AppCompatActivity {
         correo = findViewById(R.id.correo_reg);
         contrasena = findViewById(R.id.contrasena_reg);
         conf_contrasena = findViewById(R.id.conf_contrasena_reg);
+        registro_telefono = findViewById(R.id.registro_telefono);
         prefijo = findViewById(R.id.prefijo_telefonico);
         numero = findViewById(R.id.numero_telefonico);
         boton_aceptarRegistro = findViewById(R.id.boton_aceptar_registro);
         texto_leerTerminosYCondiciones = findViewById(R.id.terminos_y_condiciones);
 
+        tipo_registro.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton radioButton = findViewById(checkedId);
+                vistaRegistro(radioButton.getText().toString());
+            }
+        });
+
         boton_aceptarRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean cancel = false;
-                TextView[] campos = new TextView[8];
-                campos[0] = nombre;
-                campos[1] = apellidoPaterno;
-                campos[2] = apellidoMaterno;
-                campos[3] = correo;
-                campos[4] = contrasena;
-                campos[5] = conf_contrasena;
-                campos[6] = prefijo;
-                campos[7] = numero;
 
-                if (isEmpty(campos) || containComilla(campos) || containSpace(campos)) {
+                tipoDeUsuario = obtenerTipoRegistro();
+                cargarCampos(tipoDeUsuario);
+                if (campos == null) {
+                    Toast.makeText(StudentRegisterActivity.this, "Selecciona un tipo de registro", Toast.LENGTH_LONG).show();
+                } else if (isEmpty(campos) || containComilla(campos) || containSpace(campos)) {
                     focusView.requestFocus();
                 } else {
+                    if (tipoDeUsuario.equals("administrador")) {
+                        if (!codigo_registro.getText().toString().equals("c0n4ra53na")) {
+                            codigo_registro.setError(getString(R.string.incorrecto));
+                            focusView = codigo_registro;
+                            cancel = true;
+                        }
+                    }
                     if (!isEmailValid(correo.getText().toString())) {
                         correo.setError(getString(R.string.error_correo_invalido));
                         focusView = correo;
@@ -75,78 +97,79 @@ public class StudentRegisterActivity extends AppCompatActivity {
                         focusView = conf_contrasena;
                         cancel = true;
                     }
-                    if ( !isPrefixValid(prefijo.getText().toString()) ||
-                            isNotNumberValid(prefijo.getText().toString()) ) {
-                        prefijo.setError(getString(R.string.prefijo_invalido));
-                        focusView = prefijo;
-                        cancel = true;
-                    }
-                    if ( !isPhoneNumberValid(numero.getText().toString()) ||
-                            isNotNumberValid(numero.getText().toString()) ) {
-                        numero.setError(getString(R.string.telefono_invalido));
-                        focusView = numero;
-                        cancel = true;
+                    if (tipoDeUsuario.equals("estudiante")) {
+                        if ( !isPrefixValid(prefijo.getText().toString()) ||
+                                isNotNumberValid(prefijo.getText().toString()) ) {
+                            prefijo.setError(getString(R.string.prefijo_invalido));
+                            focusView = prefijo;
+                            cancel = true;
+                        }
+                        if ( !isPhoneNumberValid(numero.getText().toString()) ||
+                                isNotNumberValid(numero.getText().toString()) ) {
+                            numero.setError(getString(R.string.telefono_invalido));
+                            focusView = numero;
+                            cancel = true;
+                        }
                     }
                     if (cancel) {
                         focusView.requestFocus();
                     } else {
-                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                boolean success = jsonObject.getBoolean("success");
-                                if (success) {
-                                    Toast.makeText(StudentRegisterActivity.this,
-                                            "¡Registro realizado!", Toast.LENGTH_LONG).show();
-                                    guardarInfoBasica(nombre.getText().toString(),
-                                            apellidoPaterno.getText().toString(),
-                                            apellidoMaterno.getText().toString(),
-                                            correo.getText().toString(),
-                                            contrasena.getText().toString(),
-                                            (prefijo.getText().toString() + numero.getText().toString()) );
-                                    finish();
-                                    startActivity(new Intent(StudentRegisterActivity.this, StudentActivity.class));
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    boolean success = jsonObject.getBoolean("success");
+                                    if (success) {
+                                        Toast.makeText(StudentRegisterActivity.this,
+                                                "¡Registro realizado!", Toast.LENGTH_LONG).show();
+                                        guardarInfoBasica(tipoDeUsuario);
+                                        finish();
+                                        startActivity(new Intent(StudentRegisterActivity.this, StudentActivity.class));
 
-                                } else {
-                                    String error = jsonObject.getString("message");
-                                    String existing = "existing", post = "post";
-                                    if (error.equals(existing)) {
-                                        Toast.makeText(StudentRegisterActivity.this,
-                                              "El correo ya está registrado",
-                                              Toast.LENGTH_LONG).show();
-                                    } else if (error.equals(post)) {
-                                        Toast.makeText(StudentRegisterActivity.this,
-                                        "Error: Type POST",
-                                        Toast.LENGTH_LONG).show();
                                     } else {
-                                        Toast.makeText(StudentRegisterActivity.this,
-                                              "Algo salió mal",
-                                              Toast.LENGTH_LONG).show();
+                                        String error = jsonObject.getString("message");
+                                        String existing = "existing", post = "post";
+                                        if (error.equals(existing)) {
+                                            Toast.makeText(StudentRegisterActivity.this,
+                                                  "El correo ya está registrado",
+                                                  Toast.LENGTH_LONG).show();
+                                        } else if (error.equals(post)) {
+                                            Toast.makeText(StudentRegisterActivity.this,
+                                            "Error: Type POST",
+                                            Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(StudentRegisterActivity.this,
+                                                  "Algo salió mal",
+                                                  Toast.LENGTH_LONG).show();
+                                        }
                                     }
+                                } catch (JSONException e) {
+                                    Toast.makeText(StudentRegisterActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
                                 }
-                            } catch (JSONException e) {
-                                Toast.makeText(StudentRegisterActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                e.printStackTrace();
                             }
-                        }
-                    };
+                        };
 
-                    String telefono = prefijo.getText().toString() + numero.getText().toString();
-                    StudentRegisterRequest registerRequest = new StudentRegisterRequest(
-                            nombre.getText().toString(),
-                            apellidoPaterno.getText().toString(),
-                            apellidoMaterno.getText().toString(),
-                            correo.getText().toString(),
-                            contrasena.getText().toString(),
-                            telefono,
-                            "estudiante",
-                            "",
-                            MyFirebaseMessagingService.token,
-                            responseListener
-                    );
-                    RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);
-                    queue.add(registerRequest);
+                        String telefono = "";
+                        if (tipoDeUsuario.equals("estudiante")) {
+                            telefono = prefijo.getText().toString() + numero.getText().toString();
+                        }
+                        prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+                        StudentRegisterRequest registerRequest = new StudentRegisterRequest(
+                                nombre.getText().toString(),
+                                apellidoPaterno.getText().toString(),
+                                apellidoMaterno.getText().toString(),
+                                correo.getText().toString(),
+                                contrasena.getText().toString(),
+                                telefono,
+                                tipoDeUsuario,
+                                "",
+                                prefs.getString("token","nothing"),
+                                responseListener
+                        );
+                        RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);
+                        queue.add(registerRequest);
                     }
                 }
             }
@@ -162,18 +185,19 @@ public class StudentRegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void guardarInfoBasica(String nombre, String apellidoPaterno, String apellidoMaterno,
-                                   String correo, String contrasena,
-                                   String telefono) {
-        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
+    private void guardarInfoBasica(String tipoDeUsuario) {
+        editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
 
-        editor.putString("nombre", nombre);
-        editor.putString("apellidoPaterno", apellidoPaterno);
-        editor.putString("apellidoMaterno", apellidoMaterno);
-        editor.putString("correo", correo);
-        editor.putString("contrasena", contrasena);
-        editor.putString("telefono", telefono);
-        editor.putString("tipoDeUsuario", "estudiante");
+        editor.putString("nombre", nombre.getText().toString());
+        editor.putString("apellidoPaterno", apellidoPaterno.getText().toString());
+        editor.putString("apellidoMaterno", apellidoMaterno.getText().toString());
+        editor.putString("correo", correo.getText().toString());
+        editor.putString("contrasena", contrasena.getText().toString());
+        if (tipoDeUsuario.equals("estudiante")) {
+            editor.putString("telefono", (prefijo.getText().toString() + numero.getText().toString()));
+        }
+        editor.putString("tipoDeUsuario", tipoDeUsuario);
+        editor.putBoolean("first", false);
         editor.putBoolean("infoBasica", true);
         editor.putBoolean("sesion", true);
 
@@ -184,6 +208,82 @@ public class StudentRegisterActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(StudentRegisterActivity.this, LoginActivity.class));
+    }
+
+    private String obtenerTipoRegistro() {
+        String tipoRegistro;
+        switch (tipo_registro.getCheckedRadioButtonId()) {
+            case R.id.radioBtn_est:
+                tipoRegistro = "estudiante";
+                break;
+            case R.id.radioBtn_adm:
+                tipoRegistro = "administrador";
+                break;
+            default:
+                tipoRegistro = "none";
+                break;
+        }
+        return tipoRegistro;
+    }
+
+    private void vistaRegistro(String tipo_de_usuario) {
+        switch (tipo_de_usuario){
+            case "Estudiante":
+                codigo_registro.setVisibility(View.GONE);
+
+                registro_telefono.setVisibility(View.VISIBLE);
+                prefijo.setVisibility(View.VISIBLE);
+                numero.setVisibility(View.VISIBLE);
+
+                boton_aceptarRegistro.setVisibility(View.VISIBLE);
+                texto_leerTerminosYCondiciones.setVisibility(View.VISIBLE);
+                break;
+            case "Administrador":
+                codigo_registro.setVisibility(View.VISIBLE);
+
+                registro_telefono.setVisibility(View.GONE);
+                prefijo.setVisibility(View.GONE);
+                numero.setVisibility(View.GONE);
+
+                boton_aceptarRegistro.setVisibility(View.VISIBLE);
+                texto_leerTerminosYCondiciones.setVisibility(View.VISIBLE);
+                break;
+            default:
+                boton_aceptarRegistro.setVisibility(View.GONE);
+                texto_leerTerminosYCondiciones.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    private void cargarCampos(String tipoDeUsuario) {
+        switch (tipoDeUsuario) {
+            case "estudiante":
+                campos = new TextView[8];
+                campos[0] = nombre;
+                campos[1] = apellidoPaterno;
+                campos[2] = apellidoMaterno;
+                campos[3] = correo;
+                campos[4] = contrasena;
+                campos[5] = conf_contrasena;
+                campos[6] = prefijo;
+                campos[7] = numero;
+                break;
+            case "administrador":
+                campos = new TextView[7];
+                campos[0] = codigo_registro;
+                campos[1] = nombre;
+                campos[2] = apellidoPaterno;
+                campos[3] = apellidoMaterno;
+                campos[4] = correo;
+                campos[5] = contrasena;
+                campos[6] = conf_contrasena;
+                break;
+            case "none":
+                campos = null;
+            default:
+                campos = null;
+                break;
+        }
     }
 
     private boolean isPasswordValid(String password) {
@@ -225,11 +325,13 @@ public class StudentRegisterActivity extends AppCompatActivity {
 
     private boolean containSpace(TextView[] campos) {
         boolean cancel = false;
-        for (int i = 1; i < campos.length; i++) {
-            if (campos[i].getText().toString().contains(" ")) {
-                campos[i].setError(getString(R.string.espacios));
-                focusView = campos[i];
-                cancel = true;
+        for (TextView campo : campos) {
+            if (campo != nombre) {
+                if (campo.getText().toString().contains(" ")) {
+                    campo.setError(getString(R.string.espacios));
+                    focusView = campo;
+                    cancel = true;
+                }
             }
         }
         return cancel;

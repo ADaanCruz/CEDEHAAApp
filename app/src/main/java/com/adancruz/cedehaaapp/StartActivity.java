@@ -7,12 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -37,23 +34,14 @@ import org.json.JSONObject;
 public class StartActivity extends AppCompatActivity {
 
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
-
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+    private SharedPreferences prefs;
+    private AlertDialog.Builder dialog;
 
     /**
      * Some older devices needs a small delay between UI widget updates
      * and a change of the status and navigation bar.
      */
-    private static final int UI_ANIMATION_DELAY = 300;
+    private static final int UI_ANIMATION_DELAY = 50;
     private final Handler mHideHandler = new Handler();
     private View mContentView;
     private final Runnable mHidePart2Runnable = new Runnable() {
@@ -85,13 +73,7 @@ public class StartActivity extends AppCompatActivity {
         }
     };
 
-    private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
-        }
-    };
+    public boolean mVisible;
     /**
      * Touch listener to use for in-layout UI controls to delay hiding the
      * system UI. This is to prevent the jarring behavior of controls going away
@@ -114,9 +96,12 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
+        dialog = new AlertDialog.Builder(this);
+        prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+
         mContentView = findViewById(R.id.contenido_start);
-        videoCedehaa = (VideoView) findViewById(R.id.video_cedehaa_inicio);
-        btnOmitir = (Button) findViewById(R.id.boton_omitir);
+        videoCedehaa = findViewById(R.id.video_cedehaa_inicio);
+        btnOmitir = findViewById(R.id.boton_omitir);
         hide();
 
         String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.cedehaaintro;
@@ -127,9 +112,6 @@ public class StartActivity extends AppCompatActivity {
         NetworkInfo network = con.getActiveNetworkInfo();
 
         if (network != null && network.isConnected()) {
-            MyFirebaseMessagingService myFireBase = new MyFirebaseMessagingService();
-            myFireBase.mandarNotificacion();
-
             btnOmitir.setVisibility(View.VISIBLE);
             btnOmitir.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -150,7 +132,6 @@ public class StartActivity extends AppCompatActivity {
         } else {
             btnOmitir.setVisibility(View.GONE);
 
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setMessage("Necesitas conexión a Internet (WiFi o datos móviles) para el uso de la app.")
                     .setTitle("Verifica tu Internet");
 
@@ -166,7 +147,6 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void verifyPreferences() {
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
         boolean guardarSesion = prefs.getBoolean("sesion", false);
 
         if (guardarSesion) {
@@ -210,7 +190,7 @@ public class StartActivity extends AppCompatActivity {
             }
         };
 
-        SharedPreferences prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+        prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
         String correo = prefs.getString("correo", "");
         String contrasena = prefs.getString("contrasena", "");
 

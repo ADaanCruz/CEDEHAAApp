@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -29,8 +30,11 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
 
     // Referencias de la interfaz de usuario.
+    private ImageView logo;
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -41,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
     Button boton_iniciarSesion;
     TextView olvidaste;
 
+    private TextView bien_introduccion, introduccion, titulo_login;
+
     View focusView = null;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -49,6 +55,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+        //editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
+
+        bien_introduccion = findViewById(R.id.texto_bienvenida_introduccion);
+        introduccion = findViewById(R.id.texto_introduccion);
+
+        titulo_login = findViewById(R.id.texto_titulo_login);
+        logo = findViewById(R.id.logo_login);
         mEmailView = findViewById(R.id.email);
         mPasswordView = findViewById(R.id.password);
         mLoginFormView = findViewById(R.id.login_form);
@@ -60,25 +74,31 @@ public class LoginActivity extends AppCompatActivity {
         boton_registrarse = findViewById(R.id.boton_registrarse);
         boton_iniciarSesion = findViewById(R.id.boton_iniciar_sesion);
 
-        Drawable drawable = getResources().getDrawable(R.drawable.fondo2_2);
-        mLoginView.setBackground(drawable);
-
         boton_registrarse.setOnClickListener(new OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, StudentRegisterActivity.class);
                 finish();
-                startActivity(intent);
+                startActivity(new Intent(LoginActivity.this, StudentRegisterActivity.class));
             }
         });
 
         boton_iniciarSesion.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View view) {
-                boton_iniciarSesion.setEnabled(false);
-                showProgress(true);
-                attemptLogin();
-                boton_iniciarSesion.setEnabled(true);
+                // Para pruebas se deja en true, pero sin poder iniciar sesión.
+                if (prefs.getBoolean("first", true)) {
+                    //editor.putBoolean("first", false);
+                    //editor.apply();
+                    cargarFondo();
+                    showLoginForm(true);
+                } else {
+                    showProgress(true);
+                    boton_iniciarSesion.setEnabled(false);
+                    attemptLogin();
+                    boton_iniciarSesion.setEnabled(true);
+                }
             }
         });
 
@@ -88,6 +108,13 @@ public class LoginActivity extends AppCompatActivity {
                 mandarNotificaciones();
             }
         });
+
+        if (prefs.getBoolean("first", true)) {
+            showLoginForm(false);
+        } else {
+            cargarFondo();
+            showLoginForm(true);
+        }
     }
 
     /**
@@ -205,7 +232,6 @@ public class LoginActivity extends AppCompatActivity {
     private void guardarInfoBasica(String nombre, String apellidoPaterno, String apellidoMaterno,
                                    String correo, String email, String contrasena, String tipoDeUsuario,
                                    String telefono, boolean infoBasica) {
-        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
         if (!infoBasica || !email.equals(correo)) {
             editor.putString("nombre", nombre);
             editor.putString("apellidoPaterno", apellidoPaterno);
@@ -338,5 +364,32 @@ public class LoginActivity extends AppCompatActivity {
         queue.add(notificacionesRequest);
     }
 
-}
+    private void showLoginForm(boolean show) {
+        if (show) {
+            bien_introduccion.setVisibility(View.GONE);
+            introduccion.setVisibility(View.GONE);
 
+            titulo_login.setVisibility(View.VISIBLE);
+            logo.setVisibility(View.VISIBLE);
+            mLoginFormView.setVisibility(View.VISIBLE);
+
+            olvidaste.setVisibility(View.VISIBLE);
+        } else {
+            bien_introduccion.setVisibility(View.VISIBLE);
+            introduccion.setVisibility(View.VISIBLE);
+
+            titulo_login.setVisibility(View.GONE);
+            logo.setVisibility(View.GONE);
+            mLoginFormView.setVisibility(View.GONE);
+
+            olvidaste.setVisibility(View.GONE);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void cargarFondo() {
+        Drawable drawable = getResources().getDrawable(R.drawable.fondo2_2);
+        mLoginView.setBackground(drawable);
+    }
+
+}

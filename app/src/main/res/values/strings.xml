@@ -66,7 +66,7 @@
     <string name="fecha_de_publicacion">Fecha de publicación</string>
     <string name="crear_curso_nuevo">Crear curso nuevo</string>
     <string name="crear_grupo_nuevo">Crear grupo nuevo</string>
-    <string name="caracteres_contrasena">Mínimo 5 carácteres, puede usar\nmayúsculas, minúsculas, dígitos y alfanuméricos.</string>
+    <string name="caracteres_contrasena">Mínimo 5 carácteres, puede usar mayúsculas, minúsculas, dígitos y alfanuméricos.</string>
     <string name="logo_login">logo_login</string>
     <string name="siguiente">Siguiente</string>
     <string name="img_notification">img_notification</string>
@@ -101,7 +101,7 @@
     <string name="comilla_simple">No puede contener (\').</string>
     <string name="verificar_contrasena">No coincide la contraseña.</string>
     <string name="telefono_invalido">El número de teléfono es inválido.</string>
-    <string name="verifica_tu_telefono">Verifica que sea correcto tu teléfono.</string>
+    <string name="verifica_tu_telefono">Verifica que sea correcto tu teléfono celular.</string>
     <string name="verificar_correo">Correo que revise con más frecuencia.</string>
     <string name="prefijo">Prefijo (722)</string>
     <string name="prefijo_invalido">El prefijo es inválido</string>
@@ -109,4 +109,13 @@
     <string name="numero_invalido">Número inválido</string>
     <string name="ver_alumnos">Ver alumnos</string>
     <string name="no_vacio">No puede estar vacío</string>
+    <string name="introduccion">Dentro de esta aplicación\n\ntú tendrás la oportunidad\n\nde mejorar tus hábilidades\n\ny poner en práctica\n\ntus conocimientos en\n\nnuestros cursos.</string>
+    <string name="registro">Registro</string>
+    <string name="inicio_de_sesion">Inicio de sesión</string>
+    <string name="estudiante">Estudiante</string>
+    <string name="administrador">Administrador</string>
+    <string name="registrarse_como">Registrarse como</string>
+    <string name="nota_registro_admin">Administrador necesita aceptación del dueño.</string>
+    <string name="codigo">Código</string>
+    <string name="incorrecto">Incorrecto</string>
 </resources>
