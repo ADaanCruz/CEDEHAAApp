@@ -77,7 +77,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
                     focusView.requestFocus();
                 } else {
                     if (tipoDeUsuario.equals("administrador")) {
-                        if (!codigo_registro.getText().toString().equals("c0n4ra53na")) {
+                        if (!codigo_registro.getText().toString().equals("c0d1g0")) {
                             codigo_registro.setError(getString(R.string.incorrecto));
                             focusView = codigo_registro;
                             cancel = true;

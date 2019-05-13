@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,11 +39,14 @@ public class StNotificationsFragment extends Fragment {
 
     String tipoDeUsuario = "estudiante";
 
+    SwipeRefreshLayout swipeRefresh;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_st_notifications, container, false);
 
+        swipeRefresh = view.findViewById(R.id.swipe_refresh_notifications);
         notificacion = view.findViewById(R.id.texto_notificaciones);
         lista = view.findViewById(R.id.lista_cursos_o_solicitudes);
         sinLista = view.findViewById(R.id.texto_sin_lista);
@@ -53,8 +57,35 @@ public class StNotificationsFragment extends Fragment {
             MY_COURSES_REQUEST_URL = "http://projects-as-a-developer.online/my-courses.php?correo=" + correo;
         }
 
-        JsonObjectRequest request;
         assert tipoDeUsuario != null;
+        cargarListaNotifications(view);
+
+        swipeRefresh.setDistanceToTriggerSync(20);
+        swipeRefresh.setColorSchemeColors(
+                getResources().getColor(R.color.colorPrimaryDark),
+                getResources().getColor(R.color.colorPrimary),
+                getResources().getColor(R.color.colorAccent));
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                cargarListaNotifications(view);
+                swipeRefresh.setRefreshing(false);
+            }
+        });
+
+        swipeRefresh.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefresh.setRefreshing(false);
+            }
+        }, 1000);
+
+        return view;
+    }
+
+    private void cargarListaNotifications(final View view) {
+        JsonObjectRequest request;
         switch (tipoDeUsuario) {
             case "administrador": {
                 sinLista.setText(getString(R.string.sin_solicitudes_cursos));
@@ -83,6 +114,7 @@ public class StNotificationsFragment extends Fragment {
                                     lista.setAdapter(new ListSolicitudesAdapter(view.getContext(), arrayListSol));
                                     lista.setVisibility(View.VISIBLE);
                                     sinLista.setVisibility(View.GONE);
+                                    swipeRefresh.setEnabled(true);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     Toast.makeText(view.getContext(),
@@ -96,6 +128,7 @@ public class StNotificationsFragment extends Fragment {
                         error.printStackTrace();
                         lista.setVisibility(View.GONE);
                         sinLista.setVisibility(View.VISIBLE);
+                        swipeRefresh.setEnabled(false);
                     }
                 });
 
@@ -158,9 +191,8 @@ public class StNotificationsFragment extends Fragment {
 
                 lista.setVisibility(View.GONE);
                 sinLista.setVisibility(View.VISIBLE);
+                swipeRefresh.setEnabled(false);
                 break;
         }
-
-        return view;
     }
 }

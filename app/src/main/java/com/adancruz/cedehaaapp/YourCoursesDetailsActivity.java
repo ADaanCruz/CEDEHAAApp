@@ -1,9 +1,14 @@
 package com.adancruz.cedehaaapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +30,12 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
     private String tipoDeUsuario = "";
 
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
+
+    private ConnectivityManager con;
+    private NetworkInfo network;
+    private AlertDialog.Builder dialog;
+    private boolean internet;
+    private boolean selectionDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -199,44 +210,64 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
         eliminarCurso.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            boolean success = jsonObject.getBoolean("success");
-                            if (success) {
-                                Toast.makeText(YourCoursesDetailsActivity.this,
-                                        "¡Curso eliminado!", Toast.LENGTH_LONG).show();
-                                finish();
-                            } else {
-                                String error = jsonObject.getString("message");
-                                String delete = "delete", post = "post";
-                                if (error.equals(delete)) {
-                                    Toast.makeText(YourCoursesDetailsActivity.this,
-                                            "Error: Type SQL", Toast.LENGTH_LONG).show();
-                                } else if(error.equals(post)) {
-                                    Toast.makeText(YourCoursesDetailsActivity.this,
-                                            "Error: Type POST", Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(YourCoursesDetailsActivity.this,
-                                            "Algo salió mal", Toast.LENGTH_LONG).show();
+                internet = verifyInternet(v.getContext());
+                if (internet) {
+                    selectionDialog = false;
+                    mostrarDialog(
+                            "¿Seguro que quiere eliminar el curso?",
+                            "Eliminar curso",
+                            "Sí, eliminar",
+                            "No",
+                            v.getContext());
+                    if (selectionDialog) {
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    boolean success = jsonObject.getBoolean("success");
+                                    if (success) {
+                                        Toast.makeText(YourCoursesDetailsActivity.this,
+                                                "¡Curso eliminado!", Toast.LENGTH_LONG).show();
+                                        finish();
+                                    } else {
+                                        String error = jsonObject.getString("message");
+                                        String delete = "delete", post = "post";
+                                        if (error.equals(delete)) {
+                                            Toast.makeText(YourCoursesDetailsActivity.this,
+                                                    "Error: Type SQL", Toast.LENGTH_LONG).show();
+                                        } else if(error.equals(post)) {
+                                            Toast.makeText(YourCoursesDetailsActivity.this,
+                                                    "Error: Type POST", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(YourCoursesDetailsActivity.this,
+                                                    "Algo salió mal", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    Toast.makeText(YourCoursesDetailsActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    e.printStackTrace();
                                 }
                             }
-                        } catch (JSONException e) {
-                            Toast.makeText(YourCoursesDetailsActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
-                        }
-                    }
-                };
+                        };
 
-                DeleteCourseRequest registerRequest = new DeleteCourseRequest(
-                        item.getTitulo(),
-                        item.getFechaInicio(false),
-                        responseListener
-                );
-                RequestQueue queue = Volley.newRequestQueue(YourCoursesDetailsActivity.this);
-                queue.add(registerRequest);
+                        DeleteCourseRequest registerRequest = new DeleteCourseRequest(
+                                item.getTitulo(),
+                                item.getFechaInicio(false),
+                                responseListener
+                        );
+                        RequestQueue queue = Volley.newRequestQueue(YourCoursesDetailsActivity.this);
+                        queue.add(registerRequest);
+                    }
+                } else {
+                    mostrarDialog(
+                            v.getContext().getString(R.string.verify_internet_dialog_message),
+                            v.getContext().getString(R.string.verify_internet_dialog_title),
+                            "Entendido",
+                            null,
+                            v.getContext()
+                    );
+                }
             }
         });
 
@@ -295,5 +326,33 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
         );
         RequestQueue queue = Volley.newRequestQueue(YourCoursesDetailsActivity.this);
         queue.add(solicitRequest);
+    }
+
+    private boolean verifyInternet(Context context) {
+        con = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        network = con.getActiveNetworkInfo();
+        return network != null && network.isConnected();
+    }
+
+    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, Context context){
+        dialog = new AlertDialog.Builder(context);
+        dialog.setMessage(mensaje)
+                .setTitle(titulo);
+        dialog.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectionDialog = true;
+            }
+        });
+
+        if (negative != null) {
+            dialog.setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    selectionDialog = false;
+                }
+            });
+        }
+        dialog.show();
     }
 }

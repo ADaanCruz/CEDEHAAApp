@@ -1,10 +1,16 @@
 package com.adancruz.cedehaaapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,23 +35,83 @@ public class StHomeFragment extends Fragment {
 
     private static final String COURSE_REQUEST_URL = "http://projects-as-a-developer.online/all-courses.php";
 
-    TextView bienvenida, sinCursos;
+    private SwipeRefreshLayout swipeRefresh;
+    private TextView bienvenida, sinCursos;
     ListView cursos;
     Button nuevoCurso;
     ArrayList<Curso> arrayList = new ArrayList<>();
     Intent intent;
     String tipoDeUsuario = "";
 
+    private ConnectivityManager con;
+    private NetworkInfo network;
+    private AlertDialog.Builder dialog;
+    private boolean internet;
+    private boolean selectionDialog;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_st_home, container, false);
 
+        swipeRefresh = view.findViewById(R.id.swipe_refresh_home);
         bienvenida = view.findViewById(R.id.texto_st_bienvenida);
         nuevoCurso = view.findViewById(R.id.boton_crear_curso);
         sinCursos = view.findViewById(R.id.texto_sin_cursos);
         cursos = view.findViewById(R.id.lista_st_cursos);
 
+        if (getArguments() != null) {
+            String texto = "¡Bienvenido, " + getArguments().getString("nombre") + "!";
+            bienvenida.setText(texto);
+            tipoDeUsuario = getArguments().getString("tipoDeUsuario");
+            if(tipoDeUsuario != null && tipoDeUsuario.equals("administrador")) {
+                nuevoCurso.setVisibility(View.VISIBLE);
+            } else{
+                nuevoCurso.setVisibility(View.GONE);
+            }
+        }
+
+        verifyView(view);
+
+        nuevoCurso.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                internet = verifyInternet(v.getContext());
+                if (internet) {
+                    intent = new Intent(view.getContext(), CreateCourseActivity.class);
+                    intent.putExtra("editar",false);
+                    intent.putExtra("tipoDeUsuario", tipoDeUsuario);
+                    view.getContext().startActivity(intent);
+                } else {
+                    selectionDialog = false;
+                    mostrarDialog(
+                            v.getContext().getString(R.string.verify_internet_dialog_message),
+                            v.getContext().getString(R.string.verify_internet_dialog_title),
+                            "Entendido",
+                            null,
+                            view.getContext()
+                    );
+                }
+            }
+        });
+
+        swipeRefresh.setDistanceToTriggerSync(20);
+        swipeRefresh.setColorSchemeColors(
+                getResources().getColor(R.color.colorPrimaryDark),
+                getResources().getColor(R.color.colorPrimary),
+                getResources().getColor(R.color.colorAccent));
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                verifyView(view);
+                swipeRefresh.setRefreshing(false);
+            }
+        });
+
+        return view;
+    }
+
+    private void cargarLista(final View vista) {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, COURSE_REQUEST_URL, null,
                 new Response.Listener<JSONObject>() {
 
@@ -54,6 +120,7 @@ public class StHomeFragment extends Fragment {
                         try {
                             JSONArray jsonArray = response.getJSONArray("cursos");
                             arrayList = new ArrayList<>();
+                            //cursos.removeAllViews();
                             for (int i=0; i<jsonArray.length(); i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -72,14 +139,16 @@ public class StHomeFragment extends Fragment {
                             if (arrayList.size() == 0) {
                                 cursos.setVisibility(View.GONE);
                                 sinCursos.setVisibility(View.VISIBLE);
+                                swipeRefresh.setEnabled(false);
                             } else {
-                                cursos.setAdapter(new ListCoursesAdapter(view.getContext(), arrayList, tipoDeUsuario, false));
+                                cursos.setAdapter(new ListCoursesAdapter(vista.getContext(), arrayList, tipoDeUsuario, false));
                                 cursos.setVisibility(View.VISIBLE);
                                 sinCursos.setVisibility(View.GONE);
+                                swipeRefresh.setEnabled(true);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(view.getContext(),
+                            Toast.makeText(vista.getContext(),
                                     "Error: JSONException",
                                     Toast.LENGTH_LONG).show();
                         }
@@ -91,30 +160,49 @@ public class StHomeFragment extends Fragment {
             }
         });
 
-        RequestQueue queue = Volley.newRequestQueue(view.getContext());
+        RequestQueue queue = Volley.newRequestQueue(vista.getContext());
         queue.add(request);
+    }
 
-        if (getArguments() != null) {
-            String texto = "¡Bienvenido, " + getArguments().getString("nombre") + "!";
-            bienvenida.setText(texto);
-            tipoDeUsuario = getArguments().getString("tipoDeUsuario");
-            if(tipoDeUsuario != null && tipoDeUsuario.equals("administrador")) {
-                nuevoCurso.setVisibility(View.VISIBLE);
-            } else{
-                nuevoCurso.setVisibility(View.GONE);
-            }
+    private void verifyView(View view) {
+        internet = verifyInternet(view.getContext());
+        if (!internet) {
+            cursos.setVisibility(View.GONE);
+            sinCursos.setVisibility(View.VISIBLE);
+            sinCursos.setText(view.getContext().getString(R.string.no_internet));
+        } else {
+            cargarLista(view);
+            sinCursos.setText(view.getContext().getString(R.string.sin_cursos));
+            sinCursos.setVisibility(View.GONE);
+            cursos.setVisibility(View.VISIBLE);
         }
+    }
 
-        nuevoCurso.setOnClickListener(new View.OnClickListener() {
+    private boolean verifyInternet(Context context) {
+        con = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        network = con.getActiveNetworkInfo();
+        return network != null && network.isConnected();
+    }
+
+    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, Context context){
+        dialog = new AlertDialog.Builder(context);
+        dialog.setMessage(mensaje)
+                .setTitle(titulo);
+        dialog.setPositiveButton(positive, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                intent = new Intent(view.getContext(), CreateCourseActivity.class);
-                intent.putExtra("editar",false);
-                intent.putExtra("tipoDeUsuario", tipoDeUsuario);
-                view.getContext().startActivity(intent);
+            public void onClick(DialogInterface dialog, int which) {
+                selectionDialog = true;
             }
         });
 
-        return view;
+        if (negative != null) {
+            dialog.setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    selectionDialog = false;
+                }
+            });
+        }
+        dialog.show();
     }
 }

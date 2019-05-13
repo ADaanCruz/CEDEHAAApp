@@ -110,8 +110,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "0")
                 .setSmallIcon(R.drawable.ic_stat_cedehaa)
-                .setContentTitle(title)
-                .setContentText(body)
                 .setAutoCancel(true)
                 .setPriority(1)
                 .setSound(soundUri)
@@ -121,8 +119,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
                 .setContentIntent(pendingIntent);
 
+        String tipoDeUsuario = prefs.getString("tipoDeUsuario","estudiante");
+        assert tipoDeUsuario != null;
+        if (tipoDeUsuario.equals("estudiante")) {
+            notificationBuilder
+                    .setContentTitle(title)
+                    .setContentText(body);
+        } else if (tipoDeUsuario.equals("administrador")){
+            notificationBuilder
+                    .setContentTitle("Curso nuevo")
+                    .setContentText("Un administrador a creado un curso");
+        }
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, notificationBuilder.build());
-
     }
 }

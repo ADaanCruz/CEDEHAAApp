@@ -37,6 +37,8 @@ public class StartActivity extends AppCompatActivity {
     private SharedPreferences prefs;
     private AlertDialog.Builder dialog;
 
+    boolean start = false;
+
     /**
      * Some older devices needs a small delay between UI widget updates
      * and a change of the status and navigation bar.
@@ -117,7 +119,11 @@ public class StartActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     btnOmitir.setVisibility(View.GONE);
-                    verifyPreferences();
+                    btnOmitir.setEnabled(false);
+                    if (!start) {
+                        start = true;
+                        verifyPreferences();
+                    }
                 }
             });
 
@@ -126,7 +132,11 @@ public class StartActivity extends AppCompatActivity {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     btnOmitir.setVisibility(View.GONE);
-                    verifyPreferences();
+                    btnOmitir.setEnabled(false);
+                    if (!start) {
+                        start = true;
+                        verifyPreferences();
+                    }
                 }
             });
         } else {

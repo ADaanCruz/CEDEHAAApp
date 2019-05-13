@@ -86,7 +86,7 @@
     <string name="aceptar_cambios">Aceptar cambios</string>
     <string name="ejemplo_de_fecha">dd-mm-yyyy</string>
     <string name="omitir">Omitir</string>
-    <string name="mantener_curso">Mantener curso (Cerrado/Abierto)</string>
+    <string name="mantener_curso">Mantener curso</string>
     <string name="abierto">Abierto</string>
     <string name="cerrado">Cerrado</string>
     <string name="eliminar_curso">Eliminar curso</string>
@@ -118,4 +118,8 @@
     <string name="nota_registro_admin">Administrador necesita aceptación del dueño.</string>
     <string name="codigo">Código</string>
     <string name="incorrecto">Incorrecto</string>
+    <string name="imagen_para_el_curso">Elige una imagen para el curso</string>
+    <string name="no_internet">No hay buena conexión de internet.</string>
+    <string name="verify_internet_dialog_message">Necesitas conexión a Internet (WiFi o datos móviles) para el uso de la app.</string>
+    <string name="verify_internet_dialog_title">Verifica tu Internet</string>
 </resources>

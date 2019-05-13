@@ -1,10 +1,15 @@
 package com.adancruz.cedehaaapp;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +54,12 @@ public class LoginActivity extends AppCompatActivity {
 
     View focusView = null;
 
+    private ConnectivityManager con;
+    private NetworkInfo network;
+    private AlertDialog.Builder dialog;
+    private boolean internet;
+    private boolean selectionDialog;
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
-        //editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
+        editor = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
 
         bien_introduccion = findViewById(R.id.texto_bienvenida_introduccion);
         introduccion = findViewById(R.id.texto_introduccion);
@@ -74,12 +85,27 @@ public class LoginActivity extends AppCompatActivity {
         boton_registrarse = findViewById(R.id.boton_registrarse);
         boton_iniciarSesion = findViewById(R.id.boton_iniciar_sesion);
 
+        sesionAbierta.setChecked(true);
+        String mandarNotificacion = "Mandar notificación";
+        olvidaste.setText(mandarNotificacion);
+
         boton_registrarse.setOnClickListener(new OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
-                finish();
-                startActivity(new Intent(LoginActivity.this, StudentRegisterActivity.class));
+                internet = verifyInternet(v.getContext());
+                if (internet) {
+                    finish();
+                    startActivity(new Intent(LoginActivity.this, StudentRegisterActivity.class));
+                } else {
+                    mostrarDialog(
+                            v.getContext().getString(R.string.verify_internet_dialog_message),
+                            v.getContext().getString(R.string.verify_internet_dialog_title),
+                            "Entendido",
+                            null,
+                            v.getContext()
+                    );
+                }
             }
         });
 
@@ -87,17 +113,29 @@ public class LoginActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View view) {
-                // Para pruebas se deja en true, pero sin poder iniciar sesión.
-                if (prefs.getBoolean("first", true)) {
-                    //editor.putBoolean("first", false);
-                    //editor.apply();
-                    cargarFondo();
-                    showLoginForm(true);
+                internet = verifyInternet(view.getContext());
+                if (internet) {
+                    // Para pruebas se deja en true, pero sin poder iniciar sesión.
+                    if (prefs.getBoolean("first", true)) {
+                        editor.putBoolean("first", false);
+                        editor.apply();
+                        cargarFondo();
+                        showLoginForm(true);
+                    } else {
+                        showProgress(true);
+                        boton_iniciarSesion.setEnabled(false);
+                        attemptLogin();
+                        boton_iniciarSesion.setEnabled(true);
+                    }
                 } else {
-                    showProgress(true);
-                    boton_iniciarSesion.setEnabled(false);
-                    attemptLogin();
-                    boton_iniciarSesion.setEnabled(true);
+                    selectionDialog = false;
+                    mostrarDialog(
+                            view.getContext().getString(R.string.verify_internet_dialog_message),
+                            view.getContext().getString(R.string.verify_internet_dialog_title),
+                            "Entendido",
+                            null,
+                            view.getContext()
+                    );
                 }
             }
         });
@@ -199,11 +237,11 @@ public class LoginActivity extends AppCompatActivity {
                         String password = "password", email = "email", post = "post";
                         if (error.equals(password)) {
                             Toast.makeText(LoginActivity.this,
-                                    "La contraseña es incorrecta",
+                                    "Correo y/o contraseña incorrectos",
                                     Toast.LENGTH_LONG).show();
                         } else if (error.equals(email)) {
                             Toast.makeText(LoginActivity.this,
-                                    "El correo no está registrado",
+                                    "Correo y/o contraseña incorrectos",
                                     Toast.LENGTH_LONG).show();
                         } else if (error.equals(post)) {
                             Toast.makeText(LoginActivity.this,
@@ -303,7 +341,7 @@ public class LoginActivity extends AppCompatActivity {
      * Muestra el progreso de la interfaz de usuario y oculta el formulario de inicio de sesión.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
+    private void showProgress(boolean show) {
         // En Honeycomb MR2 tenemos las API ViewPropertyAnimator, que
         // permiten animaciones muy fáciles. Si está disponible, use
         // estas API para fundir el selector de progreso.
@@ -390,6 +428,34 @@ public class LoginActivity extends AppCompatActivity {
     private void cargarFondo() {
         Drawable drawable = getResources().getDrawable(R.drawable.fondo2_2);
         mLoginView.setBackground(drawable);
+    }
+
+    private boolean verifyInternet(Context context) {
+        con = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        network = con.getActiveNetworkInfo();
+        return network != null && network.isConnected();
+    }
+
+    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, Context context){
+        dialog = new AlertDialog.Builder(context);
+        dialog.setMessage(mensaje)
+                .setTitle(titulo);
+        dialog.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectionDialog = true;
+            }
+        });
+
+        if (negative != null) {
+            dialog.setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    selectionDialog = false;
+                }
+            });
+        }
+        dialog.show();
     }
 
 }

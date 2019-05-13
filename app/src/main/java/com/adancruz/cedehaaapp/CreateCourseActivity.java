@@ -1,19 +1,27 @@
 package com.adancruz.cedehaaapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
@@ -28,14 +36,19 @@ public class CreateCourseActivity extends AppCompatActivity {
     public CalendarView calendarioFechaInicio;
     private ImageView imagen;
     public Button aceptarCursoNuevo;
-    private Switch estadoCurso;
+    private ToggleButton estadoCurso;
     View focusView = null;
     int numImagen;
     String fechaInicio = "";
-    String estado = "Cerrado";
+    String estado = "Abierto";
 
     Response.Listener<String> responseListener;
     private static String url;
+
+    private ConnectivityManager con;
+    private NetworkInfo network;
+    private AlertDialog.Builder dialog;
+    private boolean internet;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +62,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         descripcionGeneral = findViewById(R.id.texto_desc_gral_del_curso_nuevo);
         limiteEstudiantes = findViewById(R.id.texto_limite_estudiantes);
         calendarioFechaInicio = findViewById(R.id.calendario_inicio_curso);
-        estadoCurso = findViewById(R.id.switch_estado_curso);
+        estadoCurso = findViewById(R.id.toggle_estado_curso);
         aceptarCursoNuevo = findViewById(R.id.boton_aceptar_curso_nuevo);
         cambios = findViewById(R.id.texto_proximos_cambios);
 
@@ -76,6 +89,17 @@ public class CreateCourseActivity extends AppCompatActivity {
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
                 fechaInicio = year + "-" + (month+1) + "-" + day;
                 Log.d(TAG, "onSelectedDayChange: yyyy-mm-dd: " + fechaInicio);
+            }
+        });
+
+        estadoCurso.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    estado = "Abierto";
+                } else {
+                    estado = "Cerrado";
+                }
             }
         });
 
@@ -190,38 +214,43 @@ public class CreateCourseActivity extends AppCompatActivity {
         aceptarCursoNuevo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                aceptarCursoNuevo.setEnabled(false);
-                boolean cancel;
-                cancel = validarCampos();
+                internet = verifyInternet(v.getContext());
+                if (internet){
+                    aceptarCursoNuevo.setEnabled(false);
+                    boolean cancel;
+                    cancel = validarCampos();
 
-                if (estadoCurso.isChecked()) {
-                    estado = "Abierto";
+                    if (!cancel) {
+                        String numeroDeImagen = numImagen + "";
+                        CreateCourseRequest courseRequest = new CreateCourseRequest(
+                                editar,
+                                url,
+                                exTitulo,
+                                exDescBreve,
+                                exFechaInicio,
+
+                                titulo.getText().toString(),
+                                numeroDeImagen,
+                                descripcionBreve.getText().toString(),
+                                descripcionGeneral.getText().toString(),
+                                fechaInicio,
+                                limiteEstudiantes.getText().toString(),
+                                estado,
+                                responseListener
+                        );
+                        RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);
+                        queue.add(courseRequest);
+                    }
+                    aceptarCursoNuevo.setEnabled(true);
                 } else {
-                    estado = "Cerrado";
-                }
-
-                if (!cancel) {
-                    String numeroDeImagen = numImagen + "";
-                    CreateCourseRequest courseRequest = new CreateCourseRequest(
-                            editar,
-                            url,
-                            exTitulo,
-                            exDescBreve,
-                            exFechaInicio,
-
-                            titulo.getText().toString(),
-                            numeroDeImagen,
-                            descripcionBreve.getText().toString(),
-                            descripcionGeneral.getText().toString(),
-                            fechaInicio,
-                            limiteEstudiantes.getText().toString(),
-                            estado,
-                            responseListener
+                    mostrarDialog(
+                            v.getContext().getString(R.string.verify_internet_dialog_message),
+                            v.getContext().getString(R.string.verify_internet_dialog_title),
+                            "Entendido",
+                            null,
+                            v.getContext()
                     );
-                    RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);
-                    queue.add(courseRequest);
                 }
-                aceptarCursoNuevo.setEnabled(true);
             }
         });
     }
@@ -351,5 +380,23 @@ public class CreateCourseActivity extends AppCompatActivity {
         );
         RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);
         queue.add(notificacionesRequest);
+    }
+
+    private boolean verifyInternet(Context context) {
+        con = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        network = con.getActiveNetworkInfo();
+        return network != null && network.isConnected();
+    }
+
+    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, Context context){
+        dialog = new AlertDialog.Builder(context);
+        dialog.setMessage(mensaje)
+                .setTitle(titulo);
+        dialog.setPositiveButton("Entendido", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        dialog.show();
     }
 }
