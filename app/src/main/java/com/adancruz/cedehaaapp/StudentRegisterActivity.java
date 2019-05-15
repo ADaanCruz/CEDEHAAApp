@@ -41,6 +41,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_register);
 
+        tipoDeUsuario = "estudiante";
         tipo_registro = findViewById(R.id.tipo_de_registro);
         codigo_registro = findViewById(R.id.codigo_registro);
 
@@ -67,14 +68,16 @@ public class StudentRegisterActivity extends AppCompatActivity {
         boton_aceptarRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boton_aceptarRegistro.setEnabled(false);
                 boolean cancel = false;
 
-                tipoDeUsuario = obtenerTipoRegistro();
                 cargarCampos(tipoDeUsuario);
                 if (campos == null) {
                     Toast.makeText(StudentRegisterActivity.this, "Selecciona un tipo de registro", Toast.LENGTH_LONG).show();
+                    boton_aceptarRegistro.setEnabled(true);
                 } else if (isEmpty(campos) || containComilla(campos) || containSpace(campos)) {
                     focusView.requestFocus();
+                    boton_aceptarRegistro.setEnabled(true);
                 } else {
                     if (tipoDeUsuario.equals("administrador")) {
                         if (!codigo_registro.getText().toString().equals("c0d1g0")) {
@@ -113,6 +116,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
                     }
                     if (cancel) {
                         focusView.requestFocus();
+                        boton_aceptarRegistro.setEnabled(true);
                     } else {
                         Response.Listener<String> responseListener = new Response.Listener<String>() {
                             @Override
@@ -126,18 +130,25 @@ public class StudentRegisterActivity extends AppCompatActivity {
                                         guardarInfoBasica(tipoDeUsuario);
                                         finish();
                                         startActivity(new Intent(StudentRegisterActivity.this, StudentActivity.class));
-
                                     } else {
                                         String error = jsonObject.getString("message");
-                                        String existing = "existing", post = "post";
-                                        if (error.equals(existing)) {
+                                        String post = "post", correo = "correo", telefono = "telefono", insert = "insert";
+                                        if (error.equals(post)) {
+                                            Toast.makeText(StudentRegisterActivity.this,
+                                                    "Error: Type POST",
+                                                    Toast.LENGTH_LONG).show();
+                                        } else if (error.equals(correo)) {
                                             Toast.makeText(StudentRegisterActivity.this,
                                                   "El correo ya está registrado",
                                                   Toast.LENGTH_LONG).show();
-                                        } else if (error.equals(post)) {
+                                        } else if (error.equals(telefono)) {
                                             Toast.makeText(StudentRegisterActivity.this,
-                                            "Error: Type POST",
-                                            Toast.LENGTH_LONG).show();
+                                                    "El telefono ya está registrado",
+                                                    Toast.LENGTH_LONG).show();
+                                        } else if (error.equals(insert)) {
+                                            Toast.makeText(StudentRegisterActivity.this,
+                                                    "Error: Type SQL: Insert",
+                                                    Toast.LENGTH_LONG).show();
                                         } else {
                                             Toast.makeText(StudentRegisterActivity.this,
                                                   "Algo salió mal",
@@ -170,6 +181,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
                         );
                         RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);
                         queue.add(registerRequest);
+                        boton_aceptarRegistro.setEnabled(true);
                     }
                 }
             }
@@ -210,25 +222,10 @@ public class StudentRegisterActivity extends AppCompatActivity {
         startActivity(new Intent(StudentRegisterActivity.this, LoginActivity.class));
     }
 
-    private String obtenerTipoRegistro() {
-        String tipoRegistro;
-        switch (tipo_registro.getCheckedRadioButtonId()) {
-            case R.id.radioBtn_est:
-                tipoRegistro = "estudiante";
-                break;
-            case R.id.radioBtn_adm:
-                tipoRegistro = "administrador";
-                break;
-            default:
-                tipoRegistro = "none";
-                break;
-        }
-        return tipoRegistro;
-    }
-
     private void vistaRegistro(String tipo_de_usuario) {
         switch (tipo_de_usuario){
             case "Estudiante":
+                tipoDeUsuario = "estudiante";
                 codigo_registro.setVisibility(View.GONE);
 
                 registro_telefono.setVisibility(View.VISIBLE);
@@ -239,6 +236,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
                 texto_leerTerminosYCondiciones.setVisibility(View.VISIBLE);
                 break;
             case "Administrador":
+                tipoDeUsuario = "administrador";
                 codigo_registro.setVisibility(View.VISIBLE);
 
                 registro_telefono.setVisibility(View.GONE);
@@ -291,7 +289,8 @@ public class StudentRegisterActivity extends AppCompatActivity {
     }
 
     private boolean isEmailValid(String email) {
-        return email.contains("@");
+        return (email.contains("@") &&
+                (email.contains("gmail.com") || email.contains("hotmail.com") || email.contains("live.com") || email.contains(".mx")));
     }
 
     private boolean isNotNumberValid(String string) {

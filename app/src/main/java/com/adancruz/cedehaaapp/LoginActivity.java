@@ -292,7 +292,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isEmailValid(String email) {
-        return email.contains("@");
+        return (email.contains("@") &&
+                (email.contains("gmail.com") || email.contains("hotmail.com") || email.contains("live.com") || email.contains(".mx")));
         //return true;
     }
 
@@ -452,6 +453,12 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     selectionDialog = false;
+                    /*switch (metodo) {
+                        case "wifi": context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            break;
+                        default:
+                            break;
+                    }*/
                 }
             });
         }

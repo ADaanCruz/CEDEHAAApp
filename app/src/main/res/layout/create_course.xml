@@ -17,6 +17,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="@string/titulo_del_curso"
+            android:maxLength="30"
+            android:digits="@string/abc_ABC_123"
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorPrimary"
             android:textSize="24sp"
@@ -48,6 +50,8 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:hint="@string/descripcion_del_curso"
+            android:maxLength="40"
+            android:digits="@string/abc_ABC_123"
             android:textColor="#000000"
             android:textColorHint="#000000"
             android:inputType="text"
@@ -60,6 +64,7 @@
             android:ems="15"
             android:inputType="textMultiLine"
             android:hint="@string/descripcion_general_del_curso"
+            android:digits="@string/digitos"
             tools:ignore="Autofill"/>
 
         <LinearLayout
@@ -83,6 +88,8 @@
                 android:gravity="center"
                 android:inputType="number"
                 android:hint="@string/valor_20"
+                android:maxLength="2"
+                android:digits="@string/n123"
                 tools:ignore="Autofill"/>
 
         </LinearLayout>

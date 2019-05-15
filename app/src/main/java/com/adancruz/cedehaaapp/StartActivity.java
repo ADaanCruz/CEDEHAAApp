@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -35,7 +36,13 @@ public class StartActivity extends AppCompatActivity {
 
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
     private SharedPreferences prefs;
+
+    private ConnectivityManager con;
+    private NetworkInfo network;
     private AlertDialog.Builder dialog;
+    private boolean internet;
+    private boolean selectionDialog;
+
 
     boolean start = false;
 
@@ -110,10 +117,8 @@ public class StartActivity extends AppCompatActivity {
         Uri uri = Uri.parse(videoPath);
         videoCedehaa.setVideoURI(uri);
 
-        ConnectivityManager con = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo network = con.getActiveNetworkInfo();
-
-        if (network != null && network.isConnected()) {
+        internet = verifyInternet(this);
+        if (internet) {
             btnOmitir.setVisibility(View.VISIBLE);
             btnOmitir.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -141,18 +146,15 @@ public class StartActivity extends AppCompatActivity {
             });
         } else {
             btnOmitir.setVisibility(View.GONE);
-
-            dialog.setMessage("Necesitas conexión a Internet (WiFi o datos móviles) para el uso de la app.")
-                    .setTitle("Verifica tu Internet");
-
-            dialog.setPositiveButton("Entendido", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-
-            dialog.show();
+            selectionDialog = false;
+            mostrarDialog(
+                    getString(R.string.verify_internet_dialog_message),
+                    getString(R.string.verify_internet_dialog_title),
+                    "Entendido",
+                    "Configuración",
+                    this,
+                    "wifi"
+            );
         }
     }
 
@@ -220,5 +222,50 @@ public class StartActivity extends AppCompatActivity {
         // Schedule a runnable to remove the status and navigation bar after a delay
         mHideHandler.removeCallbacks(mShowPart2Runnable);
         mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+    }
+
+    private boolean verifyInternet(Context context) {
+        con = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        network = con.getActiveNetworkInfo();
+        return network != null && network.isConnected();
+    }
+
+    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, final Context context, final String metodo){
+        dialog = new AlertDialog.Builder(context);
+        dialog.setMessage(mensaje)
+                .setTitle(titulo);
+        dialog.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectionDialog = true;
+                if (metodo.equals("wifi")) {
+                    if (context.getClass() == StartActivity.class) {
+                        finish();
+                    }
+                }
+            }
+        });
+
+        if (negative != null) {
+            dialog.setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    selectionDialog = false;
+                    /*switch (metodo) {
+                        case "wifi": context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            break;
+                        default:
+                            break;
+                    }*/
+                    if (metodo.equals("wifi")) {
+                        context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        if (context.getClass() == StartActivity.class) {
+                            finish();
+                        }
+                    }
+                }
+            });
+        }
+        dialog.show();
     }
 }

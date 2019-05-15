@@ -119,6 +119,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
                 .setContentIntent(pendingIntent);
 
+        prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
         String tipoDeUsuario = prefs.getString("tipoDeUsuario","estudiante");
         assert tipoDeUsuario != null;
         if (tipoDeUsuario.equals("estudiante")) {

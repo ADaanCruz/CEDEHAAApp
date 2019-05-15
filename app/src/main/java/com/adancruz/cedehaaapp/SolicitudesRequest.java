@@ -8,12 +8,11 @@ import java.util.Map;
 
 public class SolicitudesRequest extends StringRequest {
 
-    private static final String SOLICITUDES_REQUEST_URL = "http://projects-as-a-developer.online/solicitudes.php";
     private Map<String, String> params;
 
     public SolicitudesRequest(  String boton, String titulo, String fecha, String correo,
                                 Response.Listener<String> listener) {
-        super(Method.POST, SOLICITUDES_REQUEST_URL, listener, null);
+        super(Method.POST, DireccionesURL.SOLICITUDES_REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("boton", boton);
         params.put("titulo", titulo);

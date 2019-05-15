@@ -131,18 +131,6 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/boton_registrarse"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="@string/registrarse"
-        android:textColor="#FFFFFF"
-        android:background="@drawable/boton_secundario" />
-
-    <Button
         android:id="@+id/boton_iniciar_sesion"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -150,7 +138,20 @@
         android:background="@drawable/boton_primario"
         android:textColor="#ffffff"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/boton_registrarse"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/registrarse"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/boton_secundario" />
 
     <TextView
         android:id="@+id/olvidaste"

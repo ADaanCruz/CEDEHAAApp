@@ -42,9 +42,6 @@
         <activity
             android:name=".CreateCourseActivity"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".MessagesActivity"
-            android:screenOrientation="portrait"></activity>
 
         <service android:name=".MyFirebaseMessagingService">
             <intent-filter>

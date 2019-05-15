@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -218,54 +219,16 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                             "Eliminar curso",
                             "Sí, eliminar",
                             "No",
-                            v.getContext());
-                    if (selectionDialog) {
-                        Response.Listener<String> responseListener = new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    boolean success = jsonObject.getBoolean("success");
-                                    if (success) {
-                                        Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "¡Curso eliminado!", Toast.LENGTH_LONG).show();
-                                        finish();
-                                    } else {
-                                        String error = jsonObject.getString("message");
-                                        String delete = "delete", post = "post";
-                                        if (error.equals(delete)) {
-                                            Toast.makeText(YourCoursesDetailsActivity.this,
-                                                    "Error: Type SQL", Toast.LENGTH_LONG).show();
-                                        } else if(error.equals(post)) {
-                                            Toast.makeText(YourCoursesDetailsActivity.this,
-                                                    "Error: Type POST", Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(YourCoursesDetailsActivity.this,
-                                                    "Algo salió mal", Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                } catch (JSONException e) {
-                                    Toast.makeText(YourCoursesDetailsActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                    e.printStackTrace();
-                                }
-                            }
-                        };
-
-                        DeleteCourseRequest registerRequest = new DeleteCourseRequest(
-                                item.getTitulo(),
-                                item.getFechaInicio(false),
-                                responseListener
-                        );
-                        RequestQueue queue = Volley.newRequestQueue(YourCoursesDetailsActivity.this);
-                        queue.add(registerRequest);
-                    }
+                            v.getContext(),
+                            "eliminar_curso");
                 } else {
                     mostrarDialog(
                             v.getContext().getString(R.string.verify_internet_dialog_message),
                             v.getContext().getString(R.string.verify_internet_dialog_title),
                             "Entendido",
-                            null,
-                            v.getContext()
+                            "Configuración",
+                            v.getContext(),
+                            "wifi"
                     );
                 }
             }
@@ -334,7 +297,7 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
         return network != null && network.isConnected();
     }
 
-    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, Context context){
+    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, final Context context, final String metodo){
         dialog = new AlertDialog.Builder(context);
         dialog.setMessage(mensaje)
                 .setTitle(titulo);
@@ -342,6 +305,58 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 selectionDialog = true;
+                /*switch (metodo) {
+                        case "eliminar_curso":
+                            break;
+                        default:
+                            break;
+                    }*/
+                if (metodo.equals("wifi")) {
+                    context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    if (context.getClass() == StartActivity.class) {
+                        finish();
+                    }
+                }
+                if (metodo.equals("eliminar_curso")) {
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                boolean success = jsonObject.getBoolean("success");
+                                if (success) {
+                                    Toast.makeText(YourCoursesDetailsActivity.this,
+                                            "¡Curso eliminado!", Toast.LENGTH_LONG).show();
+                                    finish();
+                                } else {
+                                    String error = jsonObject.getString("message");
+                                    String delete = "delete", post = "post";
+                                    if (error.equals(delete)) {
+                                        Toast.makeText(YourCoursesDetailsActivity.this,
+                                                "Error: Type SQL", Toast.LENGTH_LONG).show();
+                                    } else if(error.equals(post)) {
+                                        Toast.makeText(YourCoursesDetailsActivity.this,
+                                                "Error: Type POST", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(YourCoursesDetailsActivity.this,
+                                                "Algo salió mal", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                Toast.makeText(YourCoursesDetailsActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+
+                    DeleteCourseRequest registerRequest = new DeleteCourseRequest(
+                            item.getTitulo(),
+                            item.getFechaInicio(false),
+                            responseListener
+                    );
+                    RequestQueue queue = Volley.newRequestQueue(YourCoursesDetailsActivity.this);
+                    queue.add(registerRequest);
+                }
             }
         });
 
@@ -350,6 +365,18 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     selectionDialog = false;
+                    /*switch (metodo) {
+                        case "wifi": context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            break;
+                        default:
+                            break;
+                    }*/
+                    if (metodo.equals("wifi")) {
+                        context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        if (context.getClass() == StartActivity.class) {
+                            finish();
+                        }
+                    }
                 }
             });
         }

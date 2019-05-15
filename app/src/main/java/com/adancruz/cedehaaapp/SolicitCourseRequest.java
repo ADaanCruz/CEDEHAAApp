@@ -8,12 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SolicitCourseRequest extends StringRequest {
-    private static final String SOLICIT_COURSE_REQUEST_URL = "http://projects-as-a-developer.online/solicit-course.php";
     private Map<String, String> params;
 
     public SolicitCourseRequest(String titulo, String fechaInicio, String correo, String verificar,
                                 Response.Listener<String> listener) {
-        super(Request.Method.POST, SOLICIT_COURSE_REQUEST_URL, listener, null);
+        super(Request.Method.POST, DireccionesURL.SOLICIT_COURSE_REQUEST_URL, listener, null);
 
         params = new HashMap<>();
         params.put("titulo", titulo);

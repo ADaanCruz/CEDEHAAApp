@@ -167,7 +167,7 @@ public class CreateCourseActivity extends AppCompatActivity {
                     }
                 }
             };
-            url = "http://projects-as-a-developer.online/edit-course.php";
+            url = DireccionesURL.EDIT_COURSE_REQUEST_URL;
         } else {
             cambios.setVisibility(View.VISIBLE);
             aceptarCursoNuevo.setText(R.string.aceptar_curso_nuevo);
@@ -208,7 +208,7 @@ public class CreateCourseActivity extends AppCompatActivity {
                     }
                 }
             };
-            url = "http://projects-as-a-developer.online/new-course.php";
+            url = DireccionesURL.NEW_COURSE_REQUEST_URL;
         }
 
         aceptarCursoNuevo.setOnClickListener(new View.OnClickListener() {

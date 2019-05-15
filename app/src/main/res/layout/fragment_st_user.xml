@@ -57,7 +57,31 @@
       android:layout_width="match_parent"
       android:layout_height="40dp"
       android:text="@string/recibir_notificaciones"
-      android:textSize="16sp"/>
+      android:textSize="16sp"
+      android:checked="true"/>
+
+  <TextView
+      android:id="@+id/conf_acerca_de"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:layout_marginTop="15dp"
+      android:gravity="center_vertical"
+      android:clickable="true"
+      android:focusable="true"
+      android:text="@string/acerca_de"
+      android:textSize="16sp"
+      android:textColor="#000" />
+
+  <TextView
+      android:id="@+id/conf_actualizar"
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:gravity="center_vertical"
+      android:clickable="true"
+      android:focusable="true"
+      android:text="@string/actualizar"
+      android:textSize="16sp"
+      android:textColor="#000" />
 
   <TextView
       android:id="@+id/conf_cerrar_sesion"
@@ -68,17 +92,6 @@
       android:clickable="true"
       android:focusable="true"
       android:text="@string/cerrar_sesion"
-      android:textSize="16sp"
-      android:textColor="#000" />
-
-  <TextView
-      android:id="@+id/conf_acerca_de"
-      android:layout_width="match_parent"
-      android:layout_height="40dp"
-      android:gravity="center_vertical"
-      android:clickable="true"
-      android:focusable="true"
-      android:text="@string/acerca_de"
       android:textSize="16sp"
       android:textColor="#000" />
 

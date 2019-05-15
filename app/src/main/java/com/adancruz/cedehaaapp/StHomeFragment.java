@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,8 +33,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class StHomeFragment extends Fragment {
-
-    private static final String COURSE_REQUEST_URL = "http://projects-as-a-developer.online/all-courses.php";
 
     private SwipeRefreshLayout swipeRefresh;
     private TextView bienvenida, sinCursos;
@@ -88,8 +87,9 @@ public class StHomeFragment extends Fragment {
                             v.getContext().getString(R.string.verify_internet_dialog_message),
                             v.getContext().getString(R.string.verify_internet_dialog_title),
                             "Entendido",
-                            null,
-                            view.getContext()
+                            "Configuración",
+                            view.getContext(),
+                            "wifi"
                     );
                 }
             }
@@ -112,7 +112,7 @@ public class StHomeFragment extends Fragment {
     }
 
     private void cargarLista(final View vista) {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, COURSE_REQUEST_URL, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, DireccionesURL.COURSE_REQUEST_URL, null,
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -165,16 +165,15 @@ public class StHomeFragment extends Fragment {
     }
 
     private void verifyView(View view) {
+        sinCursos.setVisibility(View.GONE);
         internet = verifyInternet(view.getContext());
         if (!internet) {
             cursos.setVisibility(View.GONE);
             sinCursos.setVisibility(View.VISIBLE);
             sinCursos.setText(view.getContext().getString(R.string.no_internet));
         } else {
-            cargarLista(view);
             sinCursos.setText(view.getContext().getString(R.string.sin_cursos));
-            sinCursos.setVisibility(View.GONE);
-            cursos.setVisibility(View.VISIBLE);
+            cargarLista(view);
         }
     }
 
@@ -184,7 +183,7 @@ public class StHomeFragment extends Fragment {
         return network != null && network.isConnected();
     }
 
-    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, Context context){
+    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, final Context context, final String metodo){
         dialog = new AlertDialog.Builder(context);
         dialog.setMessage(mensaje)
                 .setTitle(titulo);
@@ -192,6 +191,7 @@ public class StHomeFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 selectionDialog = true;
+
             }
         });
 
@@ -200,6 +200,15 @@ public class StHomeFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     selectionDialog = false;
+                    /*switch (metodo) {
+                        case "wifi": context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            break;
+                        default:
+                            break;
+                    }*/
+                    if (metodo.equals("wifi")) {
+                        context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
                 }
             });
         }

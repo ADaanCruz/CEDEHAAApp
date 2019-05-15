@@ -1,10 +1,17 @@
 package com.adancruz.cedehaaapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,18 +35,19 @@ import java.util.ArrayList;
 
 public class StNotificationsFragment extends Fragment {
 
-    private static String MY_COURSES_REQUEST_URL = "http://projects-as-a-developer.online/my-courses.php?correo=ninguno";
-    private static String COURSE_SOLICIT_REQUEST_URL = "http://projects-as-a-developer.online/all-solicitudes.php";
-
     ArrayList<Curso> arrayListCur;
     ArrayList<Solicitud> arrayListSol;
 
     ListView lista;
     TextView sinLista, notificacion;
-
     String tipoDeUsuario = "estudiante";
-
     SwipeRefreshLayout swipeRefresh;
+
+    private ConnectivityManager con;
+    private NetworkInfo network;
+    private AlertDialog.Builder dialog;
+    private boolean internet;
+    private boolean selectionDialog;
 
     @Nullable
     @Override
@@ -54,32 +62,24 @@ public class StNotificationsFragment extends Fragment {
         if (getArguments() != null) {
             String correo = getArguments().getString("correo");
             tipoDeUsuario = getArguments().getString("tipoDeUsuario");
-            MY_COURSES_REQUEST_URL = "http://projects-as-a-developer.online/my-courses.php?correo=" + correo;
+            DireccionesURL.MY_COURSES_REQUEST_URL = "https://projects-as-a-developer.online/my-courses.php?correo=" + correo;
         }
 
         assert tipoDeUsuario != null;
-        cargarListaNotifications(view);
+        verifyView(view);
 
         swipeRefresh.setDistanceToTriggerSync(20);
         swipeRefresh.setColorSchemeColors(
                 getResources().getColor(R.color.colorPrimaryDark),
                 getResources().getColor(R.color.colorPrimary),
                 getResources().getColor(R.color.colorAccent));
-
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                cargarListaNotifications(view);
+                verifyView(view);
                 swipeRefresh.setRefreshing(false);
             }
         });
-
-        swipeRefresh.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefresh.setRefreshing(false);
-            }
-        }, 1000);
 
         return view;
     }
@@ -90,7 +90,7 @@ public class StNotificationsFragment extends Fragment {
             case "administrador": {
                 sinLista.setText(getString(R.string.sin_solicitudes_cursos));
                 notificacion.setText(getString(R.string.solicitudes));
-                request = new JsonObjectRequest(Request.Method.GET, COURSE_SOLICIT_REQUEST_URL, null,
+                request = new JsonObjectRequest(Request.Method.GET, DireccionesURL.COURSE_SOLICIT_REQUEST_URL, null,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
@@ -140,7 +140,7 @@ public class StNotificationsFragment extends Fragment {
             case "estudiante": {
                 sinLista.setText(getString(R.string.sin_curso_inscrito));
                 notificacion.setText(getString(R.string.tus_cursos));
-                request = new JsonObjectRequest(Request.Method.GET, MY_COURSES_REQUEST_URL, null,
+                request = new JsonObjectRequest(Request.Method.GET, DireccionesURL.MY_COURSES_REQUEST_URL, null,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
@@ -194,5 +194,28 @@ public class StNotificationsFragment extends Fragment {
                 swipeRefresh.setEnabled(false);
                 break;
         }
+    }
+
+    private void verifyView(View view) {
+        sinLista.setVisibility(View.GONE);
+        internet = verifyInternet(view.getContext());
+        if (!internet) {
+            lista.setVisibility(View.GONE);
+            sinLista.setVisibility(View.VISIBLE);
+            sinLista.setText(view.getContext().getString(R.string.no_internet));
+        } else {
+            if (tipoDeUsuario.equals("administrador")) {
+                sinLista.setText(view.getContext().getString(R.string.sin_solicitudes_cursos));
+            } else if (tipoDeUsuario.equals("estudiante")) {
+                sinLista.setText(view.getContext().getString(R.string.sin_curso_inscrito));
+            }
+            cargarListaNotifications(view);
+        }
+    }
+
+    private boolean verifyInternet(Context context) {
+        con = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        network = con.getActiveNetworkInfo();
+        return network != null && network.isConnected();
     }
 }

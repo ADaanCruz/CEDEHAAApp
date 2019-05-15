@@ -8,11 +8,10 @@ import java.util.Map;
 
 public class NotificacionesRequest extends StringRequest {
 
-    private static final String NOTIFICATIONS_REQUEST = "http://projects-as-a-developer.online/notifications.php";
     private Map<String, String> params;
 
     public NotificacionesRequest(String titulo, String mensaje, Response.Listener<String> listener) {
-        super(Method.POST, NOTIFICATIONS_REQUEST, listener, null);
+        super(Method.POST, DireccionesURL.NOTIFICATIONS_REQUEST, listener, null);
         params = new HashMap<>();
         params.put("titulo", titulo);
         params.put("mensaje", mensaje);

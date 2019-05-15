@@ -122,4 +122,10 @@
     <string name="no_internet">No hay buena conexión de internet.</string>
     <string name="verify_internet_dialog_message">Necesitas conexión a Internet (WiFi o datos móviles) para el uso de la app.</string>
     <string name="verify_internet_dialog_title">Verifica tu Internet</string>
+    <string name="actualizar">Actualizar aplicación</string>
+    <string name="abc_esp_ABC">aábcdeéfghiíjklmnñóopqrstuvwxyz AÁBCDEÉFGHIÍJKLMNÑOÓPQRSTUVWXYZ</string>
+    <string name="abc_ABC">aábcdeéfghiíjklmnñóopqrstuvwxyzAÁBCDEÉFGHIÍJKLMNÑOÓPQRSTUVWXYZ</string>
+    <string name="n123">0123456789</string>
+    <string name="abc_ABC_123">aábcdeéfghiíjklmnñóopqrstuvwxyz AÁBCDEÉFGHIÍJKLMNÑOÓPQRSTUVWXYZ 0123456789</string>
+    <string name="digitos">aábcdeéfghiíjklmnñóopqrstuvwxyz AÁBCDEÉFGHIÍJKLMNÑOÓPQRSTUVWXYZ 0123456789 @-_+=(){}[]*%$#!?,.;\n: /?\\</string>
 </resources>

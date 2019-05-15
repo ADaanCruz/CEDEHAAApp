@@ -58,7 +58,7 @@ public class StudentActivity extends AppCompatActivity {
 
         cargarBundle(fragment);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.st_navView);
+        BottomNavigationView navigation = findViewById(R.id.st_navView);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.st_container_activity,
                 fragment).commit();

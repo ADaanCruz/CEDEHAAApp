@@ -9,14 +9,13 @@ import java.util.Map;
 
 public class StudentRegisterRequest extends StringRequest {
 
-    private static final String STUDENT_REGISTER_REQUEST_URL = "http://projects-as-a-developer.online/student-register.php";
     private Map<String, String> params;
 
     public StudentRegisterRequest (String nombre, String apellidoPaterno, String apellidoMaterno,
                                    String correo, String contrasena, String telefono, String tipoDeUsuario,
                                    String fotoDePerfil, String token, Response.Listener<String> listener) {
 
-        super(Request.Method.POST, STUDENT_REGISTER_REQUEST_URL, listener, null);
+        super(Request.Method.POST, DireccionesURL.STUDENT_REGISTER_REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("nombre", nombre);
         params.put("apellidoPaterno", apellidoPaterno);

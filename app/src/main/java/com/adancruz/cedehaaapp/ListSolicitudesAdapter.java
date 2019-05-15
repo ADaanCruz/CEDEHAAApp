@@ -1,6 +1,8 @@
 package com.adancruz.cedehaaapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -41,7 +43,7 @@ public class ListSolicitudesAdapter extends BaseAdapter {
         TextView nombre = view.findViewById(R.id.texto_nombre_solicita);
         TextView apellidoPaterno = view.findViewById(R.id.texto_apellido_pat_solicita);
         TextView correo = view.findViewById(R.id.texto_correo_solicita);
-        TextView telefono = view.findViewById(R.id.texto_telefono_solicita);
+        final TextView telefono = view.findViewById(R.id.texto_telefono_solicita);
         Button llamar = view.findViewById(R.id.boton_llamar_solicitud);
         Button aceptar = view.findViewById(R.id.boton_aceptar_solicitud);
         Button rechazar = view.findViewById(R.id.boton_rechazar_solicitud) ;
@@ -69,9 +71,7 @@ public class ListSolicitudesAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 botonesEnable(botones, false);
-                Toast.makeText(view.getContext(),
-                        "Llamando...",
-                        Toast.LENGTH_LONG).show();
+                view.getContext().startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+telefono.getText())));
                 botonesEnable(botones, true);
             }
         });
