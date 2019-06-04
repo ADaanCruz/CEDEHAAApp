@@ -54,18 +54,6 @@
         app:srcCompat="@drawable/cedehaa_logo_1"
         android:layout_marginBottom="10dp"/>
 
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:foregroundGravity="center_vertical|center_horizontal"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="25dp"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/login_form"
         android:layout_width="match_parent"
@@ -130,38 +118,54 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/boton_iniciar_sesion"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="@string/iniciar_sesion"
-        android:background="@drawable/boton_primario"
-        android:textColor="#ffffff"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="20dp"/>
-
-    <Button
-        android:id="@+id/boton_registrarse"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="@string/registrarse"
-        android:textColor="#FFFFFF"
-        android:background="@drawable/boton_secundario" />
-
-    <TextView
-        android:id="@+id/olvidaste"
+    <LinearLayout
+        android:id="@+id/botones_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/olvidaste_tu_contrasena"
-        android:gravity="center"
-        android:textColor="@color/black_overlay"
-        android:clickable="true"
-        android:focusable="true"/>
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/boton_iniciar_sesion"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="@string/iniciar_sesion"
+            android:background="@drawable/boton_primario"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"/>
+
+        <Button
+            android:id="@+id/boton_registrarse"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/registrarse"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/boton_secundario" />
+
+        <TextView
+            android:id="@+id/olvidaste"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/olvidaste_tu_contrasena"
+            android:gravity="center"
+            android:textColor="@color/black_overlay"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar_login"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"/>
 
 </LinearLayout>

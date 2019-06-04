@@ -87,5 +87,11 @@
             android:background="@drawable/boton_primario"
             android:textColor="#FFFFFF"
             android:visibility="gone"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar_registro"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>

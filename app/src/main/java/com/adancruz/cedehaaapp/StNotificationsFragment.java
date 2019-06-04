@@ -118,7 +118,7 @@ public class StNotificationsFragment extends Fragment {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     Toast.makeText(view.getContext(),
-                                            "Error: JSONException",
+                                            "Error del servidor",
                                             Toast.LENGTH_LONG).show();
                                 }
                             }
@@ -168,7 +168,7 @@ public class StNotificationsFragment extends Fragment {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     Toast.makeText(view.getContext(),
-                                            "Error: JSONException",
+                                            "Error del servidor",
                                             Toast.LENGTH_LONG).show();
                                 }
                             }

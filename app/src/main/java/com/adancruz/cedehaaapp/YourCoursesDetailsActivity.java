@@ -157,13 +157,13 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                                                 insert = "insert";
                                         if (error.equals(post)) {
                                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                                    "Error: Type POST", Toast.LENGTH_LONG).show();
+                                                    "Error del servidor", Toast.LENGTH_LONG).show();
                                         } else if (error.equals(cursoyusuario)) {
                                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                                    "Hay un problema con el usuario", Toast.LENGTH_LONG).show();
+                                                    "Hay un problema con tu usuario", Toast.LENGTH_LONG).show();
                                         } else if (error.equals(verificar)) {
                                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                                    "Hay un problema con la verificación", Toast.LENGTH_LONG).show();
+                                                    "Error del servidor", Toast.LENGTH_LONG).show();
                                         } else if (error.equals(exist)) {
                                             Toast.makeText(YourCoursesDetailsActivity.this,
                                                     "Su solicitud sigue en espera", Toast.LENGTH_LONG).show();
@@ -175,10 +175,10 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                                                     "El curso se acaba de llenar", Toast.LENGTH_LONG).show();
                                         } else if (error.equals(insert)) {
                                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                                    "Error: Type SQL - Insert ", Toast.LENGTH_LONG).show();
+                                                    "Error del servidor", Toast.LENGTH_LONG).show();
                                         } else {
                                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                                    "Algo salió mal", Toast.LENGTH_LONG).show();
+                                                    "Error del servidor", Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 } catch (JSONException e) {
@@ -262,18 +262,18 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                                     "Hay un problema con el curso", Toast.LENGTH_LONG).show();
                         } else if (error.equals(verificar)) {
                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                    "Hay un problema con la verificación", Toast.LENGTH_LONG).show();
+                                    "Error del servidor", Toast.LENGTH_LONG).show();
                         } else if (error.equals(post)) {
                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                    "Error: Type POST", Toast.LENGTH_LONG).show();
+                                    "Error del servidor", Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(YourCoursesDetailsActivity.this,
-                                    "Algo salió mal", Toast.LENGTH_LONG).show();
+                                    "Error del servidor", Toast.LENGTH_LONG).show();
                         }
                     }
                 } catch (JSONException e) {
                     Toast.makeText(YourCoursesDetailsActivity.this,
-                            "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            "Error del servidor", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }
@@ -333,17 +333,17 @@ public class YourCoursesDetailsActivity extends AppCompatActivity {
                                     String delete = "delete", post = "post";
                                     if (error.equals(delete)) {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "Error: Type SQL", Toast.LENGTH_LONG).show();
+                                                "Error del servidor", Toast.LENGTH_LONG).show();
                                     } else if(error.equals(post)) {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "Error: Type POST", Toast.LENGTH_LONG).show();
+                                                "Error del servidor", Toast.LENGTH_LONG).show();
                                     } else {
                                         Toast.makeText(YourCoursesDetailsActivity.this,
-                                                "Algo salió mal", Toast.LENGTH_LONG).show();
+                                                "Error del servidor", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             } catch (JSONException e) {
-                                Toast.makeText(YourCoursesDetailsActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(YourCoursesDetailsActivity.this, "Error del servidor", Toast.LENGTH_LONG).show();
                                 e.printStackTrace();
                             }
                         }

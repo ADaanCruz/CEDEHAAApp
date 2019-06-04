@@ -92,7 +92,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Notificación: " + remoteMessage.getNotification().getBody());
 
-            mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+            prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+            if (prefs.getBoolean("notificaciones",true)) {
+                mostrarNotificacion(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+            }
         }
 
         if (remoteMessage.getData().size() > 0) {

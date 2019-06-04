@@ -1,13 +1,20 @@
 package com.adancruz.cedehaaapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -32,9 +39,17 @@ public class StudentRegisterActivity extends AppCompatActivity {
             conf_contrasena, numero, prefijo, codigo_registro;
     private RadioGroup tipo_registro;
     private View focusView = null;
+    private ProgressBar mProgressView;
 
     private TextView[] campos;
     private String tipoDeUsuario;
+    private boolean mandarCorreo = false;
+
+    private ConnectivityManager con;
+    private NetworkInfo network;
+    private AlertDialog.Builder dialog;
+    private boolean internet;
+    private boolean selectionDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +70,10 @@ public class StudentRegisterActivity extends AppCompatActivity {
         prefijo = findViewById(R.id.prefijo_telefonico);
         numero = findViewById(R.id.numero_telefonico);
         boton_aceptarRegistro = findViewById(R.id.boton_aceptar_registro);
+        mProgressView = findViewById(R.id.progressBar_registro);
         texto_leerTerminosYCondiciones = findViewById(R.id.terminos_y_condiciones);
+
+        showProgress(false);
 
         tipo_registro.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -68,121 +86,134 @@ public class StudentRegisterActivity extends AppCompatActivity {
         boton_aceptarRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boton_aceptarRegistro.setEnabled(false);
-                boolean cancel = false;
-
-                cargarCampos(tipoDeUsuario);
-                if (campos == null) {
-                    Toast.makeText(StudentRegisterActivity.this, "Selecciona un tipo de registro", Toast.LENGTH_LONG).show();
-                    boton_aceptarRegistro.setEnabled(true);
-                } else if (isEmpty(campos) || containComilla(campos) || containSpace(campos)) {
-                    focusView.requestFocus();
-                    boton_aceptarRegistro.setEnabled(true);
-                } else {
-                    if (tipoDeUsuario.equals("administrador")) {
-                        if (!codigo_registro.getText().toString().equals("c0d1g0")) {
-                            codigo_registro.setError(getString(R.string.incorrecto));
-                            focusView = codigo_registro;
-                            cancel = true;
-                        }
-                    }
-                    if (!isEmailValid(correo.getText().toString())) {
-                        correo.setError(getString(R.string.error_correo_invalido));
-                        focusView = correo;
-                        cancel = true;
-                    }
-                    if (!isPasswordValid(contrasena.getText().toString())) {
-                        contrasena.setError(getString(R.string.error_contrasena_invalida));
-                        focusView = contrasena;
-                        cancel = true;
-                    } else if (!(conf_contrasena.getText().toString().equals(contrasena.getText().toString()))) {
-                        conf_contrasena.setError(getString(R.string.verificar_contrasena));
-                        focusView = conf_contrasena;
-                        cancel = true;
-                    }
-                    if (tipoDeUsuario.equals("estudiante")) {
-                        if ( !isPrefixValid(prefijo.getText().toString()) ||
-                                isNotNumberValid(prefijo.getText().toString()) ) {
-                            prefijo.setError(getString(R.string.prefijo_invalido));
-                            focusView = prefijo;
-                            cancel = true;
-                        }
-                        if ( !isPhoneNumberValid(numero.getText().toString()) ||
-                                isNotNumberValid(numero.getText().toString()) ) {
-                            numero.setError(getString(R.string.telefono_invalido));
-                            focusView = numero;
-                            cancel = true;
-                        }
-                    }
-                    if (cancel) {
+                showProgress(true);
+                internet = verifyInternet(v.getContext());
+                if (internet) {
+                    boolean cancel = false;
+                    cargarCampos(tipoDeUsuario);
+                    if (campos == null) {
+                        Toast.makeText(StudentRegisterActivity.this, "Selecciona un tipo de registro", Toast.LENGTH_LONG).show();
+                        showProgress(false);
+                    } else if (isEmpty(campos) || containComilla(campos) || containSpace(campos)) {
                         focusView.requestFocus();
-                        boton_aceptarRegistro.setEnabled(true);
+                        showProgress(false);
                     } else {
-                        Response.Listener<String> responseListener = new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    boolean success = jsonObject.getBoolean("success");
-                                    if (success) {
-                                        Toast.makeText(StudentRegisterActivity.this,
-                                                "¡Registro realizado!", Toast.LENGTH_LONG).show();
-                                        guardarInfoBasica(tipoDeUsuario);
-                                        finish();
-                                        startActivity(new Intent(StudentRegisterActivity.this, StudentActivity.class));
-                                    } else {
-                                        String error = jsonObject.getString("message");
-                                        String post = "post", correo = "correo", telefono = "telefono", insert = "insert";
-                                        if (error.equals(post)) {
-                                            Toast.makeText(StudentRegisterActivity.this,
-                                                    "Error: Type POST",
-                                                    Toast.LENGTH_LONG).show();
-                                        } else if (error.equals(correo)) {
-                                            Toast.makeText(StudentRegisterActivity.this,
-                                                  "El correo ya está registrado",
-                                                  Toast.LENGTH_LONG).show();
-                                        } else if (error.equals(telefono)) {
-                                            Toast.makeText(StudentRegisterActivity.this,
-                                                    "El telefono ya está registrado",
-                                                    Toast.LENGTH_LONG).show();
-                                        } else if (error.equals(insert)) {
-                                            Toast.makeText(StudentRegisterActivity.this,
-                                                    "Error: Type SQL: Insert",
-                                                    Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(StudentRegisterActivity.this,
-                                                  "Algo salió mal",
-                                                  Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                } catch (JSONException e) {
-                                    Toast.makeText(StudentRegisterActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                    e.printStackTrace();
-                                }
+                        if (tipoDeUsuario.equals("administrador")) {
+                            if (!codigo_registro.getText().toString().equals("c0d1g0")) {
+                                codigo_registro.setError(getString(R.string.incorrecto));
+                                focusView = codigo_registro;
+                                cancel = true;
                             }
-                        };
-
-                        String telefono = "";
-                        if (tipoDeUsuario.equals("estudiante")) {
-                            telefono = prefijo.getText().toString() + numero.getText().toString();
                         }
-                        prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
-                        StudentRegisterRequest registerRequest = new StudentRegisterRequest(
-                                nombre.getText().toString(),
-                                apellidoPaterno.getText().toString(),
-                                apellidoMaterno.getText().toString(),
-                                correo.getText().toString(),
-                                contrasena.getText().toString(),
-                                telefono,
-                                tipoDeUsuario,
-                                "",
-                                prefs.getString("token","nothing"),
-                                responseListener
-                        );
-                        RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);
-                        queue.add(registerRequest);
-                        boton_aceptarRegistro.setEnabled(true);
+                        if (!isEmailValid(correo.getText().toString())) {
+                            correo.setError(getString(R.string.error_correo_invalido));
+                            focusView = correo;
+                            cancel = true;
+                        }
+                        if (!isPasswordValid(contrasena.getText().toString())) {
+                            contrasena.setError(getString(R.string.error_contrasena_invalida));
+                            focusView = contrasena;
+                            cancel = true;
+                        } else if (!(conf_contrasena.getText().toString().equals(contrasena.getText().toString()))) {
+                            conf_contrasena.setError(getString(R.string.verificar_contrasena));
+                            focusView = conf_contrasena;
+                            cancel = true;
+                        }
+                        if (tipoDeUsuario.equals("estudiante")) {
+                            if ( !isPrefixValid(prefijo.getText().toString()) ||
+                                    isNotNumberValid(prefijo.getText().toString()) ) {
+                                prefijo.setError(getString(R.string.prefijo_invalido));
+                                focusView = prefijo;
+                                cancel = true;
+                            }
+                            if ( !isPhoneNumberValid(numero.getText().toString()) ||
+                                    isNotNumberValid(numero.getText().toString()) ) {
+                                numero.setError(getString(R.string.telefono_invalido));
+                                focusView = numero;
+                                cancel = true;
+                            }
+                        }
+                        if (cancel) {
+                            focusView.requestFocus();
+                            showProgress(false);
+                        } else {
+                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        boolean success = jsonObject.getBoolean("success");
+                                        if (success) {
+                                            Toast.makeText(StudentRegisterActivity.this,
+                                                    "¡Registro realizado!", Toast.LENGTH_LONG).show();
+                                            guardarInfoBasica(tipoDeUsuario);
+                                            mandarCorreo("registro_nuevo", "Registro", boton_aceptarRegistro, StudentRegisterActivity.this);
+                                            finish();
+                                            startActivity(new Intent(StudentRegisterActivity.this, StudentActivity.class));
+                                        } else {
+                                            String error = jsonObject.getString("message");
+                                            String post = "post", correo = "correo", telefono = "telefono", insert = "insert";
+                                            if (error.equals(post)) {
+                                                Toast.makeText(StudentRegisterActivity.this,
+                                                        "Error del servidor (POST)",
+                                                        Toast.LENGTH_LONG).show();
+                                            } else if (error.equals(correo)) {
+                                                Toast.makeText(StudentRegisterActivity.this,
+                                                        "El correo ya está registrado",
+                                                        Toast.LENGTH_LONG).show();
+                                            } else if (error.equals(telefono)) {
+                                                Toast.makeText(StudentRegisterActivity.this,
+                                                        "El telefono ya está registrado",
+                                                        Toast.LENGTH_LONG).show();
+                                            } else if (error.equals(insert)) {
+                                                Toast.makeText(StudentRegisterActivity.this,
+                                                        "Error del servidor (SQL)",
+                                                        Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Toast.makeText(StudentRegisterActivity.this,
+                                                        "Error del servidor",
+                                                        Toast.LENGTH_LONG).show();
+                                            }
+                                            showProgress(false);
+                                        }
+                                    } catch (JSONException e) {
+                                        Toast.makeText(StudentRegisterActivity.this, "Error del servidor", Toast.LENGTH_LONG).show();
+                                        e.printStackTrace();
+                                        showProgress(false);
+                                    }
+                                }
+                            };
+
+                            String telefono = "";
+                            if (tipoDeUsuario.equals("estudiante")) {
+                                telefono = prefijo.getText().toString() + numero.getText().toString();
+                            }
+                            prefs = getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+                            StudentRegisterRequest registerRequest = new StudentRegisterRequest(
+                                    nombre.getText().toString(),
+                                    apellidoPaterno.getText().toString(),
+                                    apellidoMaterno.getText().toString(),
+                                    correo.getText().toString(),
+                                    contrasena.getText().toString(),
+                                    telefono,
+                                    tipoDeUsuario,
+                                    "",
+                                    prefs.getString("token","nothing"),
+                                    responseListener
+                            );
+                            RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);
+                            queue.add(registerRequest);
+                        }
                     }
+                } else {
+                    mostrarDialog(
+                            v.getContext().getString(R.string.verify_internet_dialog_message),
+                            v.getContext().getString(R.string.verify_internet_dialog_title),
+                            "Entendido",
+                            "Configuración",
+                            v.getContext(),
+                            "wifi"
+                    );
                 }
             }
         });
@@ -212,8 +243,64 @@ public class StudentRegisterActivity extends AppCompatActivity {
         editor.putBoolean("first", false);
         editor.putBoolean("infoBasica", true);
         editor.putBoolean("sesion", true);
+        editor.putBoolean("notificaciones", true);
 
         editor.apply();
+    }
+
+    private void mandarCorreo(String tipo, final String ventana, final Button boton, final Context context) {
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean success = jsonObject.getBoolean("success");
+                    if (success) {
+                        Toast.makeText(context,
+                                "Correo enviado",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        String error = jsonObject.getString("message");
+                        String post = "post", send = "send", email = "email", tipo = "tipo";
+                        if (error.equals(post)) {
+                            Toast.makeText(context,
+                                    "Error del servidor",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error.equals(email)) {
+                            Toast.makeText(context,
+                                    "El correo no está registrado",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error.equals(tipo)) {
+                            Toast.makeText(context,
+                                    "Error del servidor",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error.equals(send)) {
+                            Toast.makeText(context,
+                                    "No se pudo envíar el correo",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context,
+                                    "Error del servidor",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        boton.setEnabled(true);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    boton.setEnabled(true);
+                }
+            }
+        };
+
+        EmailRequest emailRequest = new EmailRequest(
+                correo.getText().toString(),
+                tipo,
+                "",
+                responseListener
+        );
+
+        RequestQueue queue = Volley.newRequestQueue(StudentRegisterActivity.this);
+        queue.add(emailRequest);
     }
 
     @Override
@@ -278,6 +365,7 @@ public class StudentRegisterActivity extends AppCompatActivity {
                 break;
             case "none":
                 campos = null;
+                break;
             default:
                 campos = null;
                 break;
@@ -290,7 +378,8 @@ public class StudentRegisterActivity extends AppCompatActivity {
 
     private boolean isEmailValid(String email) {
         return (email.contains("@") &&
-                (email.contains("gmail.com") || email.contains("hotmail.com") || email.contains("live.com") || email.contains(".mx")));
+                (email.contains("outlook.com") || email.contains("gmail.com") || email.contains("hotmail.com") ||
+                        email.contains("live.com") || email.contains(".mx") || email.contains(".com")));
     }
 
     private boolean isNotNumberValid(String string) {
@@ -346,5 +435,57 @@ public class StudentRegisterActivity extends AppCompatActivity {
             }
         }
         return cancel;
+    }
+
+    private boolean verifyInternet(Context context) {
+        con = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        network = con.getActiveNetworkInfo();
+        return network != null && network.isConnected();
+    }
+
+    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, final Context context, final String metodo){
+        dialog = new AlertDialog.Builder(context);
+        dialog.setMessage(mensaje)
+                .setTitle(titulo);
+        dialog.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectionDialog = true;
+
+            }
+        });
+
+        if (negative != null) {
+            dialog.setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    selectionDialog = false;
+                    /*switch (metodo) {
+                        case "wifi": context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            break;
+                        default:
+                            break;
+                    }*/
+                    if (metodo.equals("wifi")) {
+                        context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                }
+            });
+        }
+        dialog.show();
+    }
+
+    /**
+     * Muestra el progreso de la interfaz de usuario y oculta los botones de inicio de sesión.
+     */
+    private void showProgress(boolean show) {
+        if (show)
+        {
+            boton_aceptarRegistro.setVisibility(View.GONE);
+            mProgressView.setVisibility(View.VISIBLE);
+        } else {
+            boton_aceptarRegistro.setVisibility(View.VISIBLE);
+            mProgressView.setVisibility(View.GONE);
+        }
     }
 }

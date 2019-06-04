@@ -27,4 +27,8 @@ class DireccionesURL {
 
     // LISTA DE MIS CURSOS INSCRITOS
     static String MY_COURSES_REQUEST_URL = "https://projects-as-a-developer.online/my-courses.php?correo=ninguno";
+
+    // MANDAR CORREOS
+    static final String EMAIL_REQUEST_URL = "https://projects-as-a-developer.online/mail.php";
+
 }

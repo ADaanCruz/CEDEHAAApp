@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.Objects;
@@ -20,10 +22,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class StUserFragment extends Fragment {
 
     public static final String MY_PREFS_FILENAME = "com.adancruz.cedehaaappp.User";
+    private SharedPreferences.Editor editor;
+    private SharedPreferences prefs;
 
     TextView nombre;
     TextView apellidos;
     TextView cerrar_sesion;
+    Switch notificaciones;
 
     @Nullable
     @Override
@@ -33,6 +38,7 @@ public class StUserFragment extends Fragment {
         nombre = view.findViewById(R.id.texto_nombre);
         apellidos = view.findViewById(R.id.texto_apellidos);
         cerrar_sesion = view.findViewById(R.id.conf_cerrar_sesion);
+        notificaciones = view.findViewById(R.id.switch_notificaciones);
 
         if (getArguments() != null) {
             String nombre_ = getArguments().getString("nombre");
@@ -41,6 +47,24 @@ public class StUserFragment extends Fragment {
                   getArguments().getString("apellidoMaterno");
             apellidos.setText(apellidos_);
         }
+
+        prefs = view.getContext().getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE);
+        editor = view.getContext().getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
+        if (prefs.getBoolean("notificaciones", true)) {
+            editor.putBoolean("notificaciones", true);
+            editor.apply();
+            notificaciones.setChecked(true);
+        } else {
+            notificaciones.setChecked(false);
+        }
+
+        notificaciones.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                editor.putBoolean("notificaciones", isChecked);
+                editor.apply();
+            }
+        });
 
         cerrar_sesion.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -51,7 +75,6 @@ public class StUserFragment extends Fragment {
                 SharedPreferences.Editor editor = Objects.requireNonNull(getActivity()).getSharedPreferences(MY_PREFS_FILENAME, MODE_PRIVATE).edit();
                 editor.putBoolean("sesion", false);
                 editor.apply();
-
                 Objects.requireNonNull(getActivity()).finish();
                 startActivity(new Intent(view.getContext(), LoginActivity.class));
             }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +32,8 @@ import org.json.JSONObject;
 
 public class CreateCourseActivity extends AppCompatActivity {
 
+    private boolean selectionDialog;
+
     private static final String TAG = "CreateCourseActivity";
     private TextView titulo, descripcionBreve, descripcionGeneral, limiteEstudiantes, cambios;
     String exTitulo, exFechaInicio, exDescBreve;
@@ -37,6 +41,7 @@ public class CreateCourseActivity extends AppCompatActivity {
     private ImageView imagen;
     public Button aceptarCursoNuevo;
     private ToggleButton estadoCurso;
+    private ProgressBar mProgressView;
     View focusView = null;
     int numImagen;
     String fechaInicio = "";
@@ -65,6 +70,7 @@ public class CreateCourseActivity extends AppCompatActivity {
         estadoCurso = findViewById(R.id.toggle_estado_curso);
         aceptarCursoNuevo = findViewById(R.id.boton_aceptar_curso_nuevo);
         cambios = findViewById(R.id.texto_proximos_cambios);
+        mProgressView = findViewById(R.id.progressBar_create_curso);
 
         imagen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,16 +159,16 @@ public class CreateCourseActivity extends AppCompatActivity {
                             String select = "select";
                             if (error.equals(select)) {
                                 Toast.makeText(CreateCourseActivity.this,
-                                        "Error: Query select",
+                                        "Error del servidor",
                                         Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(CreateCourseActivity.this,
-                                        "Algo salió mal",
+                                        "Error del servidor",
                                         Toast.LENGTH_LONG).show();
                             }
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(CreateCourseActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateCourseActivity.this, "Error del servidor", Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
                 }
@@ -190,21 +196,23 @@ public class CreateCourseActivity extends AppCompatActivity {
                             String post = "post", insert = "insert";
                             if (error.equals(post)) {
                                 Toast.makeText(CreateCourseActivity.this,
-                                        "Error: Type POST",
+                                        "Error con el servidor (POST)",
                                         Toast.LENGTH_LONG).show();
-                            } if (error.equals(insert)) {
+                            } else if (error.equals(insert)) {
                                 Toast.makeText(CreateCourseActivity.this,
-                                        "Error: Type SQL",
+                                        "Error con el servidor (SQL)",
                                         Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(CreateCourseActivity.this,
-                                        "Algo salió mal",
+                                        "Error con el servidor",
                                         Toast.LENGTH_LONG).show();
                             }
+                            showProgress(false);
                         }
                     } catch (JSONException e) {
                         Toast.makeText(CreateCourseActivity.this, "ERROR: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         e.printStackTrace();
+                        showProgress(false);
                     }
                 }
             };
@@ -214,9 +222,9 @@ public class CreateCourseActivity extends AppCompatActivity {
         aceptarCursoNuevo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgress(true);
                 internet = verifyInternet(v.getContext());
                 if (internet){
-                    aceptarCursoNuevo.setEnabled(false);
                     boolean cancel;
                     cancel = validarCampos();
 
@@ -240,16 +248,19 @@ public class CreateCourseActivity extends AppCompatActivity {
                         );
                         RequestQueue queue = Volley.newRequestQueue(CreateCourseActivity.this);
                         queue.add(courseRequest);
+                    } else {
+                        showProgress(false);
                     }
-                    aceptarCursoNuevo.setEnabled(true);
                 } else {
                     mostrarDialog(
                             v.getContext().getString(R.string.verify_internet_dialog_message),
                             v.getContext().getString(R.string.verify_internet_dialog_title),
                             "Entendido",
-                            null,
-                            v.getContext()
+                            "Configuración",
+                            v.getContext(),
+                            "wifi"
                     );
+                    showProgress(false);
                 }
             }
         });
@@ -388,15 +399,46 @@ public class CreateCourseActivity extends AppCompatActivity {
         return network != null && network.isConnected();
     }
 
-    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, Context context){
+    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, final Context context, final String metodo){
         dialog = new AlertDialog.Builder(context);
         dialog.setMessage(mensaje)
                 .setTitle(titulo);
-        dialog.setPositiveButton("Entendido", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(positive, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                selectionDialog = true;
+
             }
         });
+
+        if (negative != null) {
+            dialog.setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    selectionDialog = false;
+                    /*switch (metodo) {
+                        case "wifi": context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            break;
+                        default:
+                            break;
+                    }*/
+                    if (metodo.equals("wifi")) {
+                        context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                }
+            });
+        }
         dialog.show();
+    }
+
+    private void showProgress(boolean show) {
+        if (show)
+        {
+            aceptarCursoNuevo.setVisibility(View.GONE);
+            mProgressView.setVisibility(View.VISIBLE);
+        } else {
+            aceptarCursoNuevo.setVisibility(View.VISIBLE);
+            mProgressView.setVisibility(View.GONE);
+        }
     }
 }

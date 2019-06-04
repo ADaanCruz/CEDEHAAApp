@@ -1,6 +1,5 @@
 package com.adancruz.cedehaaapp;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    LinearLayout mLoginView;
+    LinearLayout mLoginView, mButtonView;
     Switch sesionAbierta;
     Button boton_registrarse;
     Button boton_iniciarSesion;
@@ -77,7 +77,8 @@ public class LoginActivity extends AppCompatActivity {
         mEmailView = findViewById(R.id.email);
         mPasswordView = findViewById(R.id.password);
         mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mButtonView = findViewById(R.id.botones_login);
+        mProgressView = findViewById(R.id.progressBar_login);
         mLoginView = findViewById(R.id.vista_login);
         sesionAbierta = findViewById(R.id.switch_sesion_abierta);
         olvidaste = findViewById(R.id.olvidaste);
@@ -86,24 +87,26 @@ public class LoginActivity extends AppCompatActivity {
         boton_iniciarSesion = findViewById(R.id.boton_iniciar_sesion);
 
         sesionAbierta.setChecked(true);
-        String mandarNotificacion = "Mandar notificación";
-        olvidaste.setText(mandarNotificacion);
+        showProgress(false);
 
         boton_registrarse.setOnClickListener(new OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View v) {
+                showProgress(true);
                 internet = verifyInternet(v.getContext());
                 if (internet) {
                     finish();
                     startActivity(new Intent(LoginActivity.this, StudentRegisterActivity.class));
                 } else {
+                    showProgress(false);
                     mostrarDialog(
                             v.getContext().getString(R.string.verify_internet_dialog_message),
                             v.getContext().getString(R.string.verify_internet_dialog_title),
                             "Entendido",
-                            null,
-                            v.getContext()
+                            "Configuraciòn",
+                            v.getContext(),
+                            "wifi"
                     );
                 }
             }
@@ -113,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View view) {
+                showProgress(true);
                 internet = verifyInternet(view.getContext());
                 if (internet) {
                     // Para pruebas se deja en true, pero sin poder iniciar sesión.
@@ -122,19 +126,20 @@ public class LoginActivity extends AppCompatActivity {
                         cargarFondo();
                         showLoginForm(true);
                     } else {
-                        showProgress(true);
                         boton_iniciarSesion.setEnabled(false);
                         attemptLogin();
                         boton_iniciarSesion.setEnabled(true);
                     }
                 } else {
                     selectionDialog = false;
+                    showProgress(false);
                     mostrarDialog(
                             view.getContext().getString(R.string.verify_internet_dialog_message),
                             view.getContext().getString(R.string.verify_internet_dialog_title),
                             "Entendido",
-                            null,
-                            view.getContext()
+                            "Configuración",
+                            view.getContext(),
+                            "wifi"
                     );
                 }
             }
@@ -143,7 +148,22 @@ public class LoginActivity extends AppCompatActivity {
         olvidaste.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mandarNotificaciones();
+                showProgress(true);
+                internet = verifyInternet(v.getContext());
+                if (internet) {
+                    //mandarNotificaciones();
+                    startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+                } else {
+                    showProgress(false);
+                    selectionDialog = false;
+                    mostrarDialog(v.getContext().getString(R.string.verify_internet_dialog_message),
+                            v.getContext().getString(R.string.verify_internet_dialog_title),
+                            "Entendido",
+                            "Configuración",
+                            v.getContext(),
+                            "wifi"
+                    );
+                }
             }
         });
 
@@ -174,8 +194,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // Comprueba si hay una dirección de correo electrónico válida.
         if (isEmpty(campos) || containSpace(campos) || containComilla(campos)) {
-            focusView.requestFocus();
             showProgress(false);
+            focusView.requestFocus();
         } else {
             String correo = mEmailView.getText().toString();
             String contrasena = mPasswordView.getText().toString();
@@ -197,12 +217,12 @@ public class LoginActivity extends AppCompatActivity {
             if (cancel) {
                 // Hubo un error y enfoca el campo con un error.
                 focusView.requestFocus();
+                showProgress(false);
             } else {
                 // Muestra un marcador de progreso y comienza una tarea en segundo plano
                 // para realizar el intento de inicio de sesión del usuario.
                 loginWithBD(correo, contrasena);
             }
-            showProgress(false);
         }
     }
 
@@ -239,25 +259,29 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this,
                                     "Correo y/o contraseña incorrectos",
                                     Toast.LENGTH_LONG).show();
+                            mPasswordView.setText("");
                         } else if (error.equals(email)) {
                             Toast.makeText(LoginActivity.this,
                                     "Correo y/o contraseña incorrectos",
                                     Toast.LENGTH_LONG).show();
+                            mPasswordView.setText("");
                         } else if (error.equals(post)) {
                             Toast.makeText(LoginActivity.this,
-                                    "Error: Type POST",
+                                    "Error del servidor (POST)",
                                     Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(LoginActivity.this,
-                                    "Algo salió mal",
+                                    "Error del servidor",
                                     Toast.LENGTH_LONG).show();
                         }
+                        showProgress(false);
                     }
                 } catch (JSONException e) {
                     Toast.makeText(LoginActivity.this,
-                            "ERROR: "+e.getMessage(),
+                            "Error del servidor",
                             Toast.LENGTH_LONG).show();
                     e.printStackTrace();
+                    showProgress(false);
                 }
             }
         };
@@ -293,7 +317,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean isEmailValid(String email) {
         return (email.contains("@") &&
-                (email.contains("gmail.com") || email.contains("hotmail.com") || email.contains("live.com") || email.contains(".mx")));
+                (email.contains("outlook.com") || email.contains("gmail.com") || email.contains("hotmail.com") ||
+                        email.contains("live.com") || email.contains(".mx") || email.contains(".com")));
         //return true;
     }
 
@@ -339,20 +364,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Muestra el progreso de la interfaz de usuario y oculta el formulario de inicio de sesión.
+     * Muestra el progreso de la interfaz de usuario y oculta los botones de inicio de sesión.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(boolean show) {
-        // En Honeycomb MR2 tenemos las API ViewPropertyAnimator, que
-        // permiten animaciones muy fáciles. Si está disponible, use
-        // estas API para fundir el selector de progreso.
-
         if (show)
         {
-            mLoginFormView.setVisibility(View.GONE);
+            mButtonView.setVisibility(View.GONE);
             mProgressView.setVisibility(View.VISIBLE);
         } else {
-            mLoginFormView.setVisibility(View.VISIBLE);
+            mButtonView.setVisibility(View.VISIBLE);
             mProgressView.setVisibility(View.GONE);
         }
     }
@@ -373,15 +393,15 @@ public class LoginActivity extends AppCompatActivity {
                         String post = "post", tokens = "tokens";
                         if (error.equals(post)) {
                             Toast.makeText(LoginActivity.this,
-                                    "Error: Type POST",
+                                    "Error con el servidor (POST)",
                                     Toast.LENGTH_LONG).show();
                         } else if (error.equals(tokens)) {
                             Toast.makeText(LoginActivity.this,
-                                    "Error con los tokens de los usuarios",
+                                    "Error con el servidor (TOKEN)",
                                     Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(LoginActivity.this,
-                                    "Notificación no enviada",
+                                    "Error con el servidor",
                                     Toast.LENGTH_LONG).show();
                         }
                     }
@@ -437,7 +457,7 @@ public class LoginActivity extends AppCompatActivity {
         return network != null && network.isConnected();
     }
 
-    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, Context context){
+    private void mostrarDialog(String mensaje, String titulo, String positive, String negative, final Context context, final String metodo){
         dialog = new AlertDialog.Builder(context);
         dialog.setMessage(mensaje)
                 .setTitle(titulo);
@@ -445,6 +465,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 selectionDialog = true;
+
             }
         });
 
@@ -459,6 +480,9 @@ public class LoginActivity extends AppCompatActivity {
                         default:
                             break;
                     }*/
+                    if (metodo.equals("wifi")) {
+                        context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
                 }
             });
         }

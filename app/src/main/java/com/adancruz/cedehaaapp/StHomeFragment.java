@@ -149,7 +149,7 @@ public class StHomeFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(vista.getContext(),
-                                    "Error: JSONException",
+                                    "Error del servidor",
                                     Toast.LENGTH_LONG).show();
                         }
                     }

@@ -128,4 +128,11 @@
     <string name="n123">0123456789</string>
     <string name="abc_ABC_123">aábcdeéfghiíjklmnñóopqrstuvwxyz AÁBCDEÉFGHIÍJKLMNÑOÓPQRSTUVWXYZ 0123456789</string>
     <string name="digitos">aábcdeéfghiíjklmnñóopqrstuvwxyz AÁBCDEÉFGHIÍJKLMNÑOÓPQRSTUVWXYZ 0123456789 @-_+=(){}[]*%$#!?,.;\n: /?\\</string>
+    <string name="intrucciones_reestablecer_contrasena">Te mandaremos un correo con un código.</string>
+    <string name="mandar_codigo">Mandar código</string>
+    <string name="reestablecer_contrasena">Reestablecer contraseña</string>
+    <string name="nueva_contrasena">Nueva contraseña</string>
+    <string name="verificar_codigo">Verificar código</string>
+    <string name="reenviar_codigo">Reenviar código</string>
+    <string name="instrucciones_reenviar_codigo">Espera unos segundos.\nEn caso de no recibirlo, presiona reenviar.</string>
 </resources>
